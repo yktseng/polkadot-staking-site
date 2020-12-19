@@ -2,11 +2,13 @@
   <div id="app">
     <site-nav/>
     <landing-page/>
-    <validator-cards v-bind:validators="[0, 1, 2]"/>
+    <validator-cards v-bind:validators="validators"/>
   </div>
 </template>
 
 <script>
+const polkadot = require('../src/scripts/polkadot');
+
 import LandingPage from './components/LandingPage.vue'
 import SiteNav from './components/SiteNav.vue'
 import ValidatorCards from './components/ValidatorCards.vue'
@@ -18,6 +20,15 @@ export default {
     SiteNav,
     ValidatorCards,
   },
+  created: async function() {
+    await polkadot.connect();
+    this.validators = await polkadot.retrieveValidators();
+  },
+  data: ()=>{
+    return {
+      validators: []
+    }
+  }
 }
 </script>
 

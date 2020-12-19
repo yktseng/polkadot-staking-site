@@ -1,13 +1,14 @@
 <template>
   <div id="validator-cards" >
     <div class='card-container' v-for="(validator, index) in validators" :key="index">
-      <validator-card/>
+      <validator-card v-bind:displayName="validator.displayName"/>
     </div>
   </div>
 </template>
 
 <script>
 import ValidatorCard from './ValidatorCard.vue'
+
 export default {
   name: 'ValidatorCards',
   props: {
@@ -35,6 +36,7 @@ export default {
 
   .card-container {
     width: 33%;
+    height: 25%;
     position: relative;
     display: inline-block;
   }

@@ -6,7 +6,7 @@
       </md-card-media>
 
       <md-card-header>
-        <div class="md-title">Validator Name</div>
+        <div class="md-title">{{displayName}}</div>
         <div class="md-subhead">Subtitle here</div>
       </md-card-header>
 
@@ -35,6 +35,9 @@
 <script>
 export default {
   name: 'ValidatorCard',
+  props: {
+    displayName: String,
+  }
 }
 </script>
 
