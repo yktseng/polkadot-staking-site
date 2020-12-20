@@ -2,7 +2,7 @@
   <div id="app">
     <site-nav/>
     <landing-page/>
-    <validator-cards v-bind:validators="validators"/>
+    <coin-cards v-bind:coins="coins"/>
   </div>
 </template>
 
@@ -11,14 +11,15 @@ const polkadot = require('../src/scripts/polkadot');
 
 import LandingPage from './components/LandingPage.vue'
 import SiteNav from './components/SiteNav.vue'
-import ValidatorCards from './components/ValidatorCards.vue'
+// import ValidatorCards from './components/ValidatorCards.vue'
+import CoinCards from './components/CoinCards.vue'
 
 export default {
   name: 'App',
   components: {
     LandingPage,
     SiteNav,
-    ValidatorCards,
+    CoinCards,
   },
   created: async function() {
     await polkadot.connect();
@@ -26,7 +27,10 @@ export default {
   },
   data: ()=>{
     return {
-      validators: []
+      validators: [],
+      coins: [{
+        displayName: 'Kusama',
+      }]
     }
   }
 }
