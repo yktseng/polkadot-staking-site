@@ -23,7 +23,6 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
   #coin-cards {
-    height: 480px;
     margin-top: -120px;
     width: 80vw;
     background-color: #fafafa;
@@ -36,7 +35,9 @@ export default {
 
   .card-container {
     width: 33%;
-    height: 25%;
+    min-width: 240px;
+    min-height: 268px;
+    max-height: 268px;
     position: relative;
     display: inline-block;
   }

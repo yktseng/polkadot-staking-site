@@ -65,7 +65,8 @@ const showStakingGuide = function() {
 <style lang="scss" scoped>
   .md-card {
     margin: 20px;
-
+    min-height: 268px;
+    max-height: 268px;
     vertical-align: top;
     
   }
