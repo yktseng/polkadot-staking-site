@@ -8,9 +8,11 @@
       </md-step>
 
       <md-step id="second" md-label="Choose validators" :md-done.sync="second">
+        <span>We hold the following validators now</span>
         <md-list>
-          <md-list-item v-for="(validator, index) in validators" :key="index">
+          <md-list-item class="validator-list-item" v-for="(validator, index) in validators" :key="index">
             <span class="md-list-item-text">{{validator.displayName}}</span>
+            <span class="md-list-validator-addr">{{validator.addr}}</span>
           </md-list-item>
           <md-divider class="md-inset"></md-divider>
         </md-list>
@@ -19,13 +21,26 @@
 
       <md-step id="third" md-label="Bond your Stake" :md-done.sync="third">
         <!-- Ask polkadot extension about the identity of the nominator and the amount of its free funds -->
+          <label>Your Kusama Accounts</label><br/>
+          <!-- <md-field>
+          <md-select v-model="selectedAddress" @change="onAddrChange($event)">
+            <md-option v-for="account in accounts" :key="account.address" v-bind:value="account.address">{{account.address}}</md-option>
+          </md-select>
+          </md-field> -->
+          <select v-model="selectedAddress" @change="onAddrChange($event)">
+            <option v-for="account in accounts" :key="account.address" v-bind:value="account.address">{{account.address}}</option>
+          </select>
+          <br/>
+        <p>Your free funds: {{freeFund}} KSM</p>
+        Stake 
+        <input type="range" v-model.number="stakeFund" :min="stakedFund" :max="maxFund" step="0.001"> {{ stakeFund }} KSM to us
       </md-step>
 
       <md-step id="fourth" md-label="See result" :md-done.sync="fourth">
       </md-step>
     </md-steppers>
       <md-dialog-actions>
-        <md-button class="md-raised md-primary" @click="setDone(nextStep())">Continue</md-button>
+        <md-button class="md-raised md-primary" @click="setDone(nextStep())" :disabled="isLoading">Continue</md-button>
         <md-button class="md-secondary" @click="showDialog = false">Close</md-button>
       </md-dialog-actions>
     </md-dialog>
@@ -33,11 +48,12 @@
 </template>
 
 <script>
+
 const polkadot = require('../scripts/polkadot');
 export default {
   name: 'StakingGuide',
   props: {
-    open: Boolean
+    open: Boolean,
   },
   data: function() {
     return {
@@ -47,18 +63,64 @@ export default {
       third: false,
       fourth: false,
       active: 'first',
-
+      isLoading: false,
       validators: [],
+      accounts: [],
+      selectedAccount: undefined,
+      selectedAddress: "",
+      freeFund: 0,
+      stakedFund: 0,
+      stakeFund: 0,
+      maxFund: 0,
     }
   },
   created: async function() {
+    this.isLoading = true;
     await polkadot.connect();
     this.validators = await polkadot.retrieveValidators();
+    this.isLoading = false;
   },
   methods: {
-    setDone (index) {
+    async setDone (index) {
       if (index) {
         this.active = index
+      }
+      if (index === 'third') { // select a number of funds to bond
+        this.accounts = await polkadot.getAccountsFromExtension();
+        if(this.accounts !== undefined) {
+          this.selectedAddress = this.accounts[0].address;
+          this.selectedAccount = this.accounts[0];
+          const accountInfo = await polkadot.getAccountInfo(this.selectedAddress);
+          console.log((accountInfo.data.free.toNumber() / 1000000000000).toFixed(3), (accountInfo.data.reserved.toNumber() / 1000000000000).toFixed(3), (accountInfo.data.feeFrozen.toNumber() / 1000000000000).toFixed(3), (accountInfo.data.miscFrozen.toNumber() / 1000000000000).toFixed(3));
+          this.freeFund = ((accountInfo.data.free - accountInfo.data.feeFrozen) / 1000000000000).toFixed(3);
+          this.stakedFund = (accountInfo.data.feeFrozen / 1000000000000).toFixed(3);
+          this.stakeFund = this.stakedFund;
+          this.maxFund = parseFloat(this.freeFund) + parseFloat(this.stakedFund) - 0.5; // minus 0.5 to make sure you have enough KSM to pay the fee
+        }
+      }
+      if (index === 'fourth') {
+        // call bond() or bondExtra()
+        // if(parseFloat(this.stakedFund) === 0) { // call bond()
+        //   await polkadot.bond(this.selectedAccount, this.selectedAccount.address, this.stakeFund);
+        // } else { // call bondExtra()
+        //   await polkadot.bondExtra(this.selectedAccount, parseFloat(this.stakeFund) - parseFloat(this.stakedFund));
+        // }
+        // call nominate()
+        await polkadot.nominate(this.selectedAccount, this.validators.map((v)=>{
+          return v.addr;
+        }));
+      }
+    },
+    async onAddrChange () {
+      if(this.selectedAddress !== undefined && this.selectedAddress.length > 0) {
+        const accountInfo = await polkadot.getAccountInfo(this.selectedAddress);
+        this.selectedAddress = accountInfo.address;
+        this.selectedAccount = accountInfo;
+        console.log((accountInfo.data.free.toNumber() / 1000000000000).toFixed(3), (accountInfo.data.reserved.toNumber() / 1000000000000).toFixed(3), (accountInfo.data.feeFrozen.toNumber() / 1000000000000).toFixed(3), (accountInfo.data.miscFrozen.toNumber() / 1000000000000).toFixed(3));
+        this.freeFund = ((accountInfo.data.free - accountInfo.data.feeFrozen) / 1000000000000).toFixed(3);
+        this.stakedFund = (accountInfo.data.feeFrozen / 1000000000000).toFixed(3);
+        this.stakeFund = this.stakedFund;
+        this.maxFund = parseFloat(this.freeFund) + parseFloat(this.stakedFund) - 0.5; // minus 0.5 to make sure you have enough KSM to pay the fee
       }
     },
     nextStep () {
@@ -80,4 +142,12 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
+  .md-list-item-text {
+    font-size: 14px;
+  }
+  .md-list-validator-addr {
+    font-size: 12px;
+    text-align: right;
+    color: gray;
+  }
 </style>

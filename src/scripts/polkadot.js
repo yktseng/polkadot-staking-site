@@ -3,9 +3,9 @@ const extension = require('@polkadot/extension-dapp');
 
 const { ApiPromise, WsProvider } = Api;
 const {
-  // web3Accounts,
+  web3Accounts,
   web3Enable,
-  // web3FromAddress,
+  web3FromAddress,
   // web3ListRpcProviders,
   // web3UseRpcProvider
 } = extension;
@@ -33,7 +33,7 @@ class Polkadot {
     return response;
   }
 
-  async nominate() {
+  async getAccountsFromExtension() {
     // returns an array of all the injected sources
     // (this needs to be called first, before other requests)
     const extensions = await web3Enable('my cool dapp');
@@ -43,7 +43,9 @@ class Polkadot {
       // in this case we should inform the use and give a link to the extension
       return;
     }
-  
+    const allAccounts = await web3Accounts();
+    console.log(allAccounts);
+    return allAccounts;
     // returns an array of { address, meta: { name, source } }
     // meta.source contains the name of the extension that provides this account
     // const allAccounts = await web3Accounts();
@@ -55,6 +57,49 @@ class Polkadot {
     // const injector = await web3FromAddress(SENDER);
     
     // this.api.tx.nominate
+  }
+
+  async getAccountInfo(addr) {
+    const accountInfo = await this.api.query.system.account(addr);
+    return accountInfo;
+  }
+
+  async bond(account, addr, balance) {
+    const extrinsic = await this.api.tx.staking.bond(addr, balance, addr);
+    await this._signAndSend(account,extrinsic);
+  }
+
+  async _signAndSend(account, extrinsic) {
+    // to be able to retrieve the signer interface from this account
+    // we can use web3FromSource which will return an InjectedExtension type
+    const injector = await web3FromAddress(account.address);
+
+    // passing the injected account address as the first argument of signAndSend
+    // will allow the api to retrieve the signer and the user will see the extension
+    // popup asking to sign the balance transfer transaction
+    extrinsic.signAndSend(account.address, { signer: injector.signer }, ({ status }) => {
+        if (status.isInBlock) {
+            console.log(`Completed at block hash #${status.asInBlock.toString()}`);
+            return true;
+        } else {
+            console.log(`Current status: ${status.type}`);
+            return false;
+        }
+    }).catch((error) => {
+        console.log(':( transaction failed', error);
+        return false;
+    });
+  }
+
+  async bondExtra(account, balance) {
+    const extrinsic = await this.api.tx.staking.bondExtra(balance);
+
+    await this._signAndSend(account, extrinsic);
+  }
+
+  async nominate(account, nominees) {
+    const extrinsic = await this.api.tx.staking.nominate(nominees);
+    await this._signAndSend(account, extrinsic);
   }
 }
 

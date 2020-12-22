@@ -6,7 +6,7 @@
       <span class="md-title"><span style="color:red">Crypto</span>Currency<span style="color:red">Lab</span></span>
       <div class="md-toolbar-section-end">
         <md-button class="md-button">
-          Stack with Us
+          Stake with Us
         </md-button>
         <md-button class="md-button">
           Blog
