@@ -1,7 +1,7 @@
 <template>
   <div id="landing-page">
       <!-- <img src="../assets/img/banner.jpg" />-->
-      <span class="main-desc">Earn Crypto Income</span><br/><span class="secondary-desc">in a few steps</span>
+      <div class="main-desc">Earn <span style="color:#7D8597">Crypto </span>Income</div><span class="secondary-desc">in a few steps</span>
   </div>
 </template>
 
@@ -17,7 +17,7 @@ export default {
   #landing-page {
     position: relative;
     z-index: 5;
-    background-color: #001233;
+    background-color: #001845;
     width: 100%;
     height: 660px;
   }
@@ -34,7 +34,7 @@ export default {
     position: absolute;
     top: 272px;
     left: 600px;
-    color: #FAFAFA;
+    color: #7D8597;
     font: normal normal normal 64px/1.4em roboto ,sans-serif;
   }
 </style>

@@ -2,25 +2,26 @@
   <template>
   <div id="staking-guide">
     <md-dialog :md-active.sync="showDialog" class="staking-guide">
-      <md-dialog-title>Kusama Stake Guide</md-dialog-title>
+      <md-dialog-title>Staking on Kusama</md-dialog-title>
       <md-steppers :md-active-step.sync="active" md-linear>
+      
       <md-step id="first" md-label="A simple guide" :md-done.sync="first">
-        <p>1. You will see a list of validators which we hold</p>
-        <p>2. The website will ask you to allow it to interact with your polkadot browser extension</p>
+        <md-progress-bar md-mode="query" v-if="showProgressBar"></md-progress-bar>
+        <p>1. You will see a list of validators which we hold, these are validators you are going to delegate</p>
+        <p>2. The website will ask you to allow it to interact with your polkadot browser extension, select Yes to continue</p>
         <p>3. You can select how much fund you want to delegate to our validators</p>
-        <p>4. The website will ask you to sign the following extrinsics to finish to transaction</p>
+        <p>4. The website will ask you to sign a batch of extrinsics to fulfill to transaction</p>
       </md-step>
 
       <md-step id="second" md-label="Choose validators" :md-done.sync="second">
         <span>We hold the following validators now</span>
         <md-list>
-          <md-list-item class="validator-list-item" v-for="(validator, index) in validators" :key="index">
+          <md-list-item class="validator-list-item" v-for="(validator, index) in validators" :key="index" value="validator.addr">
             <span class="md-list-item-text">{{validator.displayName}}</span>
             <span class="md-list-validator-addr">{{validator.addr}}</span>
           </md-list-item>
-          <md-divider class="md-inset"></md-divider>
         </md-list>
-        <span>Delegate your KSM to our validators!</span>
+        <p>Delegate your KSM to our validators!</p>
       </md-step>
 
       <md-step id="third" md-label="Bond your Stake" :md-done.sync="third">
@@ -90,9 +91,11 @@ export default {
   },
   created: async function() {
     this.isLoading = true;
+    this.showProgressBar = true;
     await polkadot.connect();
     this.validators = await polkadot.retrieveValidators();
     this.isLoading = false;
+    this.showProgressBar = false;
   },
   methods: {
     _calculateFunds(accountInfo) {
@@ -188,7 +191,7 @@ export default {
         case 'fourth':
           return 'fourth';
       }
-    }
+    },
   }
 }
 
@@ -206,5 +209,11 @@ export default {
   }
   .md-stepper-number{
     background-color: #0466C8 !important;
+  }
+  .validator-list-item {
+    height: 24px;
+  }
+  .md-content {
+    overflow: auto;
   }
 </style>

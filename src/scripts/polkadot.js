@@ -15,12 +15,14 @@ class Polkadot {
   constructor() {
     // H4EeouHL5LawTqq2itu6auF62hDRX2LEBYk1TxS6QMrn9Hg
     // 5GYczVZQhiKfBp2PG25rCdYEwSQycrD9mohzcogUcc9N3ENY
-    this.addrs = ['5GYczVZQhiKfBp2PG25rCdYEwSQycrD9mohzcogUcc9N3ENY'];
+    this.addrs = ['H4EeouHL5LawTqq2itu6auF62hDRX2LEBYk1TxS6QMrn9Hg', 'CjU6xRgu5f9utpaCbYHBWZGxZPrpgUPSSXqSQQG5mkH9LKM',
+    'GCNeCFUCEjcJ8XQxJe1QuExpS61MavucrnEAVpcngWBYsP2',
+    'EMrTktHLYSHAqpVH3f2KMMoLkZPMWjeQAZLpZTJ6KgNcXVr'];
   }
 
   async connect() {
     //wss://westend-rpc.polkadot.io  wss://kusama-rpc.polkadot.io
-    const wsProvider = new WsProvider('wss://westend-rpc.polkadot.io');
+    const wsProvider = new WsProvider('wss://kusama-rpc.polkadot.io');
     this.api = await ApiPromise.create({ provider: wsProvider });
   }
 
