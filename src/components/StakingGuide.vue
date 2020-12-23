@@ -37,6 +37,8 @@
       </md-step>
 
       <md-step id="fourth" md-label="See result" :md-done.sync="fourth">
+        <md-progress-bar md-mode="query" v-if="showProgressBar"></md-progress-bar>
+        <span>{{extrinsicStatus}}</span>
       </md-step>
     </md-steppers>
       <md-dialog-actions>
@@ -72,6 +74,9 @@ export default {
       stakedFund: 0,
       stakeFund: 0,
       maxFund: 0,
+      // step four
+      showProgressBar: false,
+      extrinsicStatus: "",
     }
   },
   created: async function() {
@@ -81,6 +86,13 @@ export default {
     this.isLoading = false;
   },
   methods: {
+    _calculateFunds(accountInfo) {
+      console.log((accountInfo.data.free.toNumber() / 1000000000000).toFixed(3), (accountInfo.data.reserved.toNumber() / 1000000000000).toFixed(3), (accountInfo.data.feeFrozen.toNumber() / 1000000000000).toFixed(3), (accountInfo.data.miscFrozen.toNumber() / 1000000000000).toFixed(3));
+          this.freeFund = ((accountInfo.data.free - accountInfo.data.feeFrozen) / 1000000000000).toFixed(3);
+          this.stakedFund = (accountInfo.data.feeFrozen / 1000000000000).toFixed(3);
+          this.stakeFund = this.stakedFund;
+          this.maxFund = parseFloat(this.freeFund) + parseFloat(this.stakedFund) - 0.5; // minus 0.5 to make sure you have enough KSM to pay the fee
+    },
     async setDone (index) {
       if (index) {
         this.active = index
@@ -91,36 +103,51 @@ export default {
           this.selectedAddress = this.accounts[0].address;
           this.selectedAccount = this.accounts[0];
           const accountInfo = await polkadot.getAccountInfo(this.selectedAddress);
-          console.log((accountInfo.data.free.toNumber() / 1000000000000).toFixed(3), (accountInfo.data.reserved.toNumber() / 1000000000000).toFixed(3), (accountInfo.data.feeFrozen.toNumber() / 1000000000000).toFixed(3), (accountInfo.data.miscFrozen.toNumber() / 1000000000000).toFixed(3));
-          this.freeFund = ((accountInfo.data.free - accountInfo.data.feeFrozen) / 1000000000000).toFixed(3);
-          this.stakedFund = (accountInfo.data.feeFrozen / 1000000000000).toFixed(3);
-          this.stakeFund = this.stakedFund;
-          this.maxFund = parseFloat(this.freeFund) + parseFloat(this.stakedFund) - 0.5; // minus 0.5 to make sure you have enough KSM to pay the fee
+          this._calculateFunds(accountInfo);
         }
       }
       if (index === 'fourth') {
         // call bond() or bondExtra()
-        // if(parseFloat(this.stakedFund) === 0) { // call bond()
-        //   await polkadot.bond(this.selectedAccount, this.selectedAccount.address, this.stakeFund);
-        // } else { // call bondExtra()
-        //   await polkadot.bondExtra(this.selectedAccount, parseFloat(this.stakeFund) - parseFloat(this.stakedFund));
-        // }
+        this.showProgressBar = true;
+        if(parseFloat(this.stakedFund) === 0) { // call bond()
+          this.extrinsicStatus = "bonding..."
+          try {
+            await polkadot.bond(this.selectedAccount, this.selectedAccount.address, this.stakeFund);
+          } catch(e) {
+            this.extrinsicStatus = "failed to bond: " + e;
+            this.showProgressBar = false;
+            return;
+          }
+        } else { // call bondExtra()
+          this.extrinsicStatus = "bondExtra..."
+          try {
+            await polkadot.bondExtra(this.selectedAccount, parseFloat(this.stakeFund) - parseFloat(this.stakedFund))
+          } catch (e) {
+            this.extrinsicStatus = "failed to bondExtra: " + e;
+            this.showProgressBar = false;
+            return;
+          }
+        }
+        this.extrinsicStatus = "nominating..."
         // call nominate()
-        await polkadot.nominate(this.selectedAccount, this.validators.map((v)=>{
-          return v.addr;
-        }));
+        try {
+          await polkadot.nominate(this.selectedAccount, this.validators.map((v)=>{
+            return v.addr;
+        }))
+        } catch(e) {
+          this.extrinsicStatus = "failed to nominate: " + e;
+          this.showProgressBar = false;
+          return;
+        }
+        this.extrinsicStatus = "done!"
+        this.showProgressBar = false;
       }
     },
     async onAddrChange () {
-      if(this.selectedAddress !== undefined && this.selectedAddress.length > 0) {
+      if(this.selectedAddress !== undefined) {
         const accountInfo = await polkadot.getAccountInfo(this.selectedAddress);
-        this.selectedAddress = accountInfo.address;
         this.selectedAccount = accountInfo;
-        console.log((accountInfo.data.free.toNumber() / 1000000000000).toFixed(3), (accountInfo.data.reserved.toNumber() / 1000000000000).toFixed(3), (accountInfo.data.feeFrozen.toNumber() / 1000000000000).toFixed(3), (accountInfo.data.miscFrozen.toNumber() / 1000000000000).toFixed(3));
-        this.freeFund = ((accountInfo.data.free - accountInfo.data.feeFrozen) / 1000000000000).toFixed(3);
-        this.stakedFund = (accountInfo.data.feeFrozen / 1000000000000).toFixed(3);
-        this.stakeFund = this.stakedFund;
-        this.maxFund = parseFloat(this.freeFund) + parseFloat(this.stakedFund) - 0.5; // minus 0.5 to make sure you have enough KSM to pay the fee
+        this._calculateFunds(accountInfo);
       }
     },
     nextStep () {

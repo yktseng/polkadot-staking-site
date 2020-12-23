@@ -66,7 +66,7 @@ class Polkadot {
 
   async bond(account, addr, balance) {
     const extrinsic = await this.api.tx.staking.bond(addr, balance, addr);
-    await this._signAndSend(account,extrinsic);
+    return this._signAndSend(account,extrinsic);
   }
 
   async _signAndSend(account, extrinsic) {
@@ -77,29 +77,31 @@ class Polkadot {
     // passing the injected account address as the first argument of signAndSend
     // will allow the api to retrieve the signer and the user will see the extension
     // popup asking to sign the balance transfer transaction
-    extrinsic.signAndSend(account.address, { signer: injector.signer }, ({ status }) => {
+    const promise = new Promise((resolve, reject)=>{
+      extrinsic.signAndSend(account.address, { signer: injector.signer }, ({ status }) => {
         if (status.isInBlock) {
-            console.log(`Completed at block hash #${status.asInBlock.toString()}`);
-            return true;
+          console.log(`Completed at block hash #${status.asInBlock.toString()}`);
+          resolve();
         } else {
-            console.log(`Current status: ${status.type}`);
-            return false;
+          console.log(`Current status: ${status.type}`);
         }
-    }).catch((error) => {
+      }).catch((error) => {
         console.log(':( transaction failed', error);
-        return false;
+        reject(error);
+      });
     });
+    return promise;
   }
 
   async bondExtra(account, balance) {
     const extrinsic = await this.api.tx.staking.bondExtra(balance);
 
-    await this._signAndSend(account, extrinsic);
+    return this._signAndSend(account, extrinsic);
   }
 
   async nominate(account, nominees) {
     const extrinsic = await this.api.tx.staking.nominate(nominees);
-    await this._signAndSend(account, extrinsic);
+    return this._signAndSend(account, extrinsic);
   }
 }
 
