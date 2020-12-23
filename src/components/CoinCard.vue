@@ -2,7 +2,7 @@
   <div id="coin-card">
     <md-card md-with-hover>
       <md-card-media class="currency-img">
-        <img src="../assets/img/kusama-logo.png" alt="KSM">
+        <img src="../assets/img/kusama-logo.svg" alt="KSM">
       </md-card-media>
 
       <md-card-header>
@@ -75,5 +75,6 @@ const showStakingGuide = function() {
     max-width: 120px;
     max-height: 120px;
     margin: auto;
+    padding-top: 10px;
   }
 </style>

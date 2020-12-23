@@ -23,7 +23,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
   #coin-cards {
-    margin-top: -120px;
+    margin-top: -160px;
     width: 80vw;
     background-color: #fafafa;
     margin-left: auto;
@@ -31,6 +31,9 @@ export default {
     z-index: 10;
     position: relative;
     display: inline-block;
+    -webkit-box-shadow: 10px 10px 5px 0px rgba(179,179,179,1);
+    -moz-box-shadow: 10px 10px 5px 0px rgba(179,179,179,1);
+    box-shadow: 10px 10px 5px 0px rgba(179,179,179,1);
   }
 
   .card-container {
@@ -38,6 +41,7 @@ export default {
     min-width: 240px;
     min-height: 268px;
     max-height: 268px;
+    margin-bottom: 40px;
     position: relative;
     display: inline-block;
   }

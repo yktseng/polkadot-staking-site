@@ -5,6 +5,10 @@
       <md-dialog-title>Kusama Stake Guide</md-dialog-title>
       <md-steppers :md-active-step.sync="active" md-linear>
       <md-step id="first" md-label="A simple guide" :md-done.sync="first">
+        <p>1. You will see a list of validators which we hold</p>
+        <p>2. The website will ask you to allow it to interact with your polkadot browser extension</p>
+        <p>3. You can select how much fund you want to delegate to our validators</p>
+        <p>4. The website will ask you to sign the following extrinsics to finish to transaction</p>
       </md-step>
 
       <md-step id="second" md-label="Choose validators" :md-done.sync="second">
@@ -39,10 +43,12 @@
       <md-step id="fourth" md-label="See result" :md-done.sync="fourth">
         <md-progress-bar md-mode="query" v-if="showProgressBar"></md-progress-bar>
         <span>{{extrinsicStatus}}</span>
+        <p v-if="extrinsicStatus === 'done!'">You can see the result in <a :href="polkascanUrl">polkascan.io/</a></p>
+        <p v-if="extrinsicStatus === 'done!'">Happy delegating</p>
       </md-step>
     </md-steppers>
       <md-dialog-actions>
-        <md-button class="md-raised md-primary" @click="setDone(nextStep())" :disabled="isLoading">Continue</md-button>
+        <md-button class="md-raised md-primary" @click="setDone(nextStep())" :disabled="isLoading || ended">Continue</md-button>
         <md-button class="md-secondary" @click="$emit('close-guide')">Close</md-button>
       </md-dialog-actions>
     </md-dialog>
@@ -77,6 +83,9 @@ export default {
       // step four
       showProgressBar: false,
       extrinsicStatus: "",
+      blockHash: "",
+      polkascanUrl: "",
+      ended: false,
     }
   },
   created: async function() {
@@ -112,6 +121,7 @@ export default {
         }
       }
       if (index === 'fourth') {
+        this.ended = true;
         // call bond() or bondExtra()
         this.showProgressBar = true;
         if(parseFloat(this.stakedFund) === 0) { // call bond()
@@ -124,7 +134,7 @@ export default {
             return;
           }
         } else if(parseFloat(this.stakeFund) - parseFloat(this.stakedFund) > 0) { // call bondExtra()
-          this.extrinsicStatus = "bondExtra..."
+          this.extrinsicStatus = "bondingExtra..."
           try {
             await polkadot.bondExtra(this.selectedAccount, parseFloat(this.stakeFund) - parseFloat(this.stakedFund))
           } catch (e) {
@@ -140,8 +150,11 @@ export default {
             return v.addr;
           }));
           this.extrinsicStatus = "done!"
+          this.blockHash = blockHash;
           await polkadot.getBlockInfo(blockHash);
           this.showProgressBar = false;
+          this.polkascanUrl = `https://polkascan.io/kusama/block/${blockHash}`;
+          
 
         } catch(e) {
           this.extrinsicStatus = "failed to nominate: " + e;
@@ -183,5 +196,8 @@ export default {
     font-size: 12px;
     text-align: right;
     color: gray;
+  }
+  .md-stepper-number{
+    background-color: #0466C8 !important;
   }
 </style>
