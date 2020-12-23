@@ -1,5 +1,6 @@
 const Api = require('@polkadot/api');
 const extension = require('@polkadot/extension-dapp');
+const utilCrypto = require('@polkadot/util-crypto')
 
 const { ApiPromise, WsProvider} = Api;
 const {
@@ -10,6 +11,9 @@ const {
   // web3ListRpcProviders,
   // web3UseRpcProvider
 } = extension;
+const {
+  encodeAddress, decodeAddress
+} = utilCrypto;
 
 class Polkadot {
   constructor() {
@@ -122,6 +126,11 @@ class Polkadot {
     return promise;
   }
   
+  transformAddressFromSubstrate(addr, toPrefix) {
+    const decoded = decodeAddress(addr);
+    return encodeAddress(decoded, toPrefix);
+  }
+
   async bond(account, addr, balance) {
     const extrinsic = await this.api.tx.staking.bond(addr, balance * 1000000000000, 0);
     return this._signAndSend(account,extrinsic);

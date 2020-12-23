@@ -33,7 +33,7 @@
           </md-select>
           </md-field> -->
           <select v-model="selectedAddress" @change="onAddrChange($event)">
-            <option v-for="account in accounts" :key="account.address" v-bind:value="account.address">{{account.address}}</option>
+            <option v-for="account in accounts" :key="account.address" v-bind:value="account.address">{{transformAddress(account.address)}}</option>
           </select>
           <br/>
         <p>Your free funds: {{freeFund}} KSM</p>
@@ -173,10 +173,10 @@ export default {
         }
       }
     },
-    async onAddrChange () {
+    async onAddrChange (event) {
       if(this.selectedAddress !== undefined) {
         const accountInfo = await polkadot.getAccountInfo(this.selectedAddress);
-        this.selectedAccount = accountInfo;
+        this.selectedAccount = this.accounts[event.target.selectedIndex];
         this._calculateFunds(accountInfo);
       }
     },
@@ -192,6 +192,9 @@ export default {
           return 'fourth';
       }
     },
+    transformAddress(addr) { 
+      return polkadot.transformAddressFromSubstrate(addr, 2);
+    }
   }
 }
 
