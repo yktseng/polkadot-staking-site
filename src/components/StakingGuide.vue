@@ -43,7 +43,7 @@
     </md-steppers>
       <md-dialog-actions>
         <md-button class="md-raised md-primary" @click="setDone(nextStep())" :disabled="isLoading">Continue</md-button>
-        <md-button class="md-secondary" @click="showDialog = false">Close</md-button>
+        <md-button class="md-secondary" @click="$emit('close-guide')">Close</md-button>
       </md-dialog-actions>
     </md-dialog>
   </div>

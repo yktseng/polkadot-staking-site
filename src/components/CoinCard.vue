@@ -29,7 +29,7 @@
         </md-card-expand-content>
       </md-card-expand>
     </md-card>
-    <staking-guide v-if="isShowGuide" v-bind:open="isShowGuide"/>
+    <staking-guide v-if="isShowGuide" v-bind:open="isShowGuide" @close-guide="isShowGuide = false"/>
   </div>
 </template>
 
