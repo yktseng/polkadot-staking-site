@@ -91,7 +91,12 @@ export default {
           this.freeFund = ((accountInfo.data.free - accountInfo.data.feeFrozen) / 1000000000000).toFixed(3);
           this.stakedFund = (accountInfo.data.feeFrozen / 1000000000000).toFixed(3);
           this.stakeFund = this.stakedFund;
-          this.maxFund = parseFloat(this.freeFund) + parseFloat(this.stakedFund) - 0.5; // minus 0.5 to make sure you have enough KSM to pay the fee
+          this.maxFund = parseFloat(this.freeFund) + parseFloat(this.stakedFund); // minus 0.5 to make sure you have enough KSM to pay the fee
+          if(this.maxFund < 0.5) {
+            this.maxFund -= 0.2;
+          } else {
+            this.maxFund -= 0.5;
+          }
     },
     async setDone (index) {
       if (index) {
@@ -118,7 +123,7 @@ export default {
             this.showProgressBar = false;
             return;
           }
-        } else { // call bondExtra()
+        } else if(parseFloat(this.stakeFund) - parseFloat(this.stakedFund) > 0) { // call bondExtra()
           this.extrinsicStatus = "bondExtra..."
           try {
             await polkadot.bondExtra(this.selectedAccount, parseFloat(this.stakeFund) - parseFloat(this.stakedFund))
@@ -131,16 +136,18 @@ export default {
         this.extrinsicStatus = "nominating..."
         // call nominate()
         try {
-          await polkadot.nominate(this.selectedAccount, this.validators.map((v)=>{
+          const blockHash = await polkadot.nominate(this.selectedAccount, this.validators.map((v)=>{
             return v.addr;
-        }))
+          }));
+          this.extrinsicStatus = "done!"
+          await polkadot.getBlockInfo(blockHash);
+          this.showProgressBar = false;
+
         } catch(e) {
           this.extrinsicStatus = "failed to nominate: " + e;
           this.showProgressBar = false;
           return;
         }
-        this.extrinsicStatus = "done!"
-        this.showProgressBar = false;
       }
     },
     async onAddrChange () {

@@ -1021,7 +1021,7 @@
     "@polkadot/util" "^5.0.1"
     "bn.js" "^4.11.9"
 
-"@polkadot/types@3.0.1":
+"@polkadot/types@^3.0.1", "@polkadot/types@3.0.1":
   "integrity" "sha512-FjU/G9fbBsA+HgmzkYlcnFfqyoN+QQG6CcFRlV6WN/HuU0SjQLPmVswn9mXYYzcdlTW3DdYL2RxBWeyrynRTTQ=="
   "resolved" "https://registry.npmjs.org/@polkadot/types/-/types-3.0.1.tgz"
   "version" "3.0.1"
