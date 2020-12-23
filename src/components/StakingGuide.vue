@@ -124,10 +124,12 @@ export default {
         this.ended = true;
         // call bond() or bondExtra()
         this.showProgressBar = true;
+        const tx = [];
         if(parseFloat(this.stakedFund) === 0) { // call bond()
           this.extrinsicStatus = "bonding..."
           try {
-            await polkadot.bond(this.selectedAccount, this.selectedAccount.address, this.stakeFund);
+            tx.push(polkadot.getBondExtrinsic(this.selectedAddress, this.stakeFund));
+            //await polkadot.bond(this.selectedAccount, this.selectedAccount.address, this.stakeFund);
           } catch(e) {
             this.extrinsicStatus = "failed to bond: " + e;
             this.showProgressBar = false;
@@ -136,7 +138,8 @@ export default {
         } else if(parseFloat(this.stakeFund) - parseFloat(this.stakedFund) > 0) { // call bondExtra()
           this.extrinsicStatus = "bondingExtra..."
           try {
-            await polkadot.bondExtra(this.selectedAccount, parseFloat(this.stakeFund) - parseFloat(this.stakedFund))
+            tx.push(polkadot.getBondExtraExtrinsic(parseFloat(this.stakeFund) - parseFloat(this.stakedFund)));
+            //await polkadot.bondExtra(this.selectedAccount, parseFloat(this.stakeFund) - parseFloat(this.stakedFund))
           } catch (e) {
             this.extrinsicStatus = "failed to bondExtra: " + e;
             this.showProgressBar = false;
@@ -146,9 +149,13 @@ export default {
         this.extrinsicStatus = "nominating..."
         // call nominate()
         try {
-          const blockHash = await polkadot.nominate(this.selectedAccount, this.validators.map((v)=>{
-            return v.addr;
-          }));
+          tx.push(polkadot.getNominateExtrinsic(this.validators.map((v)=>{
+           return v.addr;
+          })));
+          //const blockHash = await polkadot.nominate(this.selectedAccount, this.validators.map((v)=>{
+          //  return v.addr;
+          //}));
+          const blockHash = await polkadot.batchSignAndSend(this.selectedAccount, tx);
           this.extrinsicStatus = "done!"
           this.blockHash = blockHash;
           await polkadot.getBlockInfo(blockHash);

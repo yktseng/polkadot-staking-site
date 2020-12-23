@@ -72,11 +72,6 @@ class Polkadot {
     return accountInfo;
   }
 
-  async bond(account, addr, balance) {
-    const extrinsic = await this.api.tx.staking.bond(addr, balance * 1000000000000, 0);
-    return this._signAndSend(account,extrinsic);
-  }
-
   async _signAndSend(account, extrinsic) {
     // to be able to retrieve the signer interface from this account
     // we can use web3FromSource which will return an InjectedExtension type
@@ -101,8 +96,37 @@ class Polkadot {
     return promise;
   }
 
+  async batchSignAndSend(account, batch) {
+    // to be able to retrieve the signer interface from this account
+    // we can use web3FromSource which will return an InjectedExtension type
+    const injector = await web3FromAddress(account.address);
+
+    // passing the injected account address as the first argument of signAndSend
+    // will allow the api to retrieve the signer and the user will see the extension
+    // popup asking to sign the balance transfer transaction
+    const promise = new Promise((resolve, reject)=>{
+      this.api.tx.utility.batch(batch).signAndSend(account.address, { signer: injector.signer }, ({ status }) => {
+        if (status.isInBlock) {
+          console.log(`Completed at block hash #${status.asInBlock.toString()}`);
+          resolve(status.asInBlock.toString());
+        } else {
+          console.log(`Current status: ${status.type}`);
+        }
+      }).catch((error) => {
+        console.log(':( transaction failed', error);
+        reject(error);
+      });
+    });
+    return promise;
+  }
+  
+  async bond(account, addr, balance) {
+    const extrinsic = await this.api.tx.staking.bond(addr, balance * 1000000000000, 0);
+    return this._signAndSend(account,extrinsic);
+  }
+
   async bondExtra(account, balance) {
-    const extrinsic = await this.api.tx.staking.bondExtra(balance);
+    const extrinsic = await this.api.tx.staking.bondExtra(balance * 1000000000000);
 
     return this._signAndSend(account, extrinsic);
   }
@@ -110,6 +134,18 @@ class Polkadot {
   async nominate(account, nominees) {
     const extrinsic = await this.api.tx.staking.nominate(nominees);
     return this._signAndSend(account, extrinsic);
+  }
+
+  getBondExtrinsic(addr, balance) {
+    return this.api.tx.staking.bond(addr, balance * 1000000000000, 0);
+  }
+
+  getBondExtraExtrinsic(balance) {
+    return this.api.tx.staking.bondExtra(balance * 1000000000000);
+  }
+
+  getNominateExtrinsic(nominees) {
+    return this.api.tx.staking.nominate(nominees);
   }
 
   async getBlockInfo(blockHash) {

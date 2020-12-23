@@ -1,7 +1,7 @@
 <template>
   <div id="landing-page">
       <!-- <img src="../assets/img/banner.jpg" />-->
-      <span class="main-desc">Stake your funds in a few steps</span>
+      <span class="main-desc">Earn Crypto Income</span><br/><span class="secondary-desc">in a few steps</span>
   </div>
 </template>
 
@@ -29,5 +29,12 @@ export default {
     color: #FAFAFA;
     font-size: 72px;
     font: normal normal normal 96px/1.4em roboto ,sans-serif;
+  }
+  .secondary-desc {
+    position: absolute;
+    top: 272px;
+    left: 600px;
+    color: #FAFAFA;
+    font: normal normal normal 64px/1.4em roboto ,sans-serif;
   }
 </style>
