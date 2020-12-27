@@ -4,7 +4,10 @@
       <md-app-toolbar class="site-nav">
       <span class="md-title"><span style="color:#FFFFFF">Crypto</span><span style="color:#979DAC">Currency</span><span style="color:#FFFFFF">Lab</span></span>
       <div class="md-toolbar-section-end">
-        <md-button class="md-button nav-button">
+        <md-button class="md-button nav-button" @click="onClickTool">
+          Tools
+        </md-button>
+        <md-button class="md-button nav-button" @click="onClickStake">
           Stake with Us
         </md-button>
         <md-button class="md-button nav-button">
@@ -22,6 +25,14 @@
 <script>
 export default {
   name: 'SiteNav',
+  methods: {
+    onClickTool: function() {
+      this.$router.push('/tools');
+    },
+    onClickStake: function() {
+      this.$router.push('/');
+    }
+  }
 }
 </script>
 

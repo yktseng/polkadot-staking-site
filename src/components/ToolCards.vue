@@ -1,28 +1,28 @@
 <template>
-  <div id="coin-cards" class="md-elevation-10">
-    <div class='card-container' v-for="(currency, index) in coins" :key="index">
-      <coin-card v-bind:displayName="currency.displayName"/>
+  <div id="tool-cards" class="md-elevation-10">
+    <div class='card-container' v-for="(tool, index) in tools" :key="index">
+      <tool-card v-bind:displayName="tool.displayName"/>
     </div>
   </div>
 </template>
 
 <script>
-import CoinCard from './CoinCard.vue'
+import ToolCard from './ToolCard.vue'
 
 export default {
-  name: 'CoinCards',
+  name: 'ToolCards',
   props: {
-    coins: Array
+    tools: Array
   },
   components: {
-    CoinCard
+    ToolCard
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
-  #coin-cards {
+  #tool-cards {
     margin-top: 400px;
     padding-bottom: 20px;
     width: 80vw;

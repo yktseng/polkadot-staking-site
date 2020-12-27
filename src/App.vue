@@ -1,37 +1,29 @@
 <template>
   <div id="app">
     <site-nav/>
-    <landing-page/>
-    <coin-cards v-bind:coins="coins"/>
+    <div>
+      <router-view default="{name: landingPage}"></router-view>
+    </div>
+    <bottom-nav/>
   </div>
 </template>
 
 <script>
-const polkadot = require('../src/scripts/polkadot');
 
-import LandingPage from './components/LandingPage.vue'
 import SiteNav from './components/SiteNav.vue'
-// import ValidatorCards from './components/ValidatorCards.vue'
-import CoinCards from './components/CoinCards.vue'
+import BottomNav from './components/BottomNav.vue'
 
 export default {
   name: 'App',
   components: {
-    LandingPage,
     SiteNav,
-    CoinCards,
+    BottomNav,
   },
-  created: async function() {
-    await polkadot.connect();
-    this.validators = await polkadot.retrieveValidators();
-  },
-  data: ()=>{
+  data: function() {
     return {
-      validators: [],
-      coins: [{
-        displayName: 'Kusama',
-      }]
     }
+  },
+  methods: {
   }
 }
 </script>

@@ -1,14 +1,33 @@
 <template>
   <div id="landing-page">
-      <!-- <img src="../assets/img/banner.jpg" />-->
-      <div class="main-desc">Earn <span style="color:#7D8597">Crypto </span>Income</div><span class="secondary-desc">in a few steps</span>
+    <!-- <img src="../assets/img/banner.jpg" />-->
+    <div class="main-desc">Earn <span style="color:#7D8597">Crypto </span>Income</div><span class="secondary-desc">in a few steps</span>
+    <coin-cards v-bind:coins="coins"/>
   </div>
+
 </template>
 
 <script>
+const polkadot = require('../scripts/polkadot');
+
+import CoinCards from './CoinCards.vue'
 export default {
   name: 'LandingPage',
-
+  components: {
+    CoinCards,
+  },
+  created: async function() {
+    await polkadot.connect();
+    this.validators = await polkadot.retrieveValidators();
+  },
+  data: ()=>{
+    return {
+      validators: [],
+      coins: [{
+        displayName: 'Kusama',
+      }]
+    }
+  }
 }
 </script>
 
@@ -19,7 +38,7 @@ export default {
     z-index: 5;
     background-color: #001845;
     width: 100%;
-    height: 660px;
+    height: 88vh;
   }
 
   .main-desc {

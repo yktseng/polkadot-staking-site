@@ -7,13 +7,12 @@
 
       <md-card-header>
         <div class="md-title">{{displayName}}</div>
-        <div class="md-subhead">Subtitle here</div>
       </md-card-header>
 
       <md-card-expand>
         <md-card-actions md-alignment="space-between">
           <div>
-            <md-button @click="onClick">Stake With Us</md-button>
+            <md-button @click="onClickStakingGuide">Stake With Us</md-button>
           </div>
           <md-card-expand-trigger>
             <md-button class="md-icon-button">
@@ -24,7 +23,7 @@
 
         <md-card-expand-content>
           <md-card-content>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Optio itaque ea, nostrum odio. Dolores, sed accusantium quasi non, voluptas eius illo quas, saepe voluptate pariatur in deleniti minus sint. Excepturi.
+            <md-button @click="onClickCheckReward">Check your Reward</md-button>
           </md-card-content>
         </md-card-expand-content>
       </md-card-expand>
@@ -46,9 +45,12 @@ export default {
     }
   },
   methods: {
-    onClick: async function() {
+    onClickStakingGuide: async function() {
       await showStakingGuide()
       this.isShowGuide = true
+    },
+    onClickCheckReward: async function() {
+
     }
   },
   components: {
@@ -77,4 +79,4 @@ const showStakingGuide = function() {
     margin: auto;
     padding-top: 10px;
   }
-</style>
+</style>                               
