@@ -25,6 +25,7 @@
       </md-step>
 
       <md-step id="third" md-label="Bond your Stake" :md-done.sync="third">
+        <div v-if="hasExtension">
         <!-- Ask polkadot extension about the identity of the nominator and the amount of its free funds -->
           <label>Your Kusama Accounts</label><br/>
           <!-- <md-field>
@@ -39,6 +40,11 @@
         <p>Your free funds: {{freeFund}} KSM</p>
         Stake 
         <input type="range" v-model.number="stakeFund" :min="stakedFund" :max="maxFund" step="0.001"> {{ stakeFund }} KSM to us
+        </div>
+        <div v-if="!hasExtension">
+          <md-icon style="color:#fc5c65">warning</md-icon>
+          To stake Kusama with us, you must install the <a href="https://polkadot.js.org/extension/">Polkadot browser extension</a> first.
+        </div>
       </md-step>
 
       <md-step id="fourth" md-label="See result" :md-done.sync="fourth">
@@ -81,6 +87,7 @@ export default {
       stakedFund: 0,
       stakeFund: 0,
       maxFund: 0,
+      hasExtension: false,
       // step four
       showProgressBar: false,
       extrinsicStatus: "",
@@ -92,10 +99,14 @@ export default {
   created: async function() {
     this.isLoading = true;
     this.showProgressBar = true;
-    await polkadot.connect();
-    this.validators = await polkadot.retrieveValidators();
-    this.isLoading = false;
-    this.showProgressBar = false;
+    try {
+      await polkadot.connect();
+      this.validators = await polkadot.retrieveValidators();
+      this.isLoading = false;
+      this.showProgressBar = false;
+    } catch(err) {
+      console.error('We cannot connect to the kusama json rpc');
+    }
   },
   methods: {
     _calculateFunds(accountInfo) {
@@ -117,10 +128,13 @@ export default {
       if (index === 'third') { // select a number of funds to bond
         this.accounts = await polkadot.getAccountsFromExtension();
         if(this.accounts !== undefined) {
+          this.hasExtension = true;
           this.selectedAddress = this.accounts[0].address;
           this.selectedAccount = this.accounts[0];
           const accountInfo = await polkadot.getAccountInfo(this.selectedAddress);
           this._calculateFunds(accountInfo);
+        } else {
+          this.hasExtension = false;
         }
       }
       if (index === 'fourth') {
