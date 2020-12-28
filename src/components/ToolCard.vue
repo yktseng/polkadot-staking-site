@@ -8,6 +8,7 @@
 
       <md-card-header>
         <div class="md-title">{{displayName}}</div>
+        <div class="md-subhead">Status and Analysis</div>
       </md-card-header>
       </div>
     </md-card>

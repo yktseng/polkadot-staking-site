@@ -1,8 +1,9 @@
 <template>
   <div id="oneKValidator">
+    <md-progress-bar md-mode="query" v-if="showProgressBar"></md-progress-bar>
     <md-table v-model="oneKVStatus" md-sort="name" md-sort-order="asc" md-card>
       <md-table-toolbar>
-        <h1 class="md-title">Kusama 1k validators</h1>
+        <h1 class="md-title">Kusama 1k validator info and status</h1>
       </md-table-toolbar>
 
       <md-table-row slot="md-table-row" slot-scope="{ item }">
@@ -20,12 +21,15 @@ export default {
   name: 'oneKValidator',
   data: function() {
     return {
-      oneKVStatus: []
+      oneKVStatus: [],
+      showProgressBar: false,
     }
   },
   mounted: async function() {
-    const result = await axios.get('https://kusama.yaohsin.net/api/onekvlist?rate=30');
+    this.showProgressBar = true;
+    const result = await axios.get('https://kusama.yaohsin.net/api/onekvlist?rate=100');
     this.oneKVStatus = result.data;
+    this.showProgressBar = false;
   },
 }
 </script>
@@ -34,5 +38,11 @@ export default {
 <style lang="scss" scoped>
   #oneKValidator {
     height: 87vh;
+  }
+  tr:nth-child(even){
+    background-color:#fafafa;
+  }
+  tr:nth-child(odd){
+    background-color: #e7e7e7;
   }
 </style>

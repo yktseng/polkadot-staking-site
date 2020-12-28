@@ -1,7 +1,7 @@
 <template>
   <div id="landing-page">
     <!-- <img src="../assets/img/banner.jpg" />-->
-    <div class="main-desc">Earn <span style="color:#7D8597">Crypto </span>Income</div><span class="secondary-desc">in a few steps</span>
+    <div class="main-desc">Earn <span style="color:#61ba89">Crypto </span>Income</div><span class="secondary-desc">in a few steps</span>
     <coin-cards v-bind:coins="coins"/>
   </div>
 
@@ -36,7 +36,7 @@ export default {
   #landing-page {
     position: relative;
     z-index: 5;
-    background-color: #001845;
+    background-color: #293031;
     width: 100%;
     height: 88vh;
   }
@@ -53,7 +53,7 @@ export default {
     position: absolute;
     top: 272px;
     left: 600px;
-    color: #7D8597;
+    color: #61ba89;
     font: normal normal normal 64px/1.4em roboto ,sans-serif;
   }
 </style>

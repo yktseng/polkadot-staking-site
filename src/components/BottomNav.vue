@@ -14,6 +14,6 @@ export default {
   #bottom-nav {
     width: 100%;
     height: 48px;
-    background-color: #001233 !important;;
+    background-color: #1f232c !important;;
   }
 </style>

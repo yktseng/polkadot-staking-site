@@ -1,6 +1,6 @@
 <template>
   <div id="tool-page">
-    <div class="main-desc">Coming Soon...</div>
+    <div class="main-desc">Crypto Currency Tools and Analysis</div>
     <tool-cards v-bind:tools="tools"/>
   </div>
 </template>
@@ -28,7 +28,7 @@ export default {
   #tool-page {
     position: relative;
     z-index: 5;
-    background-color: #001845;
+    background-color: #293031;
     width: 100%;
     height: 88vh;
   }
