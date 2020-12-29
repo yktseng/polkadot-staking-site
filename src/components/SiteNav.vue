@@ -2,7 +2,7 @@
   <div id="site-nav">
     <md-app md-mode="fixed" >
       <md-app-toolbar class="site-nav">
-      <span class="md-title" @click="onClickTitle"><span style="color:#fc5c65">Crypto</span><span style="color:#FAFAFA">Currency</span><span style="color:#fc5c65">Lab</span></span>
+      <span class="md-title" @click="onClickTitle"><span style="color:#61ba89">Crypto</span><span style="color:#FAFAFA">Currency</span><span style="color:#61ba89">Lab</span></span>
       <div class="md-toolbar-section-end">
         <md-button class="md-button nav-button" @click="onClickTool">
           Tools

@@ -7,10 +7,10 @@
       
       <md-step id="first" md-label="A simple guide" :md-done.sync="first">
         <md-progress-bar md-mode="query" v-if="showProgressBar"></md-progress-bar>
-        <p>1. You will see a list of validators which we hold, these are validators you are going to delegate</p>
-        <p>2. The website will ask you to allow it to interact with your polkadot browser extension, select Yes to continue</p>
-        <p>3. You can select how much fund you want to delegate to our validators</p>
-        <p>4. The website will ask you to sign a batch of extrinsics to fulfill to transaction</p>
+        <p>Follow this steps, you earn KSM by delegating to validators, chosen from <a href="https://thousand-validators.kusama.network/">Kusama Thousand Validators Programme</a></p>
+        <p>1. Allow Polkadot browser extension to interact with the website.</p>
+        <p>2. Select how much funds you want to delegate to these validators</p>
+        <p>3. Sign a batch of extrinsics to fulfill to transaction</p>
       </md-step>
 
       <md-step id="second" md-label="Choose validators" :md-done.sync="second">
