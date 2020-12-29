@@ -23,7 +23,7 @@
 
         <md-card-expand-content>
           <md-card-content>
-            <md-button @click="onClickCheckReward">Check your Reward</md-button>
+            <md-button @click="onClickCheckReward">Coming soon...</md-button>
           </md-card-content>
         </md-card-expand-content>
       </md-card-expand>

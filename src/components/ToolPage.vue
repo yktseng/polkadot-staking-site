@@ -1,6 +1,6 @@
 <template>
   <div id="tool-page">
-    <div class="main-desc">Crypto Currency Tools and Analysis</div>
+    <div class="main-desc"><span style="color:#61ba89">Crypto</span> Currency <span style="color:#61ba89">Tools and Analysis</span></div>
     <tool-cards v-bind:tools="tools"/>
   </div>
 </template>

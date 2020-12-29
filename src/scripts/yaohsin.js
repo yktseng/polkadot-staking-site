@@ -2,7 +2,6 @@ const axios = require('axios');
 
 class Yaohsin {
   constructor() {
-
   }
 
   async getOneKVList(params) {
