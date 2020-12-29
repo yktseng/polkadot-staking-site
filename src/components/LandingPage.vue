@@ -18,7 +18,7 @@ export default {
   },
   created: async function() {
     await polkadot.connect();
-    this.validators = await polkadot.retrieveValidators();
+    // this.validators = await polkadot.retrieveValidators();
   },
   data: ()=>{
     return {

@@ -1,6 +1,8 @@
 const Api = require('@polkadot/api');
 const extension = require('@polkadot/extension-dapp');
-const utilCrypto = require('@polkadot/util-crypto')
+const utilCrypto = require('@polkadot/util-crypto');
+
+const Yaohsin = require('./yaohsin');
 
 const { ApiPromise, WsProvider} = Api;
 const {
@@ -19,9 +21,10 @@ class Polkadot {
   constructor() {
     // H4EeouHL5LawTqq2itu6auF62hDRX2LEBYk1TxS6QMrn9Hg
     // 5GYczVZQhiKfBp2PG25rCdYEwSQycrD9mohzcogUcc9N3ENY
-    this.addrs = ['H4EeouHL5LawTqq2itu6auF62hDRX2LEBYk1TxS6QMrn9Hg', 'CjU6xRgu5f9utpaCbYHBWZGxZPrpgUPSSXqSQQG5mkH9LKM',
-    'GCNeCFUCEjcJ8XQxJe1QuExpS61MavucrnEAVpcngWBYsP2',
-    'EMrTktHLYSHAqpVH3f2KMMoLkZPMWjeQAZLpZTJ6KgNcXVr'];
+    // this.addrs = ['H4EeouHL5LawTqq2itu6auF62hDRX2LEBYk1TxS6QMrn9Hg', 'CjU6xRgu5f9utpaCbYHBWZGxZPrpgUPSSXqSQQG5mkH9LKM',
+    // 'GCNeCFUCEjcJ8XQxJe1QuExpS61MavucrnEAVpcngWBYsP2',
+    // 'EMrTktHLYSHAqpVH3f2KMMoLkZPMWjeQAZLpZTJ6KgNcXVr'];
+    this.yaohsin = new Yaohsin();
   }
 
   async connect() {
@@ -32,19 +35,38 @@ class Polkadot {
 
   async retrieveValidators() {
     const response = [];
-    for(let i = 0; i < this.addrs.length; i++) {
-      const res = await this.api.query.identity.identityOf(this.addrs[i]);
-      let displayName = this.addrs[i];
-      if(res.value.info !== undefined) {
-        displayName = new TextDecoder().decode(res.value.info.display.value)
+    this.addrs = ['H4EeouHL5LawTqq2itu6auF62hDRX2LEBYk1TxS6QMrn9Hg', 'CjU6xRgu5f9utpaCbYHBWZGxZPrpgUPSSXqSQQG5mkH9LKM',
+    'GCNeCFUCEjcJ8XQxJe1QuExpS61MavucrnEAVpcngWBYsP2',
+    'EMrTktHLYSHAqpVH3f2KMMoLkZPMWjeQAZLpZTJ6KgNcXVr'];
+    try {
+      // add random validators from 1kv list
+      const onekvList = await this.yaohsin.getOneKVList({rate: 30});
+      const randomSelected = this.yaohsin.getRandomValidators(onekvList.data, 6);
+      if(Array.isArray(randomSelected)) {
+        this.addrs = this.addrs.concat(randomSelected.map((v)=>{
+          return v.stash;
+        }));
       }
-      const info = {
-        addr: this.addrs[i],
-        displayName: displayName,
-      };
-      response.push(info);
+    } catch(err) {
+      console.error(err);
     }
-    return response;
+    try {
+      for(let i = 0; i < this.addrs.length; i++) {
+        const res = await this.api.query.identity.identityOf(this.addrs[i]);
+        let displayName = this.addrs[i];
+        if(res.value.info !== undefined) {
+          displayName = new TextDecoder().decode(res.value.info.display.value)
+        }
+        const info = {
+          addr: this.addrs[i],
+          displayName: displayName,
+        };
+        response.push(info);
+      }
+      return response;
+    } catch(err) {
+      console.error(err);
+    }
   }
 
   async getAccountsFromExtension() {

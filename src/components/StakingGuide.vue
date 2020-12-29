@@ -14,14 +14,14 @@
       </md-step>
 
       <md-step id="second" md-label="Choose validators" :md-done.sync="second">
-        <span>We hold the following validators now</span>
+        <span>Your funds will be delegated to these validators, chosen from the <a href="https://thousand-validators.kusama.network/">Thousand Validators Programme</a></span>
         <md-list>
           <md-list-item class="validator-list-item" v-for="(validator, index) in validators" :key="index" value="validator.addr">
             <span class="md-list-item-text">{{validator.displayName}}</span>
             <span class="md-list-validator-addr">{{validator.addr}}</span>
           </md-list-item>
         </md-list>
-        <p>Delegate your KSM to our validators!</p>
+        <p></p>
       </md-step>
 
       <md-step id="third" md-label="Bond your Stake" :md-done.sync="third">
