@@ -13,7 +13,7 @@
         <md-button class="md-button nav-button" href="https://www.yaohsin.net/blog">
           Blog
         </md-button>
-        <md-button class="md-button nav-button">
+        <md-button class="md-button nav-button" href="https://www.yaohsin.net/contact">
           Contact
         </md-button>
       </div>
@@ -43,6 +43,10 @@ export default {
 <style scoped>
   .site-nav {
     background-color: #1f232c !important;
+  }
+
+  .md-title {
+    cursor: pointer;
   }
 
   .nav-button {

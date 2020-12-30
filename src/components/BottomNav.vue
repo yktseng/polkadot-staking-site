@@ -1,5 +1,6 @@
 <template>
   <div id="bottom-nav">
+    Cryptolab.network © 2021
   </div>
 </template>
 

@@ -7,10 +7,15 @@
       
       <md-step id="first" md-label="A simple guide" :md-done.sync="first">
         <md-progress-bar md-mode="query" v-if="showProgressBar"></md-progress-bar>
-        <p>Follow this steps, you earn KSM by delegating to validators, chosen from <a href="https://thousand-validators.kusama.network/">Kusama Thousand Validators Programme</a></p>
-        <p>1. Allow Polkadot browser extension to interact with the website.</p>
-        <p>2. Select how much funds you want to delegate to these validators</p>
-        <p>3. Sign a batch of extrinsics to fulfill to transaction</p>
+        <div v-if="showProgressBar">
+          <p>Loading Kusama validators...</p>
+        </div>
+        <div v-if="!showProgressBar">
+          <p>Follow this steps, you earn KSM by delegating to validators, chosen from <a href="https://thousand-validators.kusama.network/">Kusama Thousand Validators Programme</a></p>
+          <p>1. Allow Polkadot browser extension to interact with the website.</p>
+          <p>2. Select how much funds you want to delegate to these validators</p>
+          <p>3. Sign a batch of extrinsics to fulfill to transaction</p>
+        </div>
       </md-step>
 
       <md-step id="second" md-label="Choose validators" :md-done.sync="second">
@@ -51,7 +56,7 @@
         <md-progress-bar md-mode="query" v-if="showProgressBar"></md-progress-bar>
         <span>{{extrinsicStatus}}</span>
         <p v-if="extrinsicStatus === 'done!'">You can see the result in <a :href="polkascanUrl">polkascan.io/</a></p>
-        <p v-if="extrinsicStatus === 'done!'">Happy delegating</p>
+        <p v-if="extrinsicStatus === 'done!'">Happy staking!</p>
       </md-step>
     </md-steppers>
       <md-dialog-actions>
