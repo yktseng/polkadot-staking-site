@@ -10,7 +10,11 @@ class Yaohsin {
       params.rate = 100;
     }
     const result = await axios.get(`https://kusama.yaohsin.net/api/onekvlist?rate=${params.rate}`);
-    return result;
+    if(result.status === 200) {
+      return result.data;
+    } else {
+      throw new Error('Failed to retrieve data: ' + result.status);
+    }
   }
 
   getRandomValidators(arr, n) {
@@ -29,7 +33,11 @@ class Yaohsin {
 
   async getCurrentNominatingStatus() {
     const result = await axios.get(`https://kusama.yaohsin.net/api/nominators`);
-    return result;
+    if(result.status === 200) {
+      return result.data;
+    } else {
+      throw new Error('Failed to retrieve data: ' + result.status);
+    }
   }
   
   mergeOneKVListAndNominatingStatus(onekv, nominatorStats) {
