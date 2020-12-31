@@ -25,7 +25,30 @@ class Yaohsin {
         taken[x] = --len in taken ? taken[len] : len;
     }
     return result;
-}
+  }
+
+  async getCurrentNominatingStatus() {
+    const result = await axios.get(`https://kusama.yaohsin.net/api/nominators`);
+    return result;
+  }
+  
+  mergeOneKVListAndNominatingStatus(onekv, nominatorStats) {
+    const nominators = nominatorStats.nominators;
+    nominators.forEach(element => {
+      const current = element.current;
+      const stashAddr = element.address;
+      current.forEach(target => {
+        onekv.forEach(validator => {
+          if(target.stash === validator.stash) {
+            validator.nominator = stashAddr;
+            validator.elected = target.elected;
+          }
+        });
+      });
+    });
+    return onekv;
+  }
+
 }
 
 module.exports = Yaohsin;

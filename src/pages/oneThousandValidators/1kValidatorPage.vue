@@ -8,6 +8,8 @@
 
       <md-table-row slot="md-table-row" slot-scope="{ item }">
         <md-table-cell md-label="Name" md-sort-by="name">{{ item.name }}</md-table-cell>
+        <md-table-cell md-label="1KV proxy account" md-sort-by="nominator">{{ item.nominator }}</md-table-cell>
+        <md-table-cell md-label="Elected" md-numeric md-sort-by="elected">{{ item.elected }}</md-table-cell>
         <md-table-cell md-label="rank" md-numeric md-sort-by="rank">{{ item.rank }}</md-table-cell>
         <md-table-cell md-label="electedRate" md-numeric md-sort-by="electedRate">{{ item.electedRate }}</md-table-cell>
       </md-table-row>
@@ -17,6 +19,7 @@
 
 <script>
 const axios = require('axios');
+const Yaohsin = require('../../scripts/yaohsin');
 export default {
   name: 'oneKValidator',
   data: function() {
@@ -25,10 +28,13 @@ export default {
       showProgressBar: false,
     }
   },
+  // check status: 200
   mounted: async function() {
+    this.yaohsin = new Yaohsin();
     this.showProgressBar = true;
     const result = await axios.get('https://kusama.yaohsin.net/api/onekvlist?rate=100');
-    this.oneKVStatus = result.data;
+    const currentNominatingStatus = await this.yaohsin.getCurrentNominatingStatus();
+    this.oneKVStatus = this.yaohsin.mergeOneKVListAndNominatingStatus(result.data, currentNominatingStatus.data);
     this.showProgressBar = false;
   },
 }

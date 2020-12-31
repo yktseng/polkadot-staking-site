@@ -183,8 +183,6 @@ export default {
           await polkadot.getBlockInfo(blockHash);
           this.showProgressBar = false;
           this.polkascanUrl = `https://polkascan.io/kusama/block/${blockHash}`;
-          
-
         } catch(e) {
           this.extrinsicStatus = "failed to nominate: " + e;
           this.showProgressBar = false;
