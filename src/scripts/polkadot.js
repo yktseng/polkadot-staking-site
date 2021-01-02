@@ -41,7 +41,7 @@ class Polkadot {
     try {
       // add random validators from 1kv list
       const onekvList = await this.yaohsin.getOneKVList({rate: 30});
-      const randomSelected = this.yaohsin.getRandomValidators(onekvList.data, 6);
+      const randomSelected = this.yaohsin.getRandomValidators(onekvList, 6);
       if(Array.isArray(randomSelected)) {
         this.addrs = this.addrs.concat(randomSelected.map((v)=>{
           return v.stash;
