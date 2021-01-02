@@ -26,7 +26,7 @@ export default {
     margin-top: 400px;
     padding-bottom: 20px;
     width: 80vw;
-    background-color: #fafafa;
+    background-color:#404b55;
     margin-left: auto;
     margin-right: auto;
     z-index: 10;
@@ -42,5 +42,6 @@ export default {
     margin-bottom: 40px;
     position: relative;
     display: inline-block;
+    background-color:#404b55;
   }
 </style>

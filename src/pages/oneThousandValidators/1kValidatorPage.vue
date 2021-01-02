@@ -2,24 +2,26 @@
   <div id="oneKValidator">
     <md-progress-bar md-mode="query" v-if="showProgressBar"></md-progress-bar>
     <p v-if="showProgressBar">Loading 1kv status...</p>
-    <div v-if="!showProgressBar">
+    <div v-if="readyToDisplay">
       <md-content class="stats">
         <p>Total validators: {{oneKVStatus.length}}</p>
-        <p>Total nominators: {{currentNominatingStatus.nominators.length}}</p>
+        <!--<p>Total nominators: {{currentNominatingStatus.nominators.length}}</p>-->
         <p>Total nominated validators: {{totalNominatedCount}}</p>
-        <p>Total elected validators: {{totalElectedNominatorCount}}</p>
+        <!--<p>Total elected validators: {{totalElectedNominatorCount}}</p>-->
         
       </md-content>
-      <md-table v-model="oneKVStatus" md-sort="name" md-sort-order="asc" md-card>
+      <md-table class="onekvTable" v-model="oneKVStatus" md-sort="name" md-sort-order="asc" md-card>
         <md-table-toolbar>
           <h1 class="md-title">Kusama 1k validator info and status</h1>
         </md-table-toolbar>
         <md-table-row slot="md-table-row" slot-scope="{ item }">
           <md-table-cell md-label="Name" md-sort-by="name">{{ item.name }}</md-table-cell>
-          <md-table-cell md-label="1KV proxy account" md-sort-by="nominator">{{ item.nominator }}</md-table-cell>
+          <md-table-cell md-label="Total Nominators" md-numeric md-sort-by="totalNominators">{{ item.totalNominators }}</md-table-cell>
+          <md-table-cell md-label="Active Nominators" md-numeric md-sort-by="activeNominators">{{ item.activeNominators }}</md-table-cell>
+          <md-table-cell md-label="Self Stash" md-numeric md-sort-by="stakeSize">{{ Number.parseFloat(item.stakeSize / 1000000000000).toFixed(3) }}</md-table-cell>
           <md-table-cell md-label="Elected" md-numeric md-sort-by="elected">{{ item.elected? "Yes" : "No" }}</md-table-cell>
           <md-table-cell md-label="rank" md-numeric md-sort-by="rank">{{ item.rank }}</md-table-cell>
-          <md-table-cell md-label="electedRate" md-numeric md-sort-by="electedRate">{{ item.electedRate }}</md-table-cell>
+          <md-table-cell md-label="Elected Rate" md-numeric md-sort-by="electedRate">{{ Number.parseFloat(item.electedRate).toFixed(2) }}</md-table-cell>
         </md-table-row>
       </md-table>
     </div>
@@ -34,6 +36,7 @@ export default {
     return {
       oneKVStatus: [],
       showProgressBar: false,
+      readyToDisplay: false,
       currentNominatingStatus: [],
       totalNominatedCount: 0,
       totalElectedNominatorCount: 0,
@@ -42,31 +45,23 @@ export default {
   mounted: async function() {
     this.yaohsin = new Yaohsin();
     this.showProgressBar = true;
-    const result = await this.yaohsin.getOneKVList({rate: 100});
-    this.currentNominatingStatus = await this.yaohsin.getCurrentNominatingStatus();
-    this.oneKVStatus = this.yaohsin.mergeOneKVListAndNominatingStatus(result, this.currentNominatingStatus);
-    this.totalNominatedCount = this.oneKVStatus.reduce((acc, v)=>{
-      if(v.nominator !== undefined) {
-        acc++;
-      }
-      return acc;
-    }, 0);
-    this.totalElectedNominatorCount = this.oneKVStatus.reduce((acc, v)=>{
-      if(v.elected === true) {
-        acc++;
-      }
-      return acc;
-    }, 0);
-    this.showProgressBar = false;
+    const result = await this.yaohsin.getOneKVInfo();
+    this.totalValidatorCount = result.valid.length;
+    this.totalNominatedCount = result.electedCount;
+    this.oneKVStatus = result.valid;
+    this.yaohsin.getOneKVDetailedInfo().then((detail)=>{
+      console.log(detail);
+      this.oneKVStatus = this.yaohsin.mergeOneKVList(this.oneKVStatus, detail.valid);
+      this.$forceUpdate();
+      this.showProgressBar = false;
+    });
+      this.readyToDisplay = true;
   },
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
-  #oneKValidator {
-    height: 87vh;
-  }
   tr:nth-child(even){
     background-color:#fafafa;
   }
@@ -77,5 +72,8 @@ export default {
     display: block;
     justify-content: flex-start;
     align-items: flex-start;
+  }
+  .onekvTable {
+    width: 100vw;
   }
 </style>

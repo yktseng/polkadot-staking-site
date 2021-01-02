@@ -40,23 +40,48 @@ class Yaohsin {
     }
   }
   
-  mergeOneKVListAndNominatingStatus(onekv, nominatorStats) {
-    const nominators = nominatorStats.nominators;
-    nominators.forEach(element => {
-      const current = element.current;
-      const stashAddr = element.address;
-      current.forEach(target => {
-        onekv.forEach(validator => {
-          if(target.stash === validator.stash) {
-            validator.nominator = stashAddr;
-            validator.elected = target.elected;
+  mergeOneKVList(onekv, detailInfo) {
+    onekv.forEach(element => {
+      const name = element.name;
+      detailInfo.forEach(detail => {
+        if(detail.stakingInfo !== undefined && detail.stakingInfo !== null) {
+          if(detail.name === name) {
+            element.electedRate = detail.electedRate;
+            if(detail.stakingInfo.stakingLedger !== undefined) {
+              element.stakeSize = detail.stakingInfo.stakingLedger.total;
+              element.totalNominators = detail.totalNominators;
+              element.activeNominators = detail.activeNominators;
+            }
           }
-        });
+        }
       });
     });
     return onekv;
   }
+  
+  async getOneKVInfo() {
+    const result = await axios.get(`https://kusama.yaohsin.net/api/valid`);
+    if(result.status === 200) {
+      result.data.valid.map((v)=>{
+        if(v.electedRate === undefined) {
+          v.electedRate = 0;
+        }
+      });
+      return result.data;
+    } else {
+      throw new Error('Failed to retrieve data: ' + result.status);
+    }
+  }
 
+  getOneKVDetailedInfo() {
+    return axios.get(`https://kusama.yaohsin.net/api/validDetail`).then((result)=>{
+      if(result.status === 200) {
+        return result.data;
+      } else {
+        throw new Error('Failed to retrieve data: ' + result.status);
+      }
+    });
+  }
 }
 
 module.exports = Yaohsin;
