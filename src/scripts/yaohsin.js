@@ -75,7 +75,9 @@ class Yaohsin {
 
   getOneKVDetailedInfo(params) {
     if(params === undefined) {
-      params = {};
+      params = {
+        ignoredValidators: [],
+      };
     }
     return axios.get(`https://kusama.yaohsin.net/api/validDetail`).then((result)=>{
       if(result.status === 200) {
