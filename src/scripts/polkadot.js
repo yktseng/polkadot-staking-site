@@ -34,36 +34,49 @@ class Polkadot {
   }
 
   async retrieveValidators() {
-    const response = [];
-    this.addrs = ['H4EeouHL5LawTqq2itu6auF62hDRX2LEBYk1TxS6QMrn9Hg', 'CjU6xRgu5f9utpaCbYHBWZGxZPrpgUPSSXqSQQG5mkH9LKM',
-    'GCNeCFUCEjcJ8XQxJe1QuExpS61MavucrnEAVpcngWBYsP2',
-    'EMrTktHLYSHAqpVH3f2KMMoLkZPMWjeQAZLpZTJ6KgNcXVr'];
+    this.addrs = [
+      {
+        displayName: 'DRAGONLANCE',
+        addr: 'H4EeouHL5LawTqq2itu6auF62hDRX2LEBYk1TxS6QMrn9Hg'
+      },
+      {
+        displayName: 'Hsinchu',
+        addr: 'CjU6xRgu5f9utpaCbYHBWZGxZPrpgUPSSXqSQQG5mkH9LKM'
+      },
+      {
+        displayName: 'Taiwan 001',
+        addr: 'GCNeCFUCEjcJ8XQxJe1QuExpS61MavucrnEAVpcngWBYsP2'
+      },
+      {
+        displayName: 'taichung',
+        addr: 'EMrTktHLYSHAqpVH3f2KMMoLkZPMWjeQAZLpZTJ6KgNcXVr'
+      },
+    ];
     try {
       // add random validators from 1kv list
-      const onekvList = await this.yaohsin.getOneKVList({rate: 30});
+      const onekvDetailedList = await this.yaohsin.getOneKVDetailedInfo({
+        rate: 0.3,
+        totalNominators: 10,
+        ignoredValidators: [
+          'H4EeouHL5LawTqq2itu6auF62hDRX2LEBYk1TxS6QMrn9Hg', 'CjU6xRgu5f9utpaCbYHBWZGxZPrpgUPSSXqSQQG5mkH9LKM',
+          'GCNeCFUCEjcJ8XQxJe1QuExpS61MavucrnEAVpcngWBYsP2',
+          'EMrTktHLYSHAqpVH3f2KMMoLkZPMWjeQAZLpZTJ6KgNcXVr'
+        ]
+      });
+      const onekvList = onekvDetailedList.valid.reduce((acc, v)=>{
+        if(v.stakingInfo !== undefined && v.stakingInfo !== null) {
+          acc.push({
+            addr: v.stakingInfo.accountId,
+            displayName: v.name,
+          });
+        }
+        return acc;
+      }, []);
       const randomSelected = this.yaohsin.getRandomValidators(onekvList, 6);
       if(Array.isArray(randomSelected)) {
-        this.addrs = this.addrs.concat(randomSelected.map((v)=>{
-          return v.stash;
-        }));
+        this.addrs = this.addrs.concat(randomSelected);
       }
-    } catch(err) {
-      console.error(err);
-    }
-    try {
-      for(let i = 0; i < this.addrs.length; i++) {
-        const res = await this.api.query.identity.identityOf(this.addrs[i]);
-        let displayName = this.addrs[i];
-        if(res.value.info !== undefined) {
-          displayName = new TextDecoder().decode(res.value.info.display.value)
-        }
-        const info = {
-          addr: this.addrs[i],
-          displayName: displayName,
-        };
-        response.push(info);
-      }
-      return response;
+      return this.addrs;
     } catch(err) {
       console.error(err);
     }

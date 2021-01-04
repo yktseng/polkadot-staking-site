@@ -73,9 +73,44 @@ class Yaohsin {
     }
   }
 
-  getOneKVDetailedInfo() {
+  getOneKVDetailedInfo(params) {
+    if(params === undefined) {
+      params = {};
+    }
     return axios.get(`https://kusama.yaohsin.net/api/validDetail`).then((result)=>{
       if(result.status === 200) {
+        if(params.electedRate > 0) {
+          result.data.valid = result.data.valid.reduce((acc, v) => {
+            if(v.electedRate < params.electedRate) {
+              acc.push(v);
+            }
+            return acc;
+          }, []);
+        }
+        if(params.totalNominators > 0) {
+          result.data.valid = result.data.valid.reduce((acc, v) => {
+            if(v.totalNominators < params.totalNominators) {
+              acc.push(v);
+            }
+            return acc;
+          }, []);
+        }
+        if(params.ignoredValidators.length > 0) {
+          result.data.valid = result.data.valid.reduce((acc, v) => {
+            if(v.stakingInfo !== undefined && v.stakingInfo !== null) {
+              if(!params.ignoredValidators.includes(v.stakingInfo.accountId)) {
+                acc.push(v);
+              }
+            }
+            return acc;
+          }, []);
+        }
+        result.data.valid = result.data.valid.reduce((acc, v) => {
+          if(v.invalidityReasons === '') {
+            acc.push(v);
+          }
+          return acc;
+        }, []);
         return result.data;
       } else {
         throw new Error('Failed to retrieve data: ' + result.status);
