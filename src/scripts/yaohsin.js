@@ -119,6 +119,13 @@ class Yaohsin {
       }
     });
   }
+
+  async getValidatorStatus(stash) {
+    return axios.get(`http://127.0.0.1:3000/api/validator/${stash}/trend`).then((result)=>{
+      console.log(result);
+      return result;
+    });
+  }
 }
 
 module.exports = Yaohsin;

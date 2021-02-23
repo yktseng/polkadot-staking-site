@@ -15,6 +15,7 @@
           <h1 class="md-title">Kusama 1k validator info and status</h1>
         </md-table-toolbar>
         <md-table-row slot="md-table-row" slot-scope="{ item }">
+          <md-table-cell><md-button @click="onClickAnalytic(item.stash)"><md-icon>analytics</md-icon></md-button></md-table-cell>
           <md-table-cell md-label="Name" md-sort-by="name">{{ item.name }}</md-table-cell>
           <md-table-cell md-label="Total Nominators" md-numeric md-sort-by="totalNominators">{{ item.totalNominators }}</md-table-cell>
           <md-table-cell md-label="Active Nominators" md-numeric md-sort-by="activeNominators">{{ item.activeNominators }}</md-table-cell>
@@ -56,6 +57,13 @@ export default {
       this.showProgressBar = false;
     });
       this.readyToDisplay = true;
+  },
+  methods: {
+    onClickAnalytic: function(stash) {
+      console.log(stash);
+      let routeData = this.$router.resolve({path: 'validatorStatus', query: {stash: stash}});
+      window.open(routeData.href, '_blank');
+    },
   },
 }
 </script>
