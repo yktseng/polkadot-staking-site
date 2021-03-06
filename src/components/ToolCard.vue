@@ -20,6 +20,7 @@ export default {
   name: 'ToolCard',
   props: {
     displayName: String,
+    route: String
   },
   data: function() {
     return {
@@ -27,7 +28,7 @@ export default {
   },
   methods: {
     onClickCard: function() {
-      this.$router.push('/tools/oneKValidators');
+      this.$router.push(this.route);
     }
   },
   components: {

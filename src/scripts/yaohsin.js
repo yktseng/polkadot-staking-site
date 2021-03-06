@@ -1,5 +1,8 @@
 const axios = require('axios');
 
+const path = 'http://127.0.0.1:3000';
+// const path = `https://kusama.yaohsin.net`;
+
 class Yaohsin {
   constructor() {
   }
@@ -9,7 +12,7 @@ class Yaohsin {
       params = {};
       params.rate = 100;
     }
-    const result = await axios.get(`https://kusama.yaohsin.net/api/onekvlist?rate=${params.rate}`);
+    const result = await axios.get(`${path}/api/onekvlist?rate=${params.rate}`);
     if(result.status === 200) {
       return result.data;
     } else {
@@ -32,7 +35,7 @@ class Yaohsin {
   }
 
   async getCurrentNominatingStatus() {
-    const result = await axios.get(`https://kusama.yaohsin.net/api/nominators`);
+    const result = await axios.get(`${path}/api/nominators`);
     if(result.status === 200) {
       return result.data;
     } else {
@@ -60,7 +63,7 @@ class Yaohsin {
   }
   
   async getOneKVInfo() {
-    const result = await axios.get(`https://kusama.yaohsin.net/api/valid`);
+    const result = await axios.get(`${path}/api/valid`);
     if(result.status === 200) {
       result.data.valid.map((v)=>{
         if(v.electedRate === undefined) {
@@ -79,7 +82,7 @@ class Yaohsin {
         ignoredValidators: [],
       };
     }
-    return axios.get(`https://kusama.yaohsin.net/api/validDetail`).then((result)=>{
+    return axios.get(`${path}/api/validDetail`).then((result)=>{
       if(result.status === 200) {
         if(params.electedRate > 0) {
           result.data.valid = result.data.valid.reduce((acc, v) => {
@@ -121,9 +124,21 @@ class Yaohsin {
   }
 
   async getValidatorStatus(stash) {
-    return axios.get(`http://127.0.0.1:3000/api/validator/${stash}/trend`).then((result)=>{
-      console.log(result);
+    return axios.get(`${path}/api/validator/${stash}/trend`).then((result)=>{
       return result;
+    });
+  }
+
+  async getAllValidatorAndNominators() {
+    return axios.get(`${path}/api/all/validatorAndNominators`).then((result)=>{
+      return result.data;
+    });
+  }
+
+  async getNominatorBalances(nominators) {
+    const data = JSON.stringify(nominators);
+    return axios.get(`${path}/api/nominators/${data}/stakingInfo`).then((result)=>{
+      return result.data;
     });
   }
 }

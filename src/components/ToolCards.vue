@@ -1,7 +1,7 @@
 <template>
   <div id="tool-cards" class="md-elevation-10">
     <div class='card-container' v-for="(tool, index) in tools" :key="index">
-      <tool-card v-bind:displayName="tool.displayName"/>
+      <tool-card v-bind:displayName="tool.displayName" v-bind:route="tool.route" />
     </div>
   </div>
 </template>
@@ -42,5 +42,6 @@ export default {
     margin-bottom: 40px;
     position: relative;
     display: inline-block;
+    vertical-align: top;
   }
 </style>

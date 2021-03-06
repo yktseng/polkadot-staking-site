@@ -14,6 +14,10 @@ export default {
       validators: [],
       tools: [{
         displayName: 'Kusama 1K validators',
+        route: '/tools/oneKValidators',
+      }, {
+        displayName: 'Kusama Validator / Nominator Status',
+        route: '/tools/ksmVN'
       }]
     }
   },
