@@ -14,7 +14,7 @@
       </md-card-header>
       <md-card-content>
         Nominator Count: {{nominators.length}}<br>
-        Commission: {{commission / 10000000}}%
+        Commission: {{commission_ / 10000000}}%
         <!-- <div class='nominator-list' v-for="(nominator, index) in nominators" :key="index">
           <Identicon @click.native="copy"
           :size="32"
@@ -36,15 +36,18 @@ export default {
     activeKSM: Number,
     stash: String,
     nominators: Array,
+    commission: Number,
   },
   data: function() {
     return {
-      commission: 0,
+      commission_: 0,
     }
   },
   mounted: async function() {
     if(this.commission === 1) {
-      this.commission = 0;
+      this.commission_ = 0;
+    } else {
+      this.commission_ = this.commission;
     }
   },
   methods: {
