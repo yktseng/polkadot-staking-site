@@ -3,7 +3,7 @@
     <md-card v-bind:id="stash" v-bind:class="{'inactive-validator': activeKSM === 0}">
       <md-card-header>
         <div class="md-title">
-          <Identicon @click.native="copy"
+          <Identicon @click.native="copy" class="ident-icon"
           :size="32"
           :theme="'polkadot'"
           :value="stash"
@@ -16,7 +16,7 @@
       </md-card-header>
       <md-card-content>
         Nominator Count: {{nominators.length}}<br>
-        Commission: {{commission_ / 10000000}}%
+        Commission: {{(commission / 10000000).toFixed(1)}}%
         <!-- <div class='nominator-list' v-for="(nominator, index) in nominators" :key="index">
           <Identicon @click.native="copy"
           :size="32"
@@ -44,15 +44,9 @@ export default {
   },
   data: function() {
     return {
-      commission_: 0,
     }
   },
   mounted: async function() {
-    if(this.commission === 1) {
-      this.commission_ = 0;
-    } else {
-      this.commission_ = this.commission;
-    }
   },
   methods: {
     copy: function() {
@@ -80,5 +74,8 @@ export default {
   }
   .inactive-validator {
     background-color: #bbbbbb;
+  }
+  .ident-icon {
+    cursor: copy;
   }
 </style>
