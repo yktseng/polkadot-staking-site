@@ -1,15 +1,30 @@
 <template>
   <div id="nominatingStatus">
-    <div class='tool-bar'>
-      <md-icon class='tool-bar-items'>search</md-icon>
-      <md-autocomplete class='tool-bar-items' id="search-bar" v-model="selectedStash" :md-options="stashes" @md-changed="getStashes" @md-selected="onSearchSelected" @keydown.enter.native="onSearchSelected" @focusout.native="onSearchSelected"/>
-      <md-icon class='tool-bar-items'>sort</md-icon>
-    </div>
+    <md-progress-bar md-mode="query" v-if="showProgressBar"></md-progress-bar>
+    <p v-if="showProgressBar">Loading 1kv status...</p>
+    <md-toolbar v-if="!showProgressBar">
+      <div class="md-toolbar-row">
+      <div class='md-toolbar-section-start search-bar '> 
+        <md-icon id="search-icon">search</md-icon>
+        <md-autocomplete v-model="selectedStash" :md-options="stashes" @md-changed="getStashes" @md-selected="onSearchSelected" @keydown.enter.native="onSearchSelected" @focusout.native="onSearchSelected"/>
+      </div>
+      <div class="md-toolbar-section-end">
+        <md-button class="md-icon-button">
+          <md-icon>analytics</md-icon>
+        </md-button>
+        <md-button class="md-icon-button">
+          <md-icon >sort</md-icon>
+        </md-button>
+      </div>
+      </div>
+    </md-toolbar>
     <div class='card-container' v-for="(validator, index) in displayValidators" :key="index">
       <validator-card v-bind:displayName="validator.identity.display" v-bind:activeKSM="validator.exposure.total / 1000000000000 || 0"
+      v-bind:allKSM="validator.inactiveKSM || 0"
       v-bind:stash="validator.stashId"
       v-bind:nominators="validator.nominators"
-      v-bind:commission="validator.validatorPrefs.commission"/>
+      v-bind:commission="validator.validatorPrefs.commission"
+      v-bind:isLoading="validator.isLoading"/>
     </div>
   </div>
 </template>
@@ -26,24 +41,40 @@ export default {
       stashes: [],
       selectedStash: '',
       displayValidators: [],
+      showProgressBar: false,
     }
   },
   mounted: async function() {
+    this.showProgressBar = true;
     const yaohsin = new Yaohsin();
     const result = await yaohsin.getAllValidatorAndNominators();
     console.log(result);
     this.validators = result.validators;
     this.nominators = result.nominations;
-    this.validators.forEach((v)=>{
+    for(let i = 0; i < this.validators.length; i++) {
+    // this.validators.forEach((v)=>{
+      const v = this.validators[i];
+      v.isLoading = true;
       if(v.identity.displayParent !== undefined) {
         v.identity.display = `${v.identity.displayParent}/${v.identity.display}`
       }
       if(v.identity.display === undefined) {
         v.identity.display = `${v.accountId}`;
       }
+      this.balances = await yaohsin.getNominatorBalances(v.nominators);
+      v.inactiveKSM = this.balances.reduce((acc, v_)=>{
+        acc += (parseInt(v_.amount) / 1000000000000);
+        return acc;
+      }, 0);
       this.displayValidators.push(v);
-    });
-    this.displayValidators.sort((a, b) => a.identity.display.localeCompare(b.identity.display));
+      v.isLoading = false;
+    }
+    this.displayValidators = this.displayValidators.sort((a, b) => a.identity.display.localeCompare(b.identity.display));
+    this.showProgressBar = false;
+    // for(let i = 0; i < this.validators.nominators.length; i++) {
+    //   const n = this.validators.nominators;
+    //   await this.yaohsin.getNominatorBalances(this.validators.nominators);
+    // }
   },
   methods: {
     getStashes: function(term) {
@@ -89,25 +120,20 @@ export default {
 .card-container {
     width: 8%;
     min-width: 250px;
-
+    margin-top: 12px;
     margin-bottom: 10px;
     position: relative;
     display: inline-block;
     background-color:#404b55;
     vertical-align: top;
   }
-.tool-bar {
-  height: 60px;
-  width: 100%;
-  text-align: left;
-  padding-left:60px;
-}
-.tool-bar-items {
-  display: inline-block;
-}
-#search-bar {
-  width: 360px;
+.search-bar {
+  max-width: 600px;
   height: 40px;
   vertical-align: middle;
 }
+
+.tool-bar-icon {
+}
+
 </style>

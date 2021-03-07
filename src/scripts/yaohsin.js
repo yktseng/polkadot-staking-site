@@ -136,10 +136,29 @@ class Yaohsin {
   }
 
   async getNominatorBalances(nominators) {
-    const data = JSON.stringify(nominators);
-    return axios.get(`${path}/api/nominators/${data}/stakingInfo`).then((result)=>{
-      return result.data;
-    });
+    const clone = [...nominators];
+    let arrays = [clone];
+    if(clone.length > 30) {
+      arrays = this.__splitNominatorArray(clone);
+    }
+    let results = [];
+    for(let i = 0; i < arrays.length; i++) {
+      const data = JSON.stringify(arrays[i]);
+      const tmp = await axios.get(`${path}/api/nominators/${data}/stakingInfo`).then((result)=>{
+        return result.data;
+      });
+      results = results.concat(tmp);
+    }
+    return results;
+  }
+
+  __splitNominatorArray(array) {
+    let result = [];
+    const parts = 4;
+    for (let i = parts; i > 0; i--) {
+        result.push(array.splice(0, Math.ceil(array.length / i)));
+    }
+    return result;
   }
 }
 

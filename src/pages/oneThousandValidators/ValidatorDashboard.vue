@@ -1,6 +1,22 @@
 <template>
   <div id="validatorStatus">
-    <apexchart ref="nominationTrend" width="500" type="line" :options="options" :series="series"></apexchart>
+    <md-progress-bar md-mode="query" v-if="showProgressBar"></md-progress-bar>
+    <p v-if="showProgressBar">Loading Nominator Info...</p>
+    
+    <div class="info-panel">
+      <apexchart id="nomination-trend" ref="nomination-trend" width="500" type="line" :options="options" :series="series"></apexchart>
+      <div class="info-text">
+        <div class="validator-info">
+          <Identicon class="ident-icon" @click.native="copy(stash)"
+            :size="32"
+            :theme="'polkadot'"
+            :value="stash"
+          />
+          <div id="validator-id">{{stash}}</div>
+        </div>
+        <div class="validator-info">Total Nomination Amount: <span style="color: #5f6368">{{inactiveKSM}} KSM</span></div>
+      </div>
+    </div>
     <div class="nominator-list">
       <div class="nominator" v-for="(nominator, index) in nominators" :key="index">
         <Identicon class="ident-icon" @click.native="copy(nominator)"
@@ -31,12 +47,17 @@ export default {
     return {
       nominators: [],
       balances: [],
+      showProgressBar: false,
+      inactiveKSM: 0,
+      stash: "",
       options: {
         chart: {
           id: 'vuechart-example'
         },
         xaxis: {
-          categories: this.xaxisCatagory
+          categories: this.xaxisCatagory,
+          trim: true,
+          hideOverlappingLabels: true,
         },
         yaxis: [
           {
@@ -86,6 +107,7 @@ export default {
     }
   },
   mounted: async function() {
+    this.showProgressBar = true;
     this.yaohsin = new Yaohsin();
     this.stash = this.$route.query.stash;
     const validatorHistory = await this.yaohsin.getValidatorStatus(this.stash);
@@ -102,10 +124,20 @@ export default {
     });
     this.updateSeriesLine();
     this.balances = await this.yaohsin.getNominatorBalances(this.nominators);
+    this.inactiveKSM = this.balances.reduce((acc, b)=>{
+      console.log(b);
+      if(b === null) {
+        return acc;
+      }
+      acc += parseFloat((parseFloat(b.amount / 1000000000000)).toFixed(3));
+      return acc;
+    }, 0);
+    this.inactiveKSM = this.inactiveKSM.toFixed(3);
+    this.showProgressBar = false;
   },
   methods: {
     updateSeriesLine() {
-      this.$refs.nominationTrend.updateSeries([{
+      this.$refs['nomination-trend'].updateSeries([{
         data: this.nominatorCounts
       }, {
         data: this.exposures
@@ -135,6 +167,22 @@ export default {
   padding-top: 20px;
   padding-left: 20px;
 }
+.info-text {
+  vertical-align: top;
+  display: inline-block;
+}
+.validator-info {
+  vertical-align: top;
+}
+.info-panel {
+  padding-top: 30px;
+  text-align: left;
+  vertical-align: top;
+}
+#nomination-trend {
+  display: inline-block;
+  padding-right: 30px;
+}
 .nominator {
   display: inline-block;
   text-align: left;
@@ -143,6 +191,7 @@ export default {
 }
 .ident-icon {
   display: inline-block;
+  cursor: copy;
 }
 .bonding {
   color: #5f6368;
@@ -151,5 +200,11 @@ export default {
 .detail {
   display: inline-block;
   font-size: 6px;
+}
+#validator-id {
+  display: inline-block;
+  color: #5f6368;
+  vertical-align: super;
+  padding-left: 12px;
 }
 </style>
