@@ -9,7 +9,7 @@
         <md-autocomplete v-model="selectedStash" :md-options="stashes" @md-changed="getStashes" @md-selected="onSearchSelected" @keydown.enter.native="onSearchSelected" @focusout.native="onSearchSelected"/>
       </div>
       <div class="md-toolbar-section-end">
-        <md-button class="md-icon-button">
+        <md-button class="md-icon-button" @click="onClickAnalytics">
           <md-icon>analytics</md-icon>
         </md-button>
         <md-button class="md-icon-button">
@@ -26,12 +26,14 @@
       v-bind:commission="validator.validatorPrefs.commission"
       v-bind:isLoading="validator.isLoading"/>
     </div>
+    <analytics-dialog v-if="showAnalytics" v-bind:open="showAnalytics" v-bind:validators="validators" @close-guide="showAnalytics = false"/>
   </div>
 </template>
 
 <script>
 const Yaohsin = require('../../scripts/yaohsin');
-import ValidatorCard from './ValidatorCard.vue'
+import ValidatorCard from './ValidatorCard.vue';
+import AnalyticsDialog from './AnalyticsDialog.vue';
 export default {
   name: 'nominatingStatus',
   data: function() {
@@ -42,6 +44,7 @@ export default {
       selectedStash: '',
       displayValidators: [],
       showProgressBar: false,
+      showAnalytics: false,
     }
   },
   mounted: async function() {
@@ -108,14 +111,19 @@ export default {
         });
       });
     },
+    onClickAnalytics: function() {
+      this.showAnalytics = true;
+    },
   },
   components: {
     ValidatorCard,
+    AnalyticsDialog,
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
+<!-- ,
+    AnalyticsDialogAdd "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
 .card-container {
     width: 8%;
