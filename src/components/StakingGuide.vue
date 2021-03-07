@@ -1,7 +1,7 @@
  
   <template>
   <div id="staking-guide">
-    <md-dialog :md-active.sync="showDialog" class="staking-guide">
+    <md-dialog :md-active.sync="showDialog" @md-closed="onClose"  class="staking-guide">
       <md-dialog-title>Staking on Kusama</md-dialog-title>
       <md-steppers :md-active-step.sync="active" md-linear>
       
@@ -211,6 +211,10 @@ export default {
     },
     transformAddress(addr) { 
       return polkadot.transformAddressFromSubstrate(addr, 2);
+    },
+    onClose() {
+      this.showDialog = false;
+      this.$emit('close-guide');
     }
   }
 }
