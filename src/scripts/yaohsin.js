@@ -1,8 +1,7 @@
 const axios = require('axios');
 
-const path = 'http://127.0.0.1:3000';
-// const path = `https://kusama.yaohsin.net`;
-
+const path = process.env.BACKEND_PATH || 'http://127.0.0.1:3000';
+console.log(`path = ${path}`);
 class Yaohsin {
   constructor() {
   }
