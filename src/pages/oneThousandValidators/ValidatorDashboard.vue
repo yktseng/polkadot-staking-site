@@ -22,12 +22,12 @@
         <Identicon class="ident-icon" @click.native="copy(nominator)"
             :size="32"
             :theme="'polkadot'"
-            :value="nominator"
+            :value="nominator.address"
         />
         <div class="detail">
-          <div class="stash-id">{{nominator.substr(0, 5)}}......{{nominator.substr(nominator.length - 5)}}</div>
+          <div class="stash-id">{{nominator.address.substr(0, 5)}}......{{nominator.address.substr(nominator.address.length - 5)}}</div>
           <div class="bonding" v-if="balances[index] !== null && balances[index] !== undefined">
-            {{(balances[index].amount / 1000000000000).toFixed(3)}} KSM
+            {{(balances[index] / 1000000000000).toFixed(3)}} KSM
           </div>
           <div class="bonding" v-if="balances[index] === null || balances[index] === undefined">
             ? KSM
@@ -123,13 +123,16 @@ export default {
       this.nominators = eraData.nominators;
     });
     this.updateSeriesLine();
-    this.balances = await this.yaohsin.getNominatorBalances(this.nominators);
+    this.balances = this.nominators.map((nominator) => {
+      return nominator.balance.lockedBalance;
+    });
+
     this.inactiveKSM = this.balances.reduce((acc, b)=>{
       console.log(b);
       if(b === null) {
         return acc;
       }
-      acc += parseFloat((parseFloat(b.amount / 1000000000000)).toFixed(3));
+      acc += parseFloat((parseFloat(b / 1000000000000)).toFixed(3));
       return acc;
     }, 0);
     this.inactiveKSM = this.inactiveKSM.toFixed(3);
