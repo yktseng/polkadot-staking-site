@@ -8,15 +8,7 @@ import 'vue-material-slider/dist/vue-material-slider.css';
 import VueMaterialSlider from 'vue-material-slider';
 import VueApexCharts from 'vue-apexcharts'
 import VueClipboard from 'vue-clipboard2'
-import VueAnalytics from 'vue-analytics';
-
-Vue.use(VueAnalytics, {
-  id: 'G-1TD480592Z',
-  autoTracking: {
-    pageviewOnLoad: false
-  }
-})
-
+ 
 Vue.use(VueClipboard)
 Vue.use(VueApexCharts)
 
