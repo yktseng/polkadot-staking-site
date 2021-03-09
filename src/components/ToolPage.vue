@@ -27,7 +27,7 @@ export default {
     return {
       validators: [],
       tools: [{
-        displayName: 'Kusama 1K validators',
+        displayName: 'Kusama One Thousand Validator Monitor',
         route: '/tools/oneKValidators',
       }, {
         displayName: 'Kusama Validator / Nominator Status',

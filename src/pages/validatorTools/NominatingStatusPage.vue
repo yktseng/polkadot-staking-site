@@ -24,7 +24,9 @@
       v-bind:stash="validator.stashId"
       v-bind:nominators="validator.nominators"
       v-bind:commission="validator.validatorPrefs.commission"
-      v-bind:isLoading="validator.isLoading"/>
+      v-bind:isLoading="validator.isLoading"
+      v-bind:favorite.sync="validator.isMissing"
+      @favorite-clicked="onFavoriteClicked"/>
     </div>
     <analytics-dialog v-if="showAnalytics" v-bind:open="showAnalytics" v-bind:validators="validators" @close-guide="showAnalytics = false"/>
   </div>
@@ -64,20 +66,17 @@ export default {
       if(v.identity.display === undefined) {
         v.identity.display = `${v.accountId}`;
       }
-      this.balances = await yaohsin.getNominatorBalances(v.nominators);
-      v.inactiveKSM = this.balances.reduce((acc, v_)=>{
-        acc += (parseInt(v_.amount) / 1000000000000);
-        return acc;
-      }, 0);
+      // this.balances = await yaohsin.getNominatorBalances(v.nominators);
+      // v.inactiveKSM = this.balances.reduce((acc, v_)=>{
+      //   acc += (parseInt(v_.amount) / 1000000000000);
+      //   return acc;
+      // }, 0);
       this.displayValidators.push(v);
       v.isLoading = false;
     }
-    this.displayValidators = this.displayValidators.sort((a, b) => a.identity.display.localeCompare(b.identity.display));
+    this.sortById();
+    this.sortByFavorite();
     this.showProgressBar = false;
-    // for(let i = 0; i < this.validators.nominators.length; i++) {
-    //   const n = this.validators.nominators;
-    //   await this.yaohsin.getNominatorBalances(this.validators.nominators);
-    // }
   },
   methods: {
     getStashes: function(term) {
@@ -99,21 +98,48 @@ export default {
     },
     onSearchSelected: function(stash) {
       stash = this.selectedStash;
-      this.displayValidators = [];
-      this.validators.forEach((v)=>{
-        if(v.identity.display.toUpperCase().includes(stash.toUpperCase())) {
-          this.displayValidators.push(v);
-        }
-        v.nominators.forEach((n)=>{
-          if(n.toUpperCase() === stash.toUpperCase()) {
+      if(stash === '') {
+        this.sortById();
+        this.sortByFavorite();
+      } else {
+        this.displayValidators.splice(0, this.displayValidators.length);
+        this.validators.forEach((v)=>{
+          if(v.identity.display.toUpperCase().includes(stash.toUpperCase())) {
             this.displayValidators.push(v);
           }
         });
-      });
+      }
     },
     onClickAnalytics: function() {
       this.showAnalytics = true;
     },
+    onFavoriteClicked: function() {
+      if(this.selectedStash === '') {
+        this.sortById();
+        this.sortByFavorite();
+      }
+    },
+    sortById: function() {
+      this.displayValidators = this.displayValidators.sort((a, b) => a.identity.display.localeCompare(b.identity.display));
+    },
+    sortByFavorite: function() {
+      let item = localStorage.getItem('ksm.validator.favorite');
+      if(item !== undefined && item !== null) {
+        const favoriteValidators = JSON.parse(item);
+        this.displayValidators.splice(0, this.displayValidators.length);
+        this.validators.forEach((v)=>{
+          if(favoriteValidators.includes(v.stashId)) {
+            this.displayValidators.push(v);
+          }
+        });
+        this.validators.forEach((v)=>{
+          if(favoriteValidators.includes(v.stashId)) {
+            return;
+          }
+          this.displayValidators.push(v);
+        });
+      }
+    }
   },
   components: {
     ValidatorCard,
