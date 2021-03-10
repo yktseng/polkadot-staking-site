@@ -129,7 +129,7 @@ class Yaohsin {
   }
 
   async getAllValidatorAndNominators() {
-    return axios.get(`${path}/api/all/validatorAndNominators`).then((result)=>{
+    return axios.get(`${path}/api/allValidators?size=1500`).then((result)=>{
       return result.data;
     });
   }

@@ -64,69 +64,52 @@ export default {
     // 10000000
 
     this.validators.forEach((v)=>{
-      const commission = v.validatorPrefs.commission;
-      if(commission < 1000000) { // 0%
+      const commission = v.info.commission;
+      const exposure = v.info.exposure;
+      if(commission < 1) { // 0%
         this.commissionDistribution[0]++;
-        if(v.exposure !== undefined && v.exposure !== null) {
-          if(v.exposure.total > 0) {
-            this.nominatedDistribution[0]++;
-          }
+        if(exposure.length > 0) {
+          this.nominatedDistribution[0]++;
         }
-      } else if(commission > 1000000 && commission <= 10000000) { // 1%
+      } else if(commission >= 1 && commission < 2) { // 1%
         this.commissionDistribution[1]++;
-        if(v.exposure !== undefined && v.exposure !== null) {
-          if(v.exposure.total > 0) {
-            this.nominatedDistribution[1]++;
-          }
+        if(exposure.length > 0) {
+          this.nominatedDistribution[1]++;
         }
-      } else if(commission > 10000000 && commission <= 20000000) { // 2%
+      } else if(commission >= 2 && commission < 3) { // 2%
         this.commissionDistribution[2]++;
-        if(v.exposure !== undefined && v.exposure !== null) {
-          if(v.exposure.total > 0) {
-            this.nominatedDistribution[2]++;
-          }
+        if(exposure.length > 0) {
+          this.nominatedDistribution[2]++;
         }
-      } else if(commission > 20000000 && commission <= 30000000) { // 3%
+      } else if(commission >= 3 && commission < 4) { // 3%
         this.commissionDistribution[3]++;
-        if(v.exposure !== undefined && v.exposure !== null) {
-          if(v.exposure.total > 0) {
-            this.nominatedDistribution[3]++;
-          }
+        if(exposure.length > 0) {
+          this.nominatedDistribution[3]++;
         }
-      } else if(commission > 30000000 && commission <= 40000000) { // 4%
+      } else if(commission >= 4 && commission < 5) { // 4%
         this.commissionDistribution[4]++;
-        if(v.exposure !== undefined && v.exposure !== null) {
-          if(v.exposure.total > 0) {
-            this.nominatedDistribution[4]++;
-          }
+        if(exposure.length > 0) {
+          this.nominatedDistribution[4]++;
         }
-      } else if(commission > 40000000 && commission <= 50000000) { // 5%
+      } else if(commission >= 5 && commission < 6) { // 5%
         this.commissionDistribution[5]++;
-        if(v.exposure !== undefined && v.exposure !== null) {
-          if(v.exposure.total > 0) {
-            this.nominatedDistribution[5]++;
-          }
+        if(exposure.length > 0) {
+          this.nominatedDistribution[5]++;
         }
-      } else if(commission > 50000000 && commission <= 100000000) { // 6~10%
+      } else if(commission >= 6 && commission <= 10) { // 6~10%
         this.commissionDistribution[6]++;
-        if(v.exposure !== undefined && v.exposure !== null) {
-          if(v.exposure.total > 0) {
-            this.nominatedDistribution[6]++;
-          }
+        if(exposure.length > 0) {
+          this.nominatedDistribution[6]++;
         }
-      } else if(commission > 100000000 && commission <= 990000000) { // 10~99%
+      } else if(commission > 10 && commission <= 99) { // 10~99%
         this.commissionDistribution[7]++;
-        if(v.exposure !== undefined && v.exposure !== null) {
-          if(v.exposure.total > 0) {
-            this.nominatedDistribution[7]++;
-          }
+        if(exposure.length > 0) {
+          this.nominatedDistribution[7]++;
         }
-      } else if(commission > 990000000 && commission <= 1000000000) { // 100%
+      } else if(commission > 99 && commission <= 100) { // 100%
         this.commissionDistribution[8]++;
-        if(v.exposure !== undefined && v.exposure !== null) {
-          if(v.exposure.total > 0) {
-            this.nominatedDistribution[8]++;
-          }
+        if(exposure.length > 0) {
+          this.nominatedDistribution[8]++;
         }
       }
     });

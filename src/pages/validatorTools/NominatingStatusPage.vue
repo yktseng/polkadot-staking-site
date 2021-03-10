@@ -19,11 +19,11 @@
       </div>
     </md-toolbar>
     <div class='card-container' v-for="(validator, index) in displayValidators" :key="index">
-      <validator-card v-bind:displayName="validator.identity.display" v-bind:activeKSM="validator.exposure.total / 1000000000000 || 0"
+      <validator-card v-bind:displayName="validator.identity.display" v-bind:activeKSM="validator.activeKSM || 0"
       v-bind:allKSM="validator.inactiveKSM || 0"
-      v-bind:stash="validator.stashId"
-      v-bind:nominators="validator.nominators"
-      v-bind:commission="validator.validatorPrefs.commission"
+      v-bind:stash="validator.id"
+      v-bind:nominators="validator.info.nominators"
+      v-bind:commission="validator.info.commission"
       v-bind:isLoading="validator.isLoading"
       v-bind:favorite.sync="validator.isMissing"
       @favorite-clicked="onFavoriteClicked"/>
@@ -54,23 +54,31 @@ export default {
     const yaohsin = new Yaohsin();
     const result = await yaohsin.getAllValidatorAndNominators();
     console.log(result);
-    this.validators = result.validators;
-    this.nominators = result.nominations;
+    this.validators = result;
     for(let i = 0; i < this.validators.length; i++) {
     // this.validators.forEach((v)=>{
       const v = this.validators[i];
       v.isLoading = true;
-      if(v.identity.displayParent !== undefined) {
-        v.identity.display = `${v.identity.displayParent}/${v.identity.display}`
+      if(v.identity !== undefined) {
+        if(v.identity.displayParent !== undefined) {
+          v.identity.display = `${v.identity.displayParent}/${v.identity.display}`
+        }
+        if(v.identity.display === undefined) {
+          v.identity.display = `${v.id}`;
+        }
+      } else {
+        v.identity = {
+          display: v.id,
+        };
       }
-      if(v.identity.display === undefined) {
-        v.identity.display = `${v.accountId}`;
-      }
-      // this.balances = await yaohsin.getNominatorBalances(v.nominators);
-      // v.inactiveKSM = this.balances.reduce((acc, v_)=>{
-      //   acc += (parseInt(v_.amount) / 1000000000000);
-      //   return acc;
-      // }, 0);
+      v.activeKSM = v.info.exposure.reduce((acc, v_)=>{
+        acc += (parseInt(v_.value) / 1000000000000);
+        return acc;
+      }, 0);
+      v.inactiveKSM = v.info.nominators.reduce((acc, v_)=>{
+        acc += (parseInt(v_.balance.lockedBalance) / 1000000000000);
+        return acc;
+      }, 0);
       this.displayValidators.push(v);
       v.isLoading = false;
     }
@@ -124,20 +132,22 @@ export default {
     },
     sortByFavorite: function() {
       let item = localStorage.getItem('ksm.validator.favorite');
-      if(item !== undefined && item !== null) {
-        const favoriteValidators = JSON.parse(item);
-        this.displayValidators.splice(0, this.displayValidators.length);
-        this.validators.forEach((v)=>{
-          if(favoriteValidators.includes(v.stashId)) {
+      if(item !== undefined) {
+        if(item !== null) {
+          const favoriteValidators = JSON.parse(item);
+          this.displayValidators.splice(0, this.displayValidators.length);
+          this.validators.forEach((v)=>{
+            if(favoriteValidators.includes(v.id)) {
+              this.displayValidators.push(v);
+            }
+          });
+          this.validators.forEach((v)=>{
+            if(favoriteValidators.includes(v.id)) {
+              return;
+            }
             this.displayValidators.push(v);
-          }
-        });
-        this.validators.forEach((v)=>{
-          if(favoriteValidators.includes(v.stashId)) {
-            return;
-          }
-          this.displayValidators.push(v);
-        });
+          });
+        }
       }
     }
   },

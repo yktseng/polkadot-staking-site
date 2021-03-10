@@ -20,7 +20,7 @@
       <md-card-content>
         <div @click="onClickCard(stash)">
           Nominator Count: {{nominators.length}}<br>
-          Commission: {{(commission / 10000000).toFixed(1)}}%
+          Commission: {{commission}}%
         </div>
         <md-card-actions>
           <md-card-media>
