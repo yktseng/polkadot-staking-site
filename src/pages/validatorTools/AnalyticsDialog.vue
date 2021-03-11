@@ -2,7 +2,6 @@
 <div id="analytics-dialog">
   <md-dialog :md-active.sync="showDialog" @md-closed="onClose" class="analytics-dialog">
     <md-content>
-      <div class="md-title">Commission Distribution</div>
       <apexchart ref="commission-distribution" id="commission-distribution" width="500" type="bar" :options="commissionOptions" :series="commissionSeries"/>
       <apexchart ref="stake-distribution" id="stake-distribution" width="500" type="bar" :options="stakeDistributionOptions" :series="stakeDistributionSeries"/>
     </md-content>
@@ -29,6 +28,9 @@ export default {
         },
         xaxis: {
           categories: ['0%', '1%', '2%', '3%', '4%', '5%', '6%~10%', '11%~99%', '100%'],
+        },
+        title: {
+          text: 'Commission Distribution'
         },
         yaxis: [
           {
@@ -63,6 +65,9 @@ export default {
       stakeDistributionOptions: {
         chart: {
           id: 'stake-distribution'
+        },
+        title: {
+          text: 'Stash distribution',
         },
         xaxis: {
           categories: ['0', '1+', '1K+', '5K+', '10K+', '20K+', '50K+'],

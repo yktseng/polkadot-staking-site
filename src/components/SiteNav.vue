@@ -13,7 +13,7 @@
         <md-button class="md-button nav-button" href="https://www.yaohsin.net/blog">
           Blog
         </md-button>
-        <md-button class="md-button nav-button" href="https://www.yaohsin.net/contact">
+        <md-button class="md-button nav-button" @click="onClickContact">
           Contact
         </md-button>
       </div>
@@ -35,6 +35,9 @@ export default {
     onClickTitle: function() {
       this.$router.push('/');
     },
+    onClickContact: function() {
+      this.$router.push('/contact').catch(()=>{});
+    }
   }
 }
 </script>

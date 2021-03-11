@@ -1,7 +1,7 @@
 <template>
   <div id="nominatingStatus">
     <md-progress-bar md-mode="query" v-if="showProgressBar"></md-progress-bar>
-    <p v-if="showProgressBar">Loading 1kv status...</p>
+    <p v-if="showProgressBar">Loading validator and nominator status...</p>
     <md-toolbar v-if="!showProgressBar">
       <div class="md-toolbar-row">
       <div class='md-toolbar-section-start search-bar '> 
@@ -12,7 +12,7 @@
         <md-button class="md-icon-button" @click="onClickAnalytics">
           <md-icon>analytics</md-icon>
         </md-button>
-        <md-button class="md-icon-button">
+        <md-button class="md-icon-button" @click="onClickSorting">
           <md-icon >sort</md-icon>
         </md-button>
       </div>
@@ -29,6 +29,7 @@
       v-bind:apy="validator.apy"
       @favorite-clicked="onFavoriteClicked"/>
     </div>
+    <sort-option-dialog v-if="showSortOptions" v-bind:open="showSortOptions"  @close-sorting-option="showSortOptions = false" @sorting-option="onSortingOptionChanged"/>
     <analytics-dialog v-if="showAnalytics" v-bind:open="showAnalytics" v-bind:validators="validators" @close-guide="showAnalytics = false"/>
   </div>
 </template>
@@ -37,6 +38,7 @@
 const Yaohsin = require('../../scripts/yaohsin');
 import ValidatorCard from './ValidatorCard.vue';
 import AnalyticsDialog from './AnalyticsDialog.vue';
+import SortOptionDialog from './SortOptionDialog.vue';
 export default {
   name: 'nominatingStatus',
   data: function() {
@@ -48,6 +50,7 @@ export default {
       displayValidators: [],
       showProgressBar: false,
       showAnalytics: false,
+      showSortOptions: false,
     }
   },
   mounted: async function() {
@@ -122,11 +125,35 @@ export default {
     onClickAnalytics: function() {
       this.showAnalytics = true;
     },
+    onClickSorting: function() {
+      this.showSortOptions = true;
+    },
     onFavoriteClicked: function() {
       if(this.selectedStash === '') {
         this.sortById();
         this.sortByFavorite();
       }
+    },
+    onSortingOptionChanged: function(option) {
+      const sortBy = option.sortBy;
+      if(sortBy === 'alphabetical') {
+        this.sortById();
+      } else if(sortBy === 'apy'){
+        this.sortByApy();
+      } else {
+        this.sortById();
+        this.sortByFavorite();
+      }
+      // this.sortByFavorite();
+    },
+    sortByApy: function() {
+      this.displayValidators = this.displayValidators.sort((a, b) => {
+        if(a.apy > b.apy) {
+          return -1;
+        } else if(a.apy < b.apy) {
+          return 1;
+        } return 0;
+      });
     },
     sortById: function() {
       this.displayValidators = this.displayValidators.sort((a, b) => a.identity.display.localeCompare(b.identity.display));
@@ -155,6 +182,7 @@ export default {
   components: {
     ValidatorCard,
     AnalyticsDialog,
+    SortOptionDialog,
   }
 }
 </script>

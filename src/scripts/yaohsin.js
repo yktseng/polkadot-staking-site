@@ -81,7 +81,7 @@ class Yaohsin {
         ignoredValidators: [],
       };
     }
-    return axios.get(`${path}/api/validDetail`).then((result)=>{
+    return axios.get(`${path}/api/validDetail?option=1kv`).then((result)=>{
       if(result.status === 200) {
         if(params.electedRate > 0) {
           result.data.valid = result.data.valid.reduce((acc, v) => {

@@ -60,7 +60,8 @@ class Polkadot {
         ignoredValidators: [
           'H4EeouHL5LawTqq2itu6auF62hDRX2LEBYk1TxS6QMrn9Hg', 'CjU6xRgu5f9utpaCbYHBWZGxZPrpgUPSSXqSQQG5mkH9LKM',
           'GCNeCFUCEjcJ8XQxJe1QuExpS61MavucrnEAVpcngWBYsP2',
-          'EMrTktHLYSHAqpVH3f2KMMoLkZPMWjeQAZLpZTJ6KgNcXVr'
+          'EMrTktHLYSHAqpVH3f2KMMoLkZPMWjeQAZLpZTJ6KgNcXVr',
+          'HRfhckygfiHkqVW19e71R2pXNbR6om7138sLAJENt2Tw1HF',
         ]
       });
       const onekvList = onekvDetailedList.valid.reduce((acc, v)=>{
