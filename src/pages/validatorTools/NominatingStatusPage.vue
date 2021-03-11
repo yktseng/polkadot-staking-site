@@ -26,6 +26,7 @@
       v-bind:commission="validator.info.commission"
       v-bind:isLoading="validator.isLoading"
       v-bind:favorite.sync="validator.isMissing"
+      v-bind:apy="validator.apy"
       @favorite-clicked="onFavoriteClicked"/>
     </div>
     <analytics-dialog v-if="showAnalytics" v-bind:open="showAnalytics" v-bind:validators="validators" @close-guide="showAnalytics = false"/>
