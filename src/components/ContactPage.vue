@@ -7,7 +7,7 @@
       github: yktseng
     </div>
     <div class="ksm-stash">
-      Kusama Stash<br>---------------------------------------------------------------------
+      Kusama Validators <sub class='sub-head'>Nominate to support us</sub><br>---------------------------------------------------------------------
       <table id="kusama-table">
         <tr>
           <td class="ident-icon-column"><Identicon @click.native="copy('H4EeouHL5LawTqq2itu6auF62hDRX2LEBYk1TxS6QMrn9Hg')" class="ident-icon"
@@ -87,6 +87,7 @@ export default {
     background-color: #293031;
     width: 100%;
     height: 88vh;
+    font-size: 16px;
   }
   .riot-id {
     padding-top:100px;
@@ -111,5 +112,8 @@ export default {
   .ident-icon {
     display: inline-block;
     cursor: copy;
+  }
+  .sub-head {
+    font-size: 8px;
   }
 </style>

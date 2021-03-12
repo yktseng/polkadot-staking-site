@@ -10,9 +10,9 @@
         <md-button class="md-button nav-button" @click="onClickStake">
           Stake with Us
         </md-button>
-        <md-button class="md-button nav-button" href="https://www.yaohsin.net/blog">
+        <!-- <md-button class="md-button nav-button" href="https://www.yaohsin.net/blog">
           Blog
-        </md-button>
+        </md-button> -->
         <md-button class="md-button nav-button" @click="onClickContact">
           Contact
         </md-button>

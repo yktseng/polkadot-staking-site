@@ -26,7 +26,7 @@
       v-bind:commission="validator.info.commission"
       v-bind:isLoading="validator.isLoading"
       v-bind:favorite.sync="validator.isMissing"
-      v-bind:apy="validator.apy"
+      v-bind:apy="validator.info.apy"
       @favorite-clicked="onFavoriteClicked"/>
     </div>
     <sort-option-dialog v-if="showSortOptions" v-bind:open="showSortOptions"  @close-sorting-option="showSortOptions = false" @sorting-option="onSortingOptionChanged"/>
@@ -75,10 +75,7 @@ export default {
           display: v.id,
         };
       }
-      v.activeKSM = v.info.exposure.reduce((acc, v_)=>{
-        acc += (parseInt(v_.value) / 1000000000000);
-        return acc;
-      }, 0);
+      v.activeKSM = parseInt(v.info.exposure.total) / 1000000000000;
       v.inactiveKSM = v.info.nominators.reduce((acc, v_)=>{
         acc += (parseInt(v_.balance.lockedBalance) / 1000000000000);
         return acc;
@@ -148,9 +145,9 @@ export default {
     },
     sortByApy: function() {
       this.displayValidators = this.displayValidators.sort((a, b) => {
-        if(a.apy > b.apy) {
+        if(a.info.apy > b.info.apy) {
           return -1;
-        } else if(a.apy < b.apy) {
+        } else if(a.info.apy < b.info.apy) {
           return 1;
         } return 0;
       });
