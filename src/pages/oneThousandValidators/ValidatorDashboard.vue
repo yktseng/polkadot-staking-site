@@ -118,7 +118,7 @@ export default {
     validatorHistory.data[0].info.forEach((eraData)=>{
       this.xaxisCatagory.push(eraData.era.toString());
       this.nominatorCounts.push(eraData.nominators.length);
-      this.exposures.push(eraData.exposure.length);
+      this.exposures.push(eraData.exposure.others.length);
       this.commissions.push(eraData.commission);
       this.nominators = eraData.nominators;
     });
