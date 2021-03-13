@@ -3,6 +3,7 @@
   <div id="staking-guide">
     <md-dialog :md-active.sync="showDialog" @md-closed="onClose"  class="staking-guide">
       <md-dialog-title>Staking on Kusama</md-dialog-title>
+      <md-dialog-content>
       <md-steppers :md-active-step.sync="active" md-linear>
       
       <md-step id="first" md-label="A simple guide" :md-done.sync="first">
@@ -21,7 +22,7 @@
       <md-step id="second" md-label="Kusama 1KV validators" :md-done.sync="second"  class="md-scrollbar">
         <span>Your funds will be delegated to these validators, chosen from the <a href="https://thousand-validators.kusama.network/">Thousand Validators Programme</a></span>
         <md-list>
-          <md-list-item class="validator-list-item" v-for="(validator, index) in validators" :key="index" value="validator.addr">
+          <md-list-item class="validator-list-item" v-for="(validator, index) in validators.slice(0, 10)" :key="index" value="validator.addr">
             <span>
               <Identicon class="ident-icon" @click.native="copy(validator.addr)"
               :size="32"
@@ -72,6 +73,7 @@
         <md-button class="md-raised md-primary" @click="setDone(nextStep())" :disabled="(isLoading || ended) || (active === 'third' && stakeFund === 0)">Continue</md-button>
         <md-button class="md-secondary" @click="$emit('close-guide')">Close</md-button>
       </md-dialog-actions>
+      </md-dialog-content>
     </md-dialog>
   </div>
 </template>
