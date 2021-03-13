@@ -1,10 +1,14 @@
 <template>
   <div id="contact-page">
     <div class="riot-id">
-      Riot ID: tanis_37:matrix.org
+      Riot ID <br><br>
+      tanis_37:matrix.org<br>
+      yaohsin:matrix.org
     </div>
     <div class="github-id">
-      github: yktseng
+      github <br><br>
+      yktseng<br>
+      iisaint
     </div>
     <div class="ksm-stash">
       Kusama Validators <sub class='sub-head'>Nominate to support us</sub><br>---------------------------------------------------------------------
