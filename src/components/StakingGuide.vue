@@ -18,10 +18,17 @@
         </div>
       </md-step>
 
-      <md-step id="second" md-label="Choose validators" :md-done.sync="second">
+      <md-step id="second" md-label="Kusama 1KV validators" :md-done.sync="second"  class="md-scrollbar">
         <span>Your funds will be delegated to these validators, chosen from the <a href="https://thousand-validators.kusama.network/">Thousand Validators Programme</a></span>
         <md-list>
           <md-list-item class="validator-list-item" v-for="(validator, index) in validators" :key="index" value="validator.addr">
+            <span>
+              <Identicon class="ident-icon" @click.native="copy(validator.addr)"
+              :size="32"
+              :theme="'polkadot'"
+              :value="validator.addr"
+              />
+            </span>
             <span class="md-list-item-text">{{validator.displayName}}</span>
             <span class="md-list-validator-addr">{{validator.addr}}</span>
           </md-list-item>
@@ -32,17 +39,19 @@
       <md-step id="third" md-label="Bond your Stake" :md-done.sync="third">
         <div v-if="hasExtension">
         <!-- Ask polkadot extension about the identity of the nominator and the amount of its free funds -->
-          <label>Your Kusama Accounts</label><br/>
+          <label class="md-subheading">Your Kusama Accounts</label><br/>
           <!-- <md-field>
           <md-select v-model="selectedAddress" @change="onAddrChange($event)">
             <md-option v-for="account in accounts" :key="account.address" v-bind:value="account.address">{{account.address}}</md-option>
           </md-select>
           </md-field> -->
-          <select v-model="selectedAddress" @change="onAddrChange($event)">
-            <option v-for="account in accounts" :key="account.address" v-bind:value="account.address">{{transformAddress(account.address)}}</option>
-          </select>
+          <md-field>
+          <md-select v-model="selectedAddress" @md-selected="onAddrChange">
+            <md-option v-for="account in accounts" :key="account.address" v-bind:value="account.address">{{transformAddress(account.address)}}</md-option>
+          </md-select>
+          </md-field>
           <br/>
-        <p>Your free funds: {{freeFund}} KSM</p>
+        <p class="md-subheading">Your free funds: {{freeFund}} KSM</p>
         Stake 
         <input type="range" v-model.number="stakeFund" :min="stakedFund" :max="maxFund" step="0.001"> {{ stakeFund }} KSM to us
         </div>
@@ -60,7 +69,7 @@
       </md-step>
     </md-steppers>
       <md-dialog-actions>
-        <md-button class="md-raised md-primary" @click="setDone(nextStep())" :disabled="isLoading || ended">Continue</md-button>
+        <md-button class="md-raised md-primary" @click="setDone(nextStep())" :disabled="(isLoading || ended) || (active === 'third' && stakeFund === 0)">Continue</md-button>
         <md-button class="md-secondary" @click="$emit('close-guide')">Close</md-button>
       </md-dialog-actions>
     </md-dialog>
@@ -68,7 +77,7 @@
 </template>
 
 <script>
-
+import Identicon from '@polkadot/vue-identicon';
 const polkadot = require('../scripts/polkadot');
 export default {
   name: 'StakingGuide',
@@ -146,6 +155,7 @@ export default {
         this.ended = true;
         // call bond() or bondExtra()
         this.showProgressBar = true;
+        console.log(this.transformAddress(this.selectedAddress));
         const tx = [];
         if(parseFloat(this.stakedFund) === 0) { // call bond()
           this.extrinsicStatus = "bonding..."
@@ -177,6 +187,7 @@ export default {
           //const blockHash = await polkadot.nominate(this.selectedAccount, this.validators.map((v)=>{
           //  return v.addr;
           //}));
+          console.log(this.selectedAccount);
           const blockHash = await polkadot.batchSignAndSend(this.selectedAccount, tx);
           this.extrinsicStatus = "done!"
           this.blockHash = blockHash;
@@ -190,10 +201,13 @@ export default {
         }
       }
     },
-    async onAddrChange (event) {
+    async onAddrChange () {
       if(this.selectedAddress !== undefined) {
         const accountInfo = await polkadot.getAccountInfo(this.selectedAddress);
-        this.selectedAccount = this.accounts[event.target.selectedIndex];
+        this.selectedAccount = this.accounts.filter(account => account.address == this.selectedAddress);
+        if(this.selectedAccount.length > 0) {
+          this.selectedAccount = this.selectedAccount[0];
+        }
         this._calculateFunds(accountInfo);
       }
     },
@@ -215,8 +229,14 @@ export default {
     onClose() {
       this.showDialog = false;
       this.$emit('close-guide');
-    }
-  }
+    },
+    copy: function(nominator) {
+      this.$copyText(nominator);
+    },
+  },
+  components: {
+    Identicon
+  },
 }
 
 </script>
@@ -235,7 +255,11 @@ export default {
     background-color: #0466C8 !important;
   }
   .validator-list-item {
-    height: 24px;
+    height: 36px;
+  }
+  .ident-icon {
+    display: inline-block;
+    cursor: copy;
   }
   .md-content {
     overflow: auto;
