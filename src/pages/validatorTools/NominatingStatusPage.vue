@@ -19,7 +19,7 @@
       </div>
     </md-toolbar>
     <div class='card-container' v-for="(validator, index) in displayValidators" :key="index">
-      <validator-card v-bind:displayName="validator.identity.display" v-bind:activeKSM="validator.activeKSM || 0"
+      <validator-card v-bind:displayName="validator.identity.display || validator.id" v-bind:activeKSM="validator.activeKSM || 0"
       v-bind:allKSM="validator.inactiveKSM || 0"
       v-bind:stash="validator.id"
       v-bind:nominators="validator.info.nominators"
@@ -63,14 +63,13 @@ export default {
     // this.validators.forEach((v)=>{
       const v = this.validators[i];
       v.isLoading = true;
-      if(v.identity !== undefined) {
-        if(v.identity.displayParent !== undefined) {
-          v.identity.display = `${v.identity.displayParent}/${v.identity.display}`
-        }
-        if(v.identity.display === undefined) {
-          v.identity.display = `${v.id}`;
-        }
-      } else {
+     
+      if(v.identity === undefined) {
+        v.identity = {
+          display: v.id,
+        };
+      }
+      if(v.identity.display === null) {
         v.identity = {
           display: v.id,
         };

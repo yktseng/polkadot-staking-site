@@ -3,9 +3,10 @@
     <md-progress-bar md-mode="query" v-if="showProgressBar"></md-progress-bar>
     <p v-if="showProgressBar">Loading Nominator Info...</p>
     
-    <div class="info-panel">
-      <apexchart id="nomination-trend" ref="nomination-trend" width="500" type="line" :options="options" :series="series"></apexchart>
-      <div class="info-text">
+    <div class="info-panel md-layout">
+      <apexchart id="nomination-trend" ref="nomination-trend" width="500" type="line" :options="options" :series="series" class="md-layout-item"></apexchart>
+      <apexchart id="apy-trend" ref="apy-trend" width="500" type="line" :options="apyOptions" :series="apySeries" class="md-layout-item"></apexchart>
+      <div class="info-text md-layout-item">
         <div class="validator-info">
           <Identicon class="ident-icon" @click.native="copy(stash)"
             :size="32"
@@ -50,6 +51,7 @@ export default {
       showProgressBar: false,
       inactiveKSM: 0,
       stash: "",
+      apyTrend: [],
       options: {
         chart: {
           id: 'vuechart-example'
@@ -103,6 +105,37 @@ export default {
       }, {
         name: 'Commission',
         data: this.commisions,
+      }],
+      apyOptions: {
+        chart: {
+          id: 'vuechart-example'
+        },
+        xaxis: {
+          categories: this.xaxisCatagory,
+          trim: true,
+          hideOverlappingLabels: true,
+        },
+        yaxis: [
+          {
+            min: 0,
+            labels: {
+              formatter: function(val) {
+                return val.toFixed(1);
+              }
+            },
+            title: {
+              text: "APY(%)",
+              style: {
+                color: '#008FFB',
+              }
+            },
+            seriesName: 'APY'
+          },
+        ]
+      },
+      apySeries: [{
+        name: 'APY',
+        data: this.apyTrend
       }]
     }
   },
@@ -115,12 +148,14 @@ export default {
     this.exposures = [];
     this.nominatorCounts = [];
     this.commissions = [];
+    this.apyTrend = [];
     validatorHistory.data[0].info.forEach((eraData)=>{
       this.xaxisCatagory.push(eraData.era.toString());
       this.nominatorCounts.push(eraData.nominators.length);
       this.exposures.push(eraData.exposure.others.length);
       this.commissions.push(eraData.commission);
       this.nominators = eraData.nominators;
+      this.apyTrend.push(eraData.apy * 100);
     });
     this.updateSeriesLine();
     this.balances = this.nominators.map((nominator) => {
@@ -128,7 +163,6 @@ export default {
     });
 
     this.inactiveKSM = this.balances.reduce((acc, b)=>{
-      console.log(b);
       if(b === null) {
         return acc;
       }
@@ -152,6 +186,17 @@ export default {
           categories: this.xaxisCatagory
         }
       };
+      this.$refs['apy-trend'].updateSeries([{
+        data: this.apyTrend,
+      }], false, true);
+      this.apyOptions = {
+        xaxis: {
+          categories: this.xaxisCatagory,
+          title: {
+            text: 'Era'
+          }
+        }
+      };
     },
     copy: function(nominator) {
       this.$copyText(nominator);
@@ -165,6 +210,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
+#validatorStatus {
+}
 .nominator-list {
   text-align: left;
   padding-top: 20px;
