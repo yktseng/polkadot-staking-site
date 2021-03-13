@@ -48,8 +48,12 @@ class Polkadot {
         addr: 'GCNeCFUCEjcJ8XQxJe1QuExpS61MavucrnEAVpcngWBYsP2'
       },
       {
-        displayName: 'taichung',
+        displayName: 'TAICHUNG',
         addr: 'EMrTktHLYSHAqpVH3f2KMMoLkZPMWjeQAZLpZTJ6KgNcXVr'
+      },
+      {
+        displayName: 'KRYNN',
+        addr: 'HRfhckygfiHkqVW19e71R2pXNbR6om7138sLAJENt2Tw1HF'
       },
     ];
     try {
