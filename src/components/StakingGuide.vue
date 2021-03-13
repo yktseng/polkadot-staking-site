@@ -22,7 +22,7 @@
       <md-step id="second" md-label="Kusama 1KV validators" :md-done.sync="second"  class="md-scrollbar">
         <span>Your funds will be delegated to these validators, chosen from the <a href="https://thousand-validators.kusama.network/">Thousand Validators Programme</a></span>
         <md-list>
-          <md-list-item class="validator-list-item" v-for="(validator, index) in validators.slice(0, 10)" :key="index" value="validator.addr">
+          <md-list-item class="validator-list-item" v-for="(validator, index) in validators.slice(0, 16)" :key="index" value="validator.addr">
             <span>
               <Identicon class="ident-icon" @click.native="copy(validator.addr)"
               :size="32"
