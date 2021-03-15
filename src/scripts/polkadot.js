@@ -31,6 +31,11 @@ class Polkadot {
     //wss://westend-rpc.polkadot.io  wss://kusama-rpc.polkadot.io
     const wsProvider = new WsProvider('wss://kusama-rpc.polkadot.io');
     this.api = await ApiPromise.create({ provider: wsProvider });
+    setInterval(()=>{
+      this.api.disconnect().then(()=>{
+        this.api.connect();
+      });
+    }, 3600000);
   }
 
   async retrieveValidators() {
@@ -77,7 +82,7 @@ class Polkadot {
         }
         return acc;
       }, []);
-      const randomSelected = this.yaohsin.getRandomValidators(onekvList, 6);
+      const randomSelected = this.yaohsin.getRandomValidators(onekvList, 11);
       if(Array.isArray(randomSelected)) {
         this.addrs = this.addrs.concat(randomSelected);
       }
