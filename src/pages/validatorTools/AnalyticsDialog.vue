@@ -180,7 +180,7 @@ export default {
           }
         } else if(commission > 99 && commission <= 100) { // 100%
           this.commissionDistribution[8]++;
-          if(exposure.length > 0) {
+          if(exposure.total > 0) {
             this.nominatedDistribution[8]++;
           }
         }
