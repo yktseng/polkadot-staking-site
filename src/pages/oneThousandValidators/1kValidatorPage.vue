@@ -2,7 +2,8 @@
   <div id="oneKValidator">
     <md-progress-bar md-mode="query" v-if="showProgressBar"></md-progress-bar>
     <p v-if="showProgressBar">Loading 1kv status...</p>
-    <div v-if="readyToDisplay">
+    <p v-if="isError">Fetching data from our server is failed. Please try again later</p>
+    <div v-if="readyToDisplay && !isError">
       <md-content class="stats">
         <p>Total validators: {{oneKVStatus.length}}</p>
         <!--<p>Total nominators: {{currentNominatingStatus.nominators.length}}</p>-->
@@ -41,12 +42,19 @@ export default {
       currentNominatingStatus: [],
       totalNominatedCount: 0,
       totalElectedNominatorCount: 0,
+      isError: false,
     }
   },
   mounted: async function() {
     this.yaohsin = new Yaohsin();
     this.showProgressBar = true;
-    const result = await this.yaohsin.getOneKVInfo();
+    const result = await this.yaohsin.getOneKVInfo().catch(()=>{
+      this.isError = true;
+    });
+    if(this.isError) {
+      this.showProgressBar = false;
+      return;
+    }
     this.totalValidatorCount = result.valid.length;
     this.totalNominatedCount = result.electedCount;
     this.oneKVStatus = result.valid;
@@ -55,8 +63,14 @@ export default {
       this.oneKVStatus = this.yaohsin.mergeOneKVList(this.oneKVStatus, detail.valid);
       this.$forceUpdate();
       this.showProgressBar = false;
+    }).catch(()=>{
+      this.isError = true;
     });
-      this.readyToDisplay = true;
+    if(this.isError) {
+      this.showProgressBar = false;
+      return;
+    }
+    this.readyToDisplay = true;
   },
   methods: {
     onClickAnalytic: function(stash) {

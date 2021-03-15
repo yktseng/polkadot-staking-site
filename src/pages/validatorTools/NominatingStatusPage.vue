@@ -2,7 +2,8 @@
   <div id="nominatingStatus">
     <md-progress-bar md-mode="query" v-if="showProgressBar"></md-progress-bar>
     <p v-if="showProgressBar">Loading validator and nominator status...</p>
-    <md-toolbar v-if="!showProgressBar">
+    <p v-if="isError">Fetching data from our server is failed. Please try again later</p>
+    <md-toolbar v-if="!showProgressBar && !isError">
       <div class="md-toolbar-row">
       <div class='md-toolbar-section-start search-bar '> 
         <md-icon id="search-icon">search</md-icon>
@@ -51,12 +52,19 @@ export default {
       showProgressBar: false,
       showAnalytics: false,
       showSortOptions: false,
+      isError: false,
     }
   },
   mounted: async function() {
     this.showProgressBar = true;
     const yaohsin = new Yaohsin();
-    const result = await yaohsin.getAllValidatorAndNominators();
+    const result = await yaohsin.getAllValidatorAndNominators().catch(()=>{
+      this.isError = true;
+    });
+    if(this.isError) {
+      this.showProgressBar = false;
+      return;
+    }
     console.log(result);
     this.validators = result;
     for(let i = 0; i < this.validators.length; i++) {
