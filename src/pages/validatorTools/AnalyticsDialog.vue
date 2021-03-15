@@ -51,7 +51,7 @@ export default {
           {
             min: 0,
             show: false,
-            seriesName: 'Actively Nominated'
+            seriesName: 'Validators'
           },
         ]
       },
@@ -140,42 +140,42 @@ export default {
         const exposure = v.info.exposure;
         if(commission < 1) { // 0%
           this.commissionDistribution[0]++;
-          if(exposure.length > 0) {
+          if(exposure.total > 0) {
             this.nominatedDistribution[0]++;
           }
         } else if(commission >= 1 && commission < 2) { // 1%
           this.commissionDistribution[1]++;
-          if(exposure.length > 0) {
+          if(exposure.total > 0) {
             this.nominatedDistribution[1]++;
           }
         } else if(commission >= 2 && commission < 3) { // 2%
           this.commissionDistribution[2]++;
-          if(exposure.length > 0) {
+          if(exposure.total > 0) {
             this.nominatedDistribution[2]++;
           }
         } else if(commission >= 3 && commission < 4) { // 3%
           this.commissionDistribution[3]++;
-          if(exposure.length > 0) {
+          if(exposure.total > 0) {
             this.nominatedDistribution[3]++;
           }
         } else if(commission >= 4 && commission < 5) { // 4%
           this.commissionDistribution[4]++;
-          if(exposure.length > 0) {
+          if(exposure.total > 0) {
             this.nominatedDistribution[4]++;
           }
         } else if(commission >= 5 && commission < 6) { // 5%
           this.commissionDistribution[5]++;
-          if(exposure.length > 0) {
+          if(exposure.total > 0) {
             this.nominatedDistribution[5]++;
           }
         } else if(commission >= 6 && commission <= 10) { // 6~10%
           this.commissionDistribution[6]++;
-          if(exposure.length > 0) {
+          if(exposure.total > 0) {
             this.nominatedDistribution[6]++;
           }
         } else if(commission > 10 && commission <= 99) { // 10~99%
           this.commissionDistribution[7]++;
-          if(exposure.length > 0) {
+          if(exposure.total > 0) {
             this.nominatedDistribution[7]++;
           }
         } else if(commission > 99 && commission <= 100) { // 100%
