@@ -1,5 +1,5 @@
 <template>
-  <div id="tool-card">
+  <div id="tool-card" class="md-layout-item">
     <md-card md-with-hover>
       <div @click="onClickCard">
       <md-card-media class="currency-img">

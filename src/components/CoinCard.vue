@@ -1,5 +1,5 @@
 <template>
-  <div id="coin-card">
+  <div id="coin-card" class="md-layout-item" >
     <md-card md-with-hover>
       <md-card-media class="currency-img">
         <img src="../assets/img/kusama-logo.svg" alt="KSM">

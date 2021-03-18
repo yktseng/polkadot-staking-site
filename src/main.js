@@ -8,6 +8,8 @@ import 'vue-material-slider/dist/vue-material-slider.css';
 import VueMaterialSlider from 'vue-material-slider';
 import VueApexCharts from 'vue-apexcharts'
 import VueClipboard from 'vue-clipboard2'
+import VueMobileDetection from "vue-mobile-detection";
+
  
 Vue.use(VueClipboard)
 Vue.use(VueApexCharts)
@@ -17,6 +19,7 @@ Vue.component('apexchart', VueApexCharts)
 Vue.use(VueMaterial)
 Vue.use(VueMaterialSlider);
 Vue.use(VueRouter);
+Vue.use(VueMobileDetection);
 Vue.config.productionTip = false;
 
 const oneKValidators = Vue.component('oneKValidators', require('./pages/oneThousandValidators/1kValidatorPage.vue').default);

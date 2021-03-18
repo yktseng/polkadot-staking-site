@@ -14,7 +14,9 @@
         </tr>
       </table>
     </div> -->
-    <div class="main-desc"><span style="color:#61ba89">Crypto</span> Currency <span style="color:#61ba89">Tools and Analysis</span></div>
+    
+    <div v-if="$isMobile()" class="main-desc md-display-1"><span style="color:#61ba89">Crypto</span> Currency <span style="color:#61ba89"><br><span style="padding-left:16vw">Tools and Analysis</span></span></div>
+    <div v-else class="main-desc md-display-4"><span style="color:#61ba89">Crypto</span> Currency <span style="color:#61ba89"><br><span style="padding-left:20vw">Tools and Analysis</span></span></div>
     <tool-cards v-bind:tools="tools"/>
   </div>
 </template>
@@ -50,31 +52,13 @@ export default {
     width: 100%;
     height: 88vh;
   }
-  .stake-desc {
-    text-align: right;
-    color:  #61ba89;
-    margin-right: 20px;
-    margin-left: auto;
-  }
+  
   .main-desc {
-    position: absolute;
-    top: 160px;
-    left: 60px;
-    color: #FAFAFA;
-    font-size: 72px;
-    font: normal normal normal 96px/1.4em roboto ,sans-serif;
-  }
-  .validator-name {
-    text-align: right;
-  }
-
-  .validator-id {
+    padding-top: 10vh;
+    padding-left: 10vw;
     text-align: left;
-    padding-left: 12px;
+    color: #FAFAFA;
+    font: normal normal normal sans-serif;
   }
-
-  .validator-table {
-    margin-right: 0px;
-    margin-left: auto;
-  }
+  
 </style>

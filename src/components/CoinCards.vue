@@ -1,6 +1,6 @@
 <template>
   <div id="coin-cards" class="md-elevation-10">
-    <div class='card-container' v-for="(currency, index) in coins" :key="index">
+    <div class='card-container md-layout' v-for="(currency, index) in coins" :key="index">
       <coin-card v-bind:displayName="currency.displayName"/>
     </div>
   </div>
@@ -23,7 +23,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
   #coin-cards {
-    margin-top: 400px;
+    margin-top: 10vh;
     padding-bottom: 20px;
     width: 80vw;
     background-color:#404b55;

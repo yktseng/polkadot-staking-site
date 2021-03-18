@@ -1,6 +1,6 @@
 <template>
   <div id="tool-cards" class="md-elevation-10">
-    <div class='card-container' v-for="(tool, index) in tools" :key="index">
+    <div class='card-container md-layout' v-for="(tool, index) in tools" :key="index">
       <tool-card v-bind:displayName="tool.displayName" v-bind:route="tool.route" />
     </div>
   </div>
@@ -23,7 +23,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
   #tool-cards {
-    margin-top: 400px;
+    margin-top: 10vh;
     padding-bottom: 20px;
     width: 80vw;
     background-color: #404b55;
@@ -36,7 +36,7 @@ export default {
 
   .card-container {
     width: 33%;
-    min-width: 240px;
+    min-width: 300px;
     min-height: 268px;
     max-height: 268px;
     margin-bottom: 40px;

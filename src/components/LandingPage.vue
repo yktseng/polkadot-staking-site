@@ -1,7 +1,8 @@
 <template>
   <div id="landing-page">
     <!-- <img src="../assets/img/banner.jpg" />-->
-    <div class="main-desc">Earn <span style="color:#61ba89">Crypto </span>Income</div><span class="secondary-desc">in a few steps</span>
+    <div v-if="$isMobile()" class="main-desc md-display-1">Earn <span style="color:#61ba89">Crypto </span>Income<div class="secondary-desc">in a few steps</div></div>
+    <div v-else class="main-desc md-display-4">Earn <span style="color:#61ba89">Crypto </span>Income<div class="secondary-desc">in a few steps</div></div>
     <coin-cards v-bind:coins="coins"/>
   </div>
 
@@ -42,18 +43,14 @@ export default {
   }
 
   .main-desc {
-    position: absolute;
-    top: 160px;
-    left: 60px;
+    padding-top: 10vh;
+    padding-left: 10vw;
+    text-align: left;
     color: #FAFAFA;
-    font-size: 72px;
-    font: normal normal normal 96px/1.4em roboto ,sans-serif;
   }
   .secondary-desc {
-    position: absolute;
-    top: 272px;
-    left: 600px;
+    padding-left: 16vw;
+    text-align: left;
     color: #61ba89;
-    font: normal normal normal 64px/1.4em roboto ,sans-serif;
   }
 </style>

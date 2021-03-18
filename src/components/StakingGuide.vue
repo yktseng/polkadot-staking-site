@@ -4,6 +4,57 @@
     <md-dialog :md-active.sync="showDialog" @md-closed="onClose"  class="staking-guide">
       <md-dialog-title>Staking on Kusama</md-dialog-title>
       <md-dialog-content>
+      <div v-if="$isMobile()">
+        <div class="md-body-1">
+          Nominate the following validators to support us.
+        </div>
+          <table id="kusama-table">
+            <tr>
+              <td class="ident-icon-column"><Identicon @click.native="copy('H4EeouHL5LawTqq2itu6auF62hDRX2LEBYk1TxS6QMrn9Hg')" class="ident-icon"
+              :size="32"
+              :theme="'polkadot'"
+              :value="'H4EeouHL5LawTqq2itu6auF62hDRX2LEBYk1TxS6QMrn9Hg'"/></td>
+              <td>DRAGONLANCE</td>
+              <td>H4EeouHL5LawTqq2itu6auF62hDRX2LEBYk1TxS6QMrn9Hg</td>
+            </tr>
+            <tr>
+              <td class="ident-icon-column"><Identicon @click.native="copy('HRfhckygfiHkqVW19e71R2pXNbR6om7138sLAJENt2Tw1HF')" class="ident-icon"
+              :size="32"
+              :theme="'polkadot'"
+              :value="'HRfhckygfiHkqVW19e71R2pXNbR6om7138sLAJENt2Tw1HF'"/></td>
+              <td>KRYNN</td>
+              <td>HRfhckygfiHkqVW19e71R2pXNbR6om7138sLAJENt2Tw1HF</td>
+            </tr>
+            <tr>
+              <td class="ident-icon-column"><Identicon @click.native="copy('GCNeCFUCEjcJ8XQxJe1QuExpS61MavucrnEAVpcngWBYsP2')" class="ident-icon"
+              :size="32"
+              :theme="'polkadot'"
+              :value="'GCNeCFUCEjcJ8XQxJe1QuExpS61MavucrnEAVpcngWBYsP2'"/></td>
+              <td>TAIWAN 001</td>
+              <td>GCNeCFUCEjcJ8XQxJe1QuExpS61MavucrnEAVpcngWBYsP2</td>
+            </tr>
+            <tr>
+              <td class="ident-icon-column"><Identicon @click.native="copy('CjU6xRgu5f9utpaCbYHBWZGxZPrpgUPSSXqSQQG5mkH9LKM')" class="ident-icon"
+              :size="32"
+              :theme="'polkadot'"
+              :value="'CjU6xRgu5f9utpaCbYHBWZGxZPrpgUPSSXqSQQG5mkH9LKM'"/></td>
+              <td>HSINCHU</td>
+              <td>CjU6xRgu5f9utpaCbYHBWZGxZPrpgUPSSXqSQQG5mkH9LKM</td>
+            </tr>
+            <tr>
+              <td class="ident-icon-column"><Identicon @click.native="copy('EMrTktHLYSHAqpVH3f2KMMoLkZPMWjeQAZLpZTJ6KgNcXVr')" class="ident-icon"
+              :size="32"
+              :theme="'polkadot'"
+              :value="'EMrTktHLYSHAqpVH3f2KMMoLkZPMWjeQAZLpZTJ6KgNcXVr'"/></td>
+              <td>TAICHUNG</td>
+              <td>EMrTktHLYSHAqpVH3f2KMMoLkZPMWjeQAZLpZTJ6KgNcXVr</td>
+            </tr>
+          </table>
+           <md-dialog-actions>
+            <md-button class="md-raised md-primary" @click="$emit('close-guide')">OK</md-button>
+          </md-dialog-actions>
+      </div>
+      <div v-else>
       <md-steppers :md-active-step.sync="active" md-linear>
       
       <md-step id="first" md-label="A simple guide" :md-done.sync="first">
@@ -73,6 +124,7 @@
         <md-button class="md-raised md-primary" @click="setDone(nextStep())" :disabled="(isLoading || ended) || (active === 'third' && stakeFund === 0)">Continue</md-button>
         <md-button class="md-secondary" @click="$emit('close-guide')">Close</md-button>
       </md-dialog-actions>
+      </div>
       </md-dialog-content>
     </md-dialog>
   </div>
