@@ -4,23 +4,37 @@
     <p v-if="showProgressBar">Loading Nominator Info...</p>
     
     <div class="info-panel md-layout">
+      <div class="info-text md-layout-item">
+        <div class=md-title>{{this.displayName || this.stash}}</div>
+        <md-divider/>
+        <md-table>
+          <md-table-row>
+            <md-table-cell>Stash ID</md-table-cell>
+            <md-table-cell>
+            <Identicon class="ident-icon" @click.native="copy(stash)"
+              :size="32"
+              :theme="'polkadot'"
+              :value="stash"
+            />
+            <div id="validator-id">{{stash}}</div>
+            </md-table-cell>
+          </md-table-row>
+          <md-table-row>
+            <md-table-cell class="validator-info">Total Nomination Amount </md-table-cell> 
+            <md-table-cell style="color: #5f6368">{{inactiveKSM}} KSM</md-table-cell>
+          </md-table-row>
+          <md-table-row>
+            <md-table-cell class="validator-info">Commission </md-table-cell> 
+            <md-table-cell style="color: #5f6368">{{eraCommission.toFixed(1)}}%</md-table-cell>
+          </md-table-row>
+        </md-table>
+      </div>
       <apexchart id="nomination-trend" ref="nomination-trend" width="500" type="line" :options="options" :series="series" class="md-layout-item"></apexchart>
       <apexchart id="apy-trend" ref="apy-trend" width="500" type="line" :options="apyOptions" :series="apySeries" class="md-layout-item"></apexchart>
-      <div class="info-text md-layout-item">
-        <div class="validator-info">
-          <Identicon class="ident-icon" @click.native="copy(stash)"
-            :size="32"
-            :theme="'polkadot'"
-            :value="stash"
-          />
-          <div id="validator-id">{{stash}}</div>
-        </div>
-        <div class="validator-info">Total Nomination Amount: <span style="color: #5f6368">{{inactiveKSM}} KSM</span></div>
-      </div>
     </div>
     <div class="nominator-list">
       <div class="nominator" v-for="(nominator, index) in nominators" :key="index">
-        <Identicon class="ident-icon" @click.native="copy(nominator)"
+        <Identicon class="ident-icon" @click.native="copy(nominator.address)"
             :size="32"
             :theme="'polkadot'"
             :value="nominator.address"
@@ -48,10 +62,12 @@ export default {
     return {
       nominators: [],
       balances: [],
+      displayName: '',
       showProgressBar: false,
       inactiveKSM: 0,
       stash: "",
       apyTrend: [],
+      eraCommission: 0,
       options: {
         chart: {
           id: 'vuechart-example'
@@ -85,7 +101,7 @@ export default {
           {
             opposite: true,
             min: 0,
-            max: 10,
+            max: 100,
             title: {
               text: "Commission (%)",
               style: {
@@ -149,7 +165,14 @@ export default {
     this.nominatorCounts = [];
     this.commissions = [];
     this.apyTrend = [];
-    validatorHistory.data[0].info.forEach((eraData)=>{
+    const data = validatorHistory.data[0];
+    if(data.identity !== undefined) {
+      console.log(data.identity);
+      if(data.identity.display !== null) {
+        this.displayName = data.identity.display;
+      }
+    }
+    data.info.forEach((eraData)=>{
       this.xaxisCatagory.push(eraData.era.toString());
       this.nominatorCounts.push(eraData.nominators.length);
       this.exposures.push(eraData.exposure.others.length);
@@ -157,6 +180,10 @@ export default {
       this.nominators = eraData.nominators;
       this.apyTrend.push(eraData.apy * 100);
     });
+    this.eraCommission = this.commissions[this.commissions.length - 1];
+    if(this.eraCommission < 0.0001) {
+      this.eraCommission = 0;
+    }
     this.updateSeriesLine();
     this.balances = this.nominators.map((nominator) => {
       return nominator.balance.lockedBalance;
@@ -253,8 +280,7 @@ export default {
 }
 #validator-id {
   display: inline-block;
-  color: #5f6368;
+  font-size: 10px;
   vertical-align: super;
-  padding-left: 12px;
 }
 </style>
