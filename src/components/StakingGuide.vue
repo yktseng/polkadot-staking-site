@@ -5,8 +5,8 @@
       <md-dialog-title>Staking on Kusama</md-dialog-title>
       <md-dialog-content>
       <div v-if="$isMobile()">
-        <div class="md-body-1">
-          Nominate the following validators to support us.
+        <div class="md-body-1 desc">
+          Nominate the following validators to support us. Or use desktop to try our auto nomination tool.
         </div>
           <table id="kusama-table">
             <tr>
@@ -317,5 +317,8 @@ export default {
   }
   .md-content {
     overflow: auto;
+  }
+  .desc {
+    margin-bottom: 32px;
   }
 </style>
