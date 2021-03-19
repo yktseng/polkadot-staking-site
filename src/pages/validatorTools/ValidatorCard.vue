@@ -12,7 +12,10 @@
         </div>
         <div @click="onClickCard(stash)">
           <div class="md-subhead small-font">{{activeKSM.toFixed(3)}} KSM / 
-          <span class="md-subhead small-font" v-if="!isLoading && allKSM !== undefined">{{allKSM.toFixed(3)}} KSM</span></div>
+            <span class="md-subhead small-font" v-if="!isLoading && allKSM !== undefined">{{allKSM.toFixed(3)}} KSM</span>
+            <span v-if="this.commissionChange === 1"><md-icon>arrow_upward</md-icon></span>
+            <span v-if="this.commissionChange === 2"><md-icon>arrow_downward</md-icon></span>
+          </div>
           <div class="md-subhead md-headline">APY: {{(apy * 100).toFixed(2)}}%</div>
           <div class="md-subhead" v-if="isLoading">Loading total nominated amount...</div>
         </div>
@@ -49,6 +52,7 @@ export default {
     isLoading: Boolean,
     favorite: Boolean,
     apy: Number,
+    commissionChange: Number,
   },
   computed: {
     shortenedDisplayName: function() {

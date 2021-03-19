@@ -28,6 +28,7 @@
       v-bind:isLoading="validator.isLoading"
       v-bind:favorite.sync="validator.isMissing"
       v-bind:apy="validator.info.apy"
+      v-bind:commissionChange="commissionChange(validator.id)"
       @favorite-clicked="onFavoriteClicked"/>
     </div>
     <sort-option-dialog v-if="showSortOptions" v-bind:open="showSortOptions"  @close-sorting-option="showSortOptions = false" @sorting-option="onSortingOptionChanged"/>
@@ -90,6 +91,13 @@ export default {
       this.displayValidators.push(v);
       v.isLoading = false;
     }
+    this.displayValidators = this.displayValidators.map(
+      function(data, idx)
+      {
+        data.idx = idx;
+        return data;
+      }
+    );
     this.sortById();
     this.sortByFavorite();
     this.showProgressBar = false;
@@ -148,7 +156,21 @@ export default {
         this.sortById();
         this.sortByFavorite();
       }
+      const hightlights = option.highlights;
+      if(hightlights.commissionChange === true) {
+        this.sortByCommissionChange();
+      }
       // this.sortByFavorite();
+    },
+    sortByCommissionChange: function() {
+      this.displayValidators = this.displayValidators.sort((a, b) => {
+        if(a.statusChange.commission !== 0 && b.statusChange.commission === 0) {
+          return -1;
+        } else if (a.statusChange.commission === 0 && b.statusChange.commission !== 0) {
+          return 1;
+        }
+        return a.idx - b.idx;
+      });
     },
     sortByApy: function() {
       this.displayValidators = this.displayValidators.sort((a, b) => {
@@ -156,7 +178,8 @@ export default {
           return -1;
         } else if(a.info.apy < b.info.apy) {
           return 1;
-        } return 0;
+        }
+        return a.idx - b.idx;
       });
     },
     sortById: function() {
@@ -181,7 +204,23 @@ export default {
           });
         }
       }
+      this.displayValidators = this.displayValidators.map(
+        function(data, idx)
+        {
+          data.idx = idx;
+          return data;
+        }
+      );
+    },
+    commissionChange: function(validator) {
+      if(validator.statusChange !== undefined) {
+        return validator.statusChange.commission;
+      }
+      return 0;
     }
+  },
+  computed: {
+    
   },
   components: {
     ValidatorCard,
