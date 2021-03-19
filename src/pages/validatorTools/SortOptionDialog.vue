@@ -32,7 +32,7 @@ export default {
     return {
       showDialog: this.open,
       sortOptions: 'default',
-      highlightCommissionChange: false,
+      highlightCommissionChange: true,
     }
   },
   mounted: async function() {

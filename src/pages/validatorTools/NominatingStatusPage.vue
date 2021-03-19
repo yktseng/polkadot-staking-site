@@ -99,6 +99,7 @@ export default {
       }
     );
     this.sortById();
+    this.sortByCommissionChange();
     this.sortByFavorite();
     this.showProgressBar = false;
   },
@@ -125,6 +126,13 @@ export default {
       if(stash === '') {
         this.sortById();
         this.sortByFavorite();
+        this.displayValidators = this.displayValidators.map(
+          function(data, idx)
+          {
+            data.idx = idx;
+            return data;
+          }
+        );
       } else {
         this.displayValidators.splice(0, this.displayValidators.length);
         this.validators.forEach((v)=>{
@@ -150,17 +158,31 @@ export default {
       const sortBy = option.sortBy;
       if(sortBy === 'alphabetical') {
         this.sortById();
+        const hightlights = option.highlights;
+        if(hightlights.commissionChange === true) {
+          this.sortByCommissionChange();
+        }
       } else if(sortBy === 'apy'){
         this.sortByApy();
+        const hightlights = option.highlights;
+        if(hightlights.commissionChange === true) {
+          this.sortByCommissionChange();
+        }
       } else {
         this.sortById();
+        const hightlights = option.highlights;
+        if(hightlights.commissionChange === true) {
+          this.sortByCommissionChange();
+        }
         this.sortByFavorite();
       }
-      const hightlights = option.highlights;
-      if(hightlights.commissionChange === true) {
-        this.sortByCommissionChange();
-      }
-      // this.sortByFavorite();
+      this.displayValidators = this.displayValidators.map(
+        function(data, idx)
+        {
+          data.idx = idx;
+          return data;
+        }
+      );
     },
     sortByCommissionChange: function() {
       this.displayValidators = this.displayValidators.sort((a, b) => {
@@ -190,27 +212,19 @@ export default {
       if(item !== undefined) {
         if(item !== null) {
           const favoriteValidators = JSON.parse(item);
-          this.displayValidators.splice(0, this.displayValidators.length);
-          this.validators.forEach((v)=>{
+          // this.displayValidators.splice(0, this.displayValidators.length);
+          this.displayValidators.forEach((v, idx)=>{
             if(favoriteValidators.includes(v.id)) {
-              this.displayValidators.push(v);
+              this.displayValidators.splice(idx, 1);
             }
           });
           this.validators.forEach((v)=>{
             if(favoriteValidators.includes(v.id)) {
-              return;
+              this.displayValidators.unshift(v);
             }
-            this.displayValidators.push(v);
           });
         }
       }
-      this.displayValidators = this.displayValidators.map(
-        function(data, idx)
-        {
-          data.idx = idx;
-          return data;
-        }
-      );
     },
     commissionChange: function(validator) {
       if(validator.statusChange !== undefined) {
