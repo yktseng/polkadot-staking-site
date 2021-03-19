@@ -28,7 +28,7 @@
       v-bind:isLoading="validator.isLoading"
       v-bind:favorite.sync="validator.isMissing"
       v-bind:apy="validator.info.apy"
-      v-bind:commissionChange="commissionChange(validator.id)"
+      v-bind:commissionChange="commissionChange(validator)"
       @favorite-clicked="onFavoriteClicked"/>
     </div>
     <sort-option-dialog v-if="showSortOptions" v-bind:open="showSortOptions"  @close-sorting-option="showSortOptions = false" @sorting-option="onSortingOptionChanged"/>

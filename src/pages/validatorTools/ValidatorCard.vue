@@ -13,8 +13,6 @@
         <div @click="onClickCard(stash)">
           <div class="md-subhead small-font">{{activeKSM.toFixed(3)}} KSM / 
             <span class="md-subhead small-font" v-if="!isLoading && allKSM !== undefined">{{allKSM.toFixed(3)}} KSM</span>
-            <span v-if="this.commissionChange === 1"><md-icon>arrow_upward</md-icon></span>
-            <span v-if="this.commissionChange === 2"><md-icon>arrow_downward</md-icon></span>
           </div>
           <div class="md-subhead md-headline">APY: {{(apy * 100).toFixed(2)}}%</div>
           <div class="md-subhead" v-if="isLoading">Loading total nominated amount...</div>
@@ -25,6 +23,8 @@
         <div @click="onClickCard(stash)">
           Nominator Count: {{nominators.length}}<br>
           Commission: {{commission.toFixed(1)}}%
+          <span v-if="this.commissionChange === 1"><md-icon style="color:#FF2D00">arrow_upward</md-icon></span>
+          <span v-if="this.commissionChange === 2"><md-icon style="color:4FC50B">arrow_downward</md-icon></span>
         </div>
         <md-card-actions>
           <md-card-media>
@@ -63,6 +63,7 @@ export default {
     },
   },
   mounted: async function() {
+    console.log(this.commissionChange);
      let item = localStorage.getItem('ksm.validator.favorite');
       let favoriteValidators = [];
       if(item !== undefined && item !== null) {
