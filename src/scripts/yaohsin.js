@@ -6,7 +6,7 @@ class Yaohsin {
   }
 
   async getOneKVOfficialNominators() {
-    const result = await axios.get(`${path}/api/nominators`);
+    const result = await axios.get(`${path}/api/1kv/nominators`);
     if(result.status === 200) {
       return result.data;
     } else {
@@ -69,9 +69,6 @@ class Yaohsin {
               const oneKV = oneKVNominators[j];
               for(let k = 0; k < oneKV.current.length; k++) {
                 if(oneKV.current[k].stash === validator) {
-                  console.log(
-                    'onekv'
-                  );
                   element.oneKVNominated = true;
                   break;
                 }
