@@ -1,9 +1,17 @@
 const axios = require('axios');
-
 const path = process.env.VUE_APP_BACKEND_PATH || 'http://127.0.0.1:3000';
 console.log(`path = ${path}`);
 class Yaohsin {
   constructor() {
+  }
+
+  async getOneKVOfficialNominators() {
+    const result = await axios.get(`${path}/api/nominators`);
+    if(result.status === 200) {
+      return result.data;
+    } else {
+      throw new Error('Failed to retrieve data: ' + result.status);
+    }
   }
 
   async getOneKVList(params) {
@@ -42,7 +50,7 @@ class Yaohsin {
     }
   }
   
-  mergeOneKVList(onekv, detailInfo) {
+  mergeOneKVList(onekv, detailInfo, oneKVNominators) {
     onekv.forEach(element => {
       const name = element.name;
       detailInfo.forEach(detail => {
@@ -53,6 +61,24 @@ class Yaohsin {
               element.stakeSize = detail.stakingInfo.stakingLedger.total;
               element.totalNominators = detail.totalNominators;
               element.activeNominators = detail.activeNominators;
+            }
+            element.oneKVNominated = false;
+            // find matched 1kv nominator
+            const validator = detail.stash;
+            for(let j = 0; j < oneKVNominators.length; j++) {
+              const oneKV = oneKVNominators[j];
+              for(let k = 0; k < oneKV.current.length; k++) {
+                if(oneKV.current[k].stash === validator) {
+                  console.log(
+                    'onekv'
+                  );
+                  element.oneKVNominated = true;
+                  break;
+                }
+              }
+              if(element.oneKVNominated === true) {
+                break;
+              }
             }
           }
         }

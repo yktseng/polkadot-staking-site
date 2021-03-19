@@ -2,7 +2,7 @@
   <div id="nominatingStatus">
     <md-progress-bar md-mode="query" v-if="showProgressBar"></md-progress-bar>
     <p v-if="showProgressBar">Loading validator and nominator status...</p>
-    <p v-if="isError">Fetching data from our server is failed. Please try again later</p>
+    <p v-if="isError">Fetching data from our server is failed. The site is probably syncing new era data. Please try again later</p>
     <md-toolbar v-if="!showProgressBar && !isError">
       <div class="md-toolbar-row">
       <div class='md-toolbar-section-start search-bar '> 

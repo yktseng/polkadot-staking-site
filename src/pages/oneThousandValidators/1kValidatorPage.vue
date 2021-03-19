@@ -21,7 +21,8 @@
           <md-table-cell md-label="Total Nominators" md-numeric md-sort-by="totalNominators">{{ item.totalNominators }}</md-table-cell>
           <md-table-cell md-label="Active Nominators" md-numeric md-sort-by="activeNominators">{{ item.activeNominators }}</md-table-cell>
           <md-table-cell md-label="Self Stash" md-numeric md-sort-by="stakeSize">{{ Number.parseFloat(item.stakeSize / 1000000000000).toFixed(3) }}</md-table-cell>
-          <md-table-cell md-label="Elected" md-sort-by="elected">{{ item.elected? "Yes" : "No" }}</md-table-cell>
+          <md-table-cell md-label="Elected">{{ item.elected? "Yes" : "No" }}</md-table-cell>
+          <md-table-cell md-label="1KV Nominated">{{ item.oneKVNominated? "Yes" : "No" }}</md-table-cell>
           <md-table-cell md-label="rank" md-numeric md-sort-by="rank">{{ item.rank }}</md-table-cell>
           <md-table-cell md-label="Elected Rate" md-numeric md-sort-by="electedRate">{{ Number.parseFloat(item.electedRate).toFixed(2) }}</md-table-cell>
         </md-table-row>
@@ -55,12 +56,13 @@ export default {
       this.showProgressBar = false;
       return;
     }
+    const oneKVOfficial = await this.yaohsin.getOneKVOfficialNominators();
+    const oneKVNominators = oneKVOfficial.nominators;
     this.totalValidatorCount = result.valid.length;
     this.totalNominatedCount = result.electedCount;
     this.oneKVStatus = result.valid;
     this.yaohsin.getOneKVDetailedInfo().then((detail)=>{
-      console.log(detail);
-      this.oneKVStatus = this.yaohsin.mergeOneKVList(this.oneKVStatus, detail.valid);
+      this.oneKVStatus = this.yaohsin.mergeOneKVList(this.oneKVStatus, detail.valid, oneKVNominators);
       this.$forceUpdate();
       this.showProgressBar = false;
     }).catch(()=>{
