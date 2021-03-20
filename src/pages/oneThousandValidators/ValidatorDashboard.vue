@@ -177,7 +177,14 @@ export default {
       this.nominatorCounts.push(eraData.nominators.length);
       this.exposures.push(eraData.exposure.others.length);
       this.commissions.push(eraData.commission);
-      this.nominators = eraData.nominators;
+      this.nominators = eraData.nominators.sort((a, b)=>{
+        if(a.balance.lockedBalance > b.balance.lockedBalance) {
+          return -1;
+        } else if(a.balance.lockedBalance < b.balance.lockedBalance) {
+          return 1;
+        }
+        return 0;
+      });
       this.apyTrend.push(eraData.apy * 100);
     });
     this.eraCommission = this.commissions[this.commissions.length - 1];
