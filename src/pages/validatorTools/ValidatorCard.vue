@@ -63,7 +63,6 @@ export default {
     },
   },
   mounted: async function() {
-    console.log(this.commissionChange);
      let item = localStorage.getItem('ksm.validator.favorite');
       let favoriteValidators = [];
       if(item !== undefined && item !== null) {

@@ -36,7 +36,11 @@ export default {
     }
   },
   mounted: async function() {
-    console.log('123');
+    if(localStorage.getItem('ksm.validator.highlight.commissionChange') === '1') {
+      this.highlightCommissionChange = true;
+    } else {
+      this.highlightCommissionChange = false;
+    }
   },
   methods: {
     onClose() {
@@ -52,6 +56,11 @@ export default {
           commissionChange: this.highlightCommissionChange,
         }
       });
+      if(this.highlightCommissionChange) {
+        localStorage.setItem('ksm.validator.highlight.commissionChange', '1');
+      } else {
+        localStorage.setItem('ksm.validator.highlight.commissionChange', '0');
+      }
     }
   }
 }

@@ -66,7 +66,6 @@ export default {
       this.showProgressBar = false;
       return;
     }
-    console.log(result);
     this.validators = result;
     for(let i = 0; i < this.validators.length; i++) {
     // this.validators.forEach((v)=>{
@@ -156,24 +155,16 @@ export default {
     },
     onSortingOptionChanged: function(option) {
       const sortBy = option.sortBy;
-      if(sortBy === 'alphabetical') {
+      if(sortBy === 'alphabetical' || sortBy === 'default') {
         this.sortById();
-        const hightlights = option.highlights;
-        if(hightlights.commissionChange === true) {
-          this.sortByCommissionChange();
-        }
       } else if(sortBy === 'apy'){
         this.sortByApy();
-        const hightlights = option.highlights;
+      }
+      const hightlights = option.highlights;
         if(hightlights.commissionChange === true) {
           this.sortByCommissionChange();
         }
-      } else {
-        this.sortById();
-        const hightlights = option.highlights;
-        if(hightlights.commissionChange === true) {
-          this.sortByCommissionChange();
-        }
+      if(sortBy === 'default') {
         this.sortByFavorite();
       }
       this.displayValidators = this.displayValidators.map(
@@ -212,14 +203,9 @@ export default {
       if(item !== undefined) {
         if(item !== null) {
           const favoriteValidators = JSON.parse(item);
-          // this.displayValidators.splice(0, this.displayValidators.length);
           this.displayValidators.forEach((v, idx)=>{
             if(favoriteValidators.includes(v.id)) {
               this.displayValidators.splice(idx, 1);
-            }
-          });
-          this.validators.forEach((v)=>{
-            if(favoriteValidators.includes(v.id)) {
               this.displayValidators.unshift(v);
             }
           });
