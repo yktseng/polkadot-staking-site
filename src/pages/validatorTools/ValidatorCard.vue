@@ -23,8 +23,8 @@
         <div @click="onClickCard(stash)">
           Nominator Count: {{nominators.length}}<br>
           Commission: {{commission.toFixed(1)}}%
-          <span v-if="this.commissionChange === 1"><md-icon style="color:#FF2D00">arrow_upward</md-icon></span>
-          <span v-if="this.commissionChange === 2"><md-icon style="color:4FC50B">arrow_downward</md-icon></span>
+          <span v-if="this.commissionChange === 1"><md-icon style="color:#FF2D00">keyboard_arrow_up</md-icon></span>
+          <span v-if="this.commissionChange === 2"><md-icon style="color:#4FC50B">keyboard_arrow_down</md-icon></span>
         </div>
         <md-card-actions>
           <md-card-media>
