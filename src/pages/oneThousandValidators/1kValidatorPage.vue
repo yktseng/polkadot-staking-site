@@ -17,12 +17,22 @@
         </md-table-toolbar>
         <md-table-row slot="md-table-row" slot-scope="{ item }">
           <md-table-cell><md-button @click="onClickAnalytic(item.stash)"><md-icon>analytics</md-icon></md-button></md-table-cell>
+          <md-table-cell>
+            <md-icon v-if="item.elected === true && item.oneKVNominated === false" class="nominated">celebration</md-icon>
+            <md-icon v-if="item.elected === false && item.oneKVNominated === true" class="waiting">mood_bad</md-icon>
+          </md-table-cell>
           <md-table-cell md-label="Name" md-sort-by="name">{{ item.name }}</md-table-cell>
           <md-table-cell md-label="Total Nominators" md-numeric md-sort-by="totalNominators">{{ item.totalNominators }}</md-table-cell>
           <md-table-cell md-label="Active Nominators" md-numeric md-sort-by="activeNominators">{{ item.activeNominators }}</md-table-cell>
           <md-table-cell md-label="Self Stash" md-numeric md-sort-by="stakeSize">{{ Number.parseFloat(item.stakeSize / 1000000000000).toFixed(3) }}</md-table-cell>
-          <md-table-cell md-label="Active">{{ item.elected? "Yes" : "No" }}</md-table-cell>
-          <md-table-cell md-label="1KV Nominated">{{ item.oneKVNominated? "Yes" : "No" }}</md-table-cell>
+          <md-table-cell md-label="Active">
+            <md-icon v-if="item.elected === true" class="nominated">check</md-icon>
+            <md-icon v-if="item.elected === false" class="waiting">close</md-icon>
+          </md-table-cell>
+          <md-table-cell md-label="1KV Nominated">
+            <md-icon v-if="item.oneKVNominated === true" class="nominated">check</md-icon>
+            <md-icon v-if="item.oneKVNominated === false" class="waiting">close</md-icon>
+          </md-table-cell>
           <md-table-cell md-label="rank" md-numeric md-sort-by="rank">{{ item.rank }}</md-table-cell>
           <md-table-cell md-label="Elected Rate" md-numeric md-sort-by="electedRate">{{ Number.parseFloat(item.electedRate).toFixed(2) }}</md-table-cell>
         </md-table-row>
@@ -99,5 +109,11 @@ export default {
   }
   .onekvTable {
     width: 100vw;
+  }
+  .nominated {
+    color: #FF2D00 !important;
+  }
+  .waiting {
+    color: #4FC50B !important;
   }
 </style>
