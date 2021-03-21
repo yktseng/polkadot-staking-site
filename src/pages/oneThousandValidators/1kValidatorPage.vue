@@ -111,9 +111,9 @@ export default {
     width: 100vw;
   }
   .nominated {
-    color: #FF2D00 !important;
+    color: #4FC50B !important;
   }
   .waiting {
-    color: #4FC50B !important;
+    color: #FF2D00 !important;
   }
 </style>
