@@ -159,6 +159,13 @@ export default {
         this.sortById();
       } else if(sortBy === 'apy'){
         this.sortByApy();
+        this.displayValidators = this.displayValidators.map(
+        function(data, idx)
+        {
+          data.idx = idx;
+          return data;
+        }
+        );
       }
       const hightlights = option.highlights;
         if(hightlights.commissionChange === true) {
