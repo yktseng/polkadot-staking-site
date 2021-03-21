@@ -14,6 +14,15 @@ class Yaohsin {
     }
   }
 
+  async getAllNominators() {
+    const result = await axios.get(`${path}/api/nominators`);
+    if(result.status === 200) {
+      return result.data;
+    } else {
+      throw new Error('Failed to retrieve data: ' + result.status);
+    }
+  }
+
   async getOneKVList(params) {
     if(params === 'undefined') {
       params = {};

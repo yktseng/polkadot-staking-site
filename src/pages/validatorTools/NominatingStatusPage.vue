@@ -7,7 +7,8 @@
       <div class="md-toolbar-row">
       <div class='md-toolbar-section-start search-bar '> 
         <md-icon id="search-icon">search</md-icon>
-        <md-autocomplete v-model="selectedStash" :md-options="stashes" @md-changed="getStashes" @md-selected="onSearchSelected" @keydown.enter.native="onSearchSelected" @focusout.native="onSearchSelected"/>
+        <md-autocomplete md-input-placeholder="Search validators or nominators"
+        v-model="selectedStash" :md-options="stashes" @md-changed="getStashes" @md-selected="onSearchSelected" @keydown.enter.native="onSearchSelected" @focusout.native="onSearchSelected"/>
       </div>
       <div class="md-toolbar-section-end">
         <md-button class="md-icon-button" @click="onClickAnalytics">
@@ -101,44 +102,72 @@ export default {
     this.sortByCommissionChange();
     this.sortByFavorite();
     this.showProgressBar = false;
+
+    yaohsin.getAllNominators().then((nominators)=>{
+      this.nominators = nominators;
+    });
   },
   methods: {
     getStashes: function(term) {
       this.stashes = new Promise((resolve)=>{
         const matched = [];
         this.validators.forEach((v)=>{
-          if(v.identity.display.toUpperCase().includes(term.toUpperCase())) {
-            matched.push(v.identity.display);
+          if(v.identity !== undefined) {
+            if(v.identity.display.toUpperCase().includes(term.toUpperCase())) {
+              matched.push(v.identity.display);
+            }
           }
         });
-        // this.nominators.forEach((n)=>{
-        //   if(n.nominator.toUpperCase().includes(term.toUpperCase())) {
-        //     matched.push(n.nominator);
-        //   }
-        // });
-
         resolve(matched);
       });
+    },
+    onSearchClear: function() {
+      console.log('sort all');
+      this.displayValidators.splice(0, this.displayValidators.length);
+      this.validators.forEach((v)=>{
+        this.displayValidators.push(v);
+      });
+      this.sortById();
+      this.sortByFavorite();
+      this.displayValidators = this.displayValidators.map(
+        function(data, idx)
+        {
+          data.idx = idx;
+          return data;
+        }
+      );
+      console.log('sort all ends');
     },
     onSearchSelected: function(stash) {
       stash = this.selectedStash;
       if(stash === '') {
-        this.sortById();
-        this.sortByFavorite();
-        this.displayValidators = this.displayValidators.map(
-          function(data, idx)
-          {
-            data.idx = idx;
-            return data;
-          }
-        );
+        this.onSearchClear();
       } else {
         this.displayValidators.splice(0, this.displayValidators.length);
         this.validators.forEach((v)=>{
           if(v.identity.display.toUpperCase().includes(stash.toUpperCase())) {
             this.displayValidators.push(v);
           }
+          if(v.id.toUpperCase() === stash.toUpperCase()) {
+            this.displayValidators.push(v);
+          }
         });
+        if(this.displayValidators.length === 0) {
+          console.log('search nominators');
+          this.nominators.forEach((n)=>{
+            if(n.accountId === stash) {
+              // which is really slow here...
+              this.validators.forEach((v)=>{
+                n.targets.forEach((t)=>{
+                  if(v.id.toUpperCase().includes(t.toUpperCase())) {
+                    this.displayValidators.push(v);
+                  }
+                });
+              });
+            }
+          });
+          console.log('search nominators finished');
+        }
       }
     },
     onClickAnalytics: function() {
