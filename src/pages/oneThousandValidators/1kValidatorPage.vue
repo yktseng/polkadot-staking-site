@@ -18,8 +18,8 @@
         <md-table-row slot="md-table-row" slot-scope="{ item }">
           <md-table-cell><md-button @click="onClickAnalytic(item.stash)"><md-icon>analytics</md-icon></md-button></md-table-cell>
           <md-table-cell>
-            <md-icon v-if="item.elected === true && item.oneKVNominated === false" class="nominated">celebration</md-icon>
-            <md-icon v-if="item.elected === false && item.oneKVNominated === true" class="waiting">mood_bad</md-icon>
+            <md-icon v-if="item.elected === true && item.oneKVNominated === false" class="waiting">celebration</md-icon>
+            <md-icon v-if="item.elected === false && item.oneKVNominated === true" class="nominated">mood_bad</md-icon>
           </md-table-cell>
           <md-table-cell md-label="Name" md-sort-by="name">{{ item.name }}</md-table-cell>
           <md-table-cell md-label="Total Nominators" md-numeric md-sort-by="totalNominators">{{ item.totalNominators }}</md-table-cell>
