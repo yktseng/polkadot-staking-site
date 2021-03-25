@@ -34,6 +34,7 @@
             <md-icon v-if="item.oneKVNominated === true" class="nominated">check</md-icon>
             <md-icon v-if="item.oneKVNominated === false" class="waiting">close</md-icon>
           </md-table-cell>
+          <md-table-cell class="nomination-order" md-label="Nominator Order" md-numeric md-sort-by="order">{{item.order}}</md-table-cell>
           <md-table-cell md-label="rank" md-numeric md-sort-by="rank">{{ item.rank }}</md-table-cell>
           <md-table-cell md-label="Elected Rate" md-numeric md-sort-by="electedRate">{{ Number.parseFloat(item.electedRate).toFixed(2) }}</md-table-cell>
         </md-table-row>
@@ -79,6 +80,7 @@ export default {
           v.commissionZero === true;
         }
       });
+      this.sortByNominationOrder();
       this.$forceUpdate();
       this.showProgressBar = false;
     }).catch(()=>{
@@ -96,6 +98,19 @@ export default {
       let routeData = this.$router.resolve({path: 'validatorStatus', query: {stash: stash}});
       window.open(routeData.href, '_blank');
     },
+    sortByNominationOrder: function() {
+      this.oneKVStatus.sort((a, b)=>{
+        if(a.aggregate > b.aggregate) {
+          return -1;
+        } else if(a.aggregate < b.aggregate) {
+          return 1;
+        }
+        return 0;
+      });
+      for(let i = 0; i < this.oneKVStatus.length; i++) {
+        this.oneKVStatus[i].order = i + 1;
+      }
+    }
   },
 }
 </script>
@@ -122,4 +137,5 @@ export default {
   .waiting {
     color: #FF2D00 !important;
   }
+
 </style>
