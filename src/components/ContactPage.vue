@@ -11,7 +11,19 @@
       iisaint
     </div>
     <div class="ksm-stash">
-      Kusama Validators <sub class='sub-head'>Nominate to support us</sub><br>---------------------------------------------------------------------
+      Official Kusama Validators <sub class='sub-head'>Nominate to support us</sub><br>---------------------------------------------------------------------
+      <table id="kusama-table">
+        <tr>
+          <td class="ident-icon-column"><Identicon @click.native="copy('GA1WBfVMBReXjWKGnXneC682ZZYustFoc8aTsqXv5fFvi2e')" class="ident-icon"
+          :size="32"
+          :theme="'polkadot'"
+          :value="'GA1WBfVMBReXjWKGnXneC682ZZYustFoc8aTsqXv5fFvi2e'"/></td>
+          <td>Cryptolab.Network</td>
+          <td>GA1WBfVMBReXjWKGnXneC682ZZYustFoc8aTsqXv5fFvi2e</td>
+        </tr>
+      </table>
+      <br><br>
+      Personal Kusama Validators <sub class='sub-head'>Nominate to support us</sub><br>---------------------------------------------------------------------
       <table id="kusama-table">
         <tr>
           <td class="ident-icon-column"><Identicon @click.native="copy('H4EeouHL5LawTqq2itu6auF62hDRX2LEBYk1TxS6QMrn9Hg')" class="ident-icon"
