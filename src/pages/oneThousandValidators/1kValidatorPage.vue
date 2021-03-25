@@ -22,7 +22,7 @@
             <md-icon v-if="item.elected === false && item.oneKVNominated === true" class="nominated">mood_bad</md-icon>
           </md-table-cell>
           <md-table-cell md-label="Name" md-sort-by="name">{{ item.name }}</md-table-cell>
-          <md-table-cell md-label="Commission (%)" md-numeric md-sort-by="commission">{{ item.commissionZero? 0 : item.commission }}%</md-table-cell>
+          <md-table-cell md-label="Commission (%)" md-numeric md-sort-by="commission">{{ item.commissionZero? 0 : (item.commission / 10000000).toFixed(1)}}%</md-table-cell>
           <md-table-cell md-label="Total Nominators" md-numeric md-sort-by="totalNominators">{{ item.totalNominators }}</md-table-cell>
           <md-table-cell md-label="Active Nominators" md-numeric md-sort-by="activeNominators">{{ item.activeNominators }}</md-table-cell>
           <md-table-cell md-label="Self Stash" md-numeric md-sort-by="stakeSize">{{ Number.parseFloat(item.stakeSize / 1000000000000).toFixed(3) }}</md-table-cell>
@@ -76,7 +76,7 @@ export default {
       this.oneKVStatus = this.yaohsin.mergeOneKVList(this.oneKVStatus, detail.valid, oneKVNominators);
       this.oneKVStatus.map((v)=>{
         if(v.commission < 1) {
-          v.commissionZero = true;
+          v.commissionZero === true;
         }
       });
       this.$forceUpdate();

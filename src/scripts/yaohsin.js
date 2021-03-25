@@ -67,6 +67,7 @@ class Yaohsin {
           if(detail.name === name) {
             element.electedRate = detail.electedRate;
             if(detail.stakingInfo.stakingLedger !== undefined) {
+              element.commission = detail.stakingInfo.validatorPrefs.commission;
               element.stakeSize = detail.stakingInfo.stakingLedger.total;
               element.totalNominators = detail.totalNominators;
               element.activeNominators = detail.activeNominators;
@@ -142,9 +143,7 @@ class Yaohsin {
           }, []);
         }
         result.data.valid = result.data.valid.reduce((acc, v) => {
-          if(v.invalidityReasons === '') {
-            acc.push(v);
-          }
+          acc.push(v);
           return acc;
         }, []);
         return result.data;
