@@ -25,7 +25,7 @@
           <md-table-cell md-label="Commission (%)" md-numeric md-sort-by="commission">{{ item.commissionZero? 0 : (item.commission / 10000000).toFixed(1)}}%</md-table-cell>
           <md-table-cell md-label="Total Nominators" md-numeric md-sort-by="totalNominators">{{ item.totalNominators }}</md-table-cell>
           <md-table-cell md-label="Active Nominators" md-numeric md-sort-by="activeNominators">{{ item.activeNominators }}</md-table-cell>
-          <md-table-cell md-label="Self Stash" md-numeric md-sort-by="stakeSize">{{ Number.parseFloat(item.stakeSize / 1000000000000).toFixed(3) }}</md-table-cell>
+          <!--<md-table-cell md-label="Self Stash" md-numeric md-sort-by="stakeSize">{{ Number.parseFloat(item.stakeSize / 1000000000000).toFixed(3) }}</md-table-cell>-->
           <md-table-cell md-label="Active">
             <md-icon v-if="item.elected === true" class="nominated">check</md-icon>
             <md-icon v-if="item.elected === false" class="waiting">close</md-icon>
@@ -34,7 +34,7 @@
             <md-icon v-if="item.oneKVNominated === true" class="nominated">check</md-icon>
             <md-icon v-if="item.oneKVNominated === false" class="waiting">close</md-icon>
           </md-table-cell>
-          <md-table-cell class="nomination-order" md-label="Nominator Order" md-numeric md-sort-by="order">{{item.order}}</md-table-cell>
+          <md-table-cell class="nomination-order" md-label="Nomination Order" md-numeric md-sort-by="order">{{item.order}}</md-table-cell>
           <md-table-cell md-label="rank" md-numeric md-sort-by="rank">{{ item.rank }}</md-table-cell>
           <md-table-cell md-label="Elected Rate" md-numeric md-sort-by="electedRate">{{ Number.parseFloat(item.electedRate).toFixed(2) }}</md-table-cell>
         </md-table-row>
