@@ -17,10 +17,10 @@
         </md-table-toolbar>
         <md-table-row slot="md-table-row" slot-scope="{ item }">
           <md-table-cell><md-button @click="onClickAnalytic(item.stash)"><md-icon>analytics</md-icon></md-button></md-table-cell>
-          <md-table-cell>
+          <!--<md-table-cell>
             <md-icon v-if="item.elected === true && item.oneKVNominated === false" class="waiting">celebration</md-icon>
             <md-icon v-if="item.elected === false && item.oneKVNominated === true" class="nominated">mood_bad</md-icon>
-          </md-table-cell>
+          </md-table-cell>-->
           <md-table-cell md-label="Name" md-sort-by="name">{{ item.name }}</md-table-cell>
           <md-table-cell md-label="Commission (%)" md-numeric md-sort-by="commission">{{ item.commissionZero? 0 : (item.commission / 10000000).toFixed(1)}}%</md-table-cell>
           <md-table-cell md-label="Total Nominators" md-numeric md-sort-by="totalNominators">{{ item.totalNominators }}</md-table-cell>
@@ -31,7 +31,8 @@
             <md-icon v-if="item.elected === false" class="waiting">close</md-icon>
           </md-table-cell>
           <md-table-cell md-label="1KV Nominated">
-            <md-icon v-if="item.oneKVNominated === true" class="nominated">check</md-icon>
+            <md-icon v-if="item.oneKVNominated === true" class="nominated onekv-nominated-cell">check</md-icon>
+            <div v-if="item.oneKVNominated === true" class="onekv-nominated-cell">({{item.nominatedFor}})</div>
             <md-icon v-if="item.oneKVNominated === false" class="waiting">close</md-icon>
           </md-table-cell>
           <md-table-cell class="nomination-order" md-label="Nomination Order" md-numeric md-sort-by="order">{{item.order}}</md-table-cell>
@@ -100,6 +101,15 @@ export default {
     },
     sortByNominationOrder: function() {
       this.oneKVStatus.sort((a, b)=>{
+        // add this condition to allow those who have been nominated for 3 era join the ordering.(because they can actually be nominated again)
+        if((Date.now() - a.lastNomination < 18 * 3600 * 1000) || (Date.now() - b.lastNomination < 18 * 3600 * 1000)) { // last era, ignore it
+          if(a.oneKVNominated === true && b.oneKVNominated === false) {
+            return 1;
+          }
+          if(a.oneKVNominated === false && b.oneKVNominated === true) {
+            return -1;
+          }
+        }
         if(a.aggregate > b.aggregate) {
           return -1;
         } else if(a.aggregate < b.aggregate) {
@@ -136,6 +146,9 @@ export default {
   }
   .waiting {
     color: #FF2D00 !important;
+  }
+  .onekv-nominated-cell {
+    display: inline-block;
   }
 
 </style>

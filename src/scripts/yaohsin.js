@@ -80,6 +80,10 @@ class Yaohsin {
               for(let k = 0; k < oneKV.current.length; k++) {
                 if(oneKV.current[k].stash === validator) {
                   element.oneKVNominated = true;
+                  element.oneKVStash = oneKV.address;
+                  element.lastNomination = Date.parse(oneKV.lastNomination);
+                  const nominatedForNumber = Date.now() - element.lastNomination;
+                  element.nominatedFor = this.__parseTimeDiffrenceToString(nominatedForNumber);
                   break;
                 }
               }
@@ -94,6 +98,18 @@ class Yaohsin {
     return onekv;
   }
   
+  __parseTimeDiffrenceToString(timeDiff) {
+    const timeDiffSeconds = timeDiff / 1000;
+    const timeDiffHour = (timeDiffSeconds / 3600).toFixed(0) % 24;
+    const timeDiffMinutes = (timeDiffSeconds / 60).toFixed(0) % 60;
+    return this.__pad(timeDiffHour, 2) + ':' + this.__pad(timeDiffMinutes, 2);
+  }
+
+  __pad (str, max) {
+    str = str.toString();
+    return str.length < max ? this.__pad("0" + str, max) : str;
+  }
+
   async getOneKVInfo() {
     const result = await axios.get(`${path}/api/valid`);
     if(result.status === 200) {
