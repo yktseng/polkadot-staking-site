@@ -19,10 +19,7 @@ export default {
       }, {
         displayName: 'Kusama Validator / Nominator Status',
         route: '/tools/ksmVN',
-      }, {
-        displayName: 'Kusama Validator and Nominator Telegram Bot Guide',
-        route: '/tools/ksmBotGuide',
-      }, {
+      },{
         displayName: 'Polkadot Validator / Nominator Status',
         route: '/tools/dotVN',
       }]
