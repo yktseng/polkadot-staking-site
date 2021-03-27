@@ -30,7 +30,7 @@
             <md-icon v-if="item.elected === true" class="nominated">check</md-icon>
             <md-icon v-if="item.elected === false" class="waiting">close</md-icon>
           </md-table-cell>
-          <md-table-cell md-label="1KV Nominated">
+          <md-table-cell md-label="1KV Nominated (Nominated For)">
             <md-icon v-if="item.oneKVNominated === true" class="nominated onekv-nominated-cell">check</md-icon>
             <div v-if="item.oneKVNominated === true" class="onekv-nominated-cell">({{item.nominatedFor}})</div>
             <md-icon v-if="item.oneKVNominated === false" class="waiting">close</md-icon>
