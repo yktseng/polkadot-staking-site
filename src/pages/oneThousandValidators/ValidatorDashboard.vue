@@ -21,7 +21,7 @@
           </md-table-row>
           <md-table-row>
             <md-table-cell class="validator-info">Total Nomination Amount </md-table-cell> 
-            <md-table-cell style="color: #5f6368">{{inactiveKSM}} KSM</md-table-cell>
+            <md-table-cell style="color: #5f6368">{{inactiveKSM}} {{coinName}}</md-table-cell>
           </md-table-row>
           <md-table-row>
             <md-table-cell class="validator-info">Commission </md-table-cell> 
@@ -42,10 +42,10 @@
         <div class="detail">
           <div class="stash-id">{{nominator.address.substr(0, 5)}}......{{nominator.address.substr(nominator.address.length - 5)}}</div>
           <div class="bonding" v-if="balances[index] !== null && balances[index] !== undefined">
-            {{(balances[index] / 1000000000000).toFixed(3)}} KSM
+            {{(balances[index] / decimal).toFixed(3)}} {{coinName}}
           </div>
           <div class="bonding" v-if="balances[index] === null || balances[index] === undefined">
-            ? KSM
+            ? {{coinName}}
           </div>
         </div>
       </div>
@@ -55,6 +55,7 @@
 
 <script>
 const Yaohsin = require('../../scripts/yaohsin');
+const constants = require('../../scripts/constants');
 import Identicon from '@polkadot/vue-identicon';
 export default {
   name: 'validatorStatus',
@@ -159,7 +160,9 @@ export default {
     this.showProgressBar = true;
     this.yaohsin = new Yaohsin();
     this.stash = this.$route.query.stash;
-    const validatorHistory = await this.yaohsin.getValidatorStatus(this.stash);
+    this.coinName = this.$route.query.coin;
+    console.log(this.$route);
+    const validatorHistory = await this.yaohsin.getValidatorStatus(this.stash, {coin: this.coinName});
     this.xaxisCatagory= [];
     this.exposures = [];
     this.nominatorCounts = [];
@@ -200,7 +203,7 @@ export default {
       if(b === null) {
         return acc;
       }
-      acc += parseFloat((parseFloat(b / 1000000000000)).toFixed(3));
+      acc += parseFloat((parseFloat(b / constants.KUSAMA_DECIMAL)).toFixed(3));
       return acc;
     }, 0);
     this.inactiveKSM = this.inactiveKSM.toFixed(3);
@@ -235,6 +238,16 @@ export default {
     copy: function(nominator) {
       this.$copyText(nominator);
     },
+  },
+  computed: {
+    decimal: function() {
+      if(this.coinName === 'KSM') {
+        return constants.KUSAMA_DECIMAL;
+      } else if(this.coinName === 'DOT') {
+        return constants.POLKADOT_DECIMAL;
+      }
+      return 0;
+    }
   },
   components: {
     Identicon

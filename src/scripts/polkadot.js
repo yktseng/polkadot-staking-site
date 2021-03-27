@@ -3,6 +3,7 @@ const extension = require('@polkadot/extension-dapp');
 const utilCrypto = require('@polkadot/util-crypto');
 
 const Yaohsin = require('./yaohsin');
+const constants = require('../scripts/constants');
 
 const { ApiPromise, WsProvider} = Api;
 const {
@@ -177,12 +178,12 @@ class Polkadot {
   }
 
   async bond(account, addr, balance) {
-    const extrinsic = await this.api.tx.staking.bond(addr, balance * 1000000000000, 0);
+    const extrinsic = await this.api.tx.staking.bond(addr, balance * constants.KUSAMA_DECIMAL, 0);
     return this._signAndSend(account,extrinsic);
   }
 
   async bondExtra(account, balance) {
-    const extrinsic = await this.api.tx.staking.bondExtra(balance * 1000000000000);
+    const extrinsic = await this.api.tx.staking.bondExtra(balance * constants.KUSAMA_DECIMAL);
 
     return this._signAndSend(account, extrinsic);
   }
@@ -193,11 +194,11 @@ class Polkadot {
   }
 
   getBondExtrinsic(addr, balance) {
-    return this.api.tx.staking.bond(addr, balance * 1000000000000, 0);
+    return this.api.tx.staking.bond(addr, balance * constants.KUSAMA_DECIMAL, 0);
   }
 
   getBondExtraExtrinsic(balance) {
-    return this.api.tx.staking.bondExtra(balance * 1000000000000);
+    return this.api.tx.staking.bondExtra(balance * constants.KUSAMA_DECIMAL);
   }
 
   getNominateExtrinsic(nominees) {

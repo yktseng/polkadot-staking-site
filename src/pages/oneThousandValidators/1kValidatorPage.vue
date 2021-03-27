@@ -46,6 +46,7 @@
 
 <script>
 const Yaohsin = require('../../scripts/yaohsin');
+// const constants = require('../scripts/constants');
 export default {
   name: 'oneKValidator',
   data: function() {

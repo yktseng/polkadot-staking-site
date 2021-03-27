@@ -101,8 +101,8 @@ class Yaohsin {
   __parseTimeDiffrenceToString(timeDiff) {
     const timeDiffSeconds = timeDiff / 1000;
     const timeDiffHour = (timeDiffSeconds / 3600).toFixed(0) % 24;
-    const timeDiffMinutes = (timeDiffSeconds / 60).toFixed(0) % 60;
-    return this.__pad(timeDiffHour, 2) + ' hours ' + this.__pad(timeDiffMinutes, 2) + ' minutes';
+    // const timeDiffMinutes = (timeDiffSeconds / 60).toFixed(0) % 60;
+    return this.__pad(timeDiffHour, 2) + ' hours';
   }
 
   __pad (str, max) {
@@ -169,14 +169,33 @@ class Yaohsin {
     });
   }
 
-  async getValidatorStatus(stash) {
-    return axios.get(`${path}/api/validator/${stash}/trend`).then((result)=>{
+  async getValidatorStatus(stash, options) {
+    console.log(options);
+    if(options === undefined) {
+      options = {
+        coin: 'KSM',
+      };
+    }
+    let url = `${path}/api`;
+    if(options.coin === 'DOT') {
+      url += '/dot';
+    }
+    return axios.get(`${url}/validator/${stash}/trend`).then((result)=>{
       return result;
     });
   }
 
-  async getAllValidatorAndNominators() {
-    return axios.get(`${path}/api/allValidators?size=1500`).then((result)=>{
+  async getAllValidatorAndNominators(options) {
+    if(options === undefined) {
+      options = {
+        coin: 'KSM',
+      };
+    }
+    let url = `${path}/api`;
+    if(options.coin === 'DOT') {
+      url += '/dot';
+    }
+    return axios.get(`${url}/allValidators?size=1500`).then((result)=>{
       return result.data;
     });
   }

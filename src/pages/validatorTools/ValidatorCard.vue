@@ -11,8 +11,8 @@
         /> {{shortenedDisplayName}}
         </div>
         <div @click="onClickCard(stash)">
-          <div class="md-subhead small-font">{{activeKSM.toFixed(3)}} KSM / 
-            <span class="md-subhead small-font" v-if="!isLoading && allKSM !== undefined">{{allKSM.toFixed(3)}} KSM</span>
+          <div class="md-subhead small-font">{{activeKSM.toFixed(coinName === 'KSM'?3:0)}} {{coinName}} / 
+            <span class="md-subhead small-font" v-if="!isLoading && allKSM !== undefined">{{allKSM.toFixed(coinName === 'KSM'?3:0)}} {{coinName}}</span>
           </div>
           <div class="md-subhead md-headline">APY: {{(apy * 100).toFixed(2)}}%</div>
           <div class="md-subhead" v-if="isLoading">Loading total nominated amount...</div>
@@ -53,6 +53,7 @@ export default {
     favorite: Boolean,
     apy: Number,
     commissionChange: Number,
+    coinName: String
   },
   computed: {
     shortenedDisplayName: function() {
@@ -61,9 +62,17 @@ export default {
       }
       return this.displayName;
     },
+    localStoragePath: function() {
+      if(this.coinName === 'KSM') {
+        return 'ksm.validator.favorite';
+      } else if(this.coinName === 'DOT') {
+        return 'dot.validator.favorite';
+      }
+      return '';
+    }
   },
   mounted: async function() {
-     let item = localStorage.getItem('ksm.validator.favorite');
+     let item = localStorage.getItem(this.localStoragePath);
       let favoriteValidators = [];
       if(item !== undefined && item !== null) {
         favoriteValidators = JSON.parse(item);
@@ -79,36 +88,37 @@ export default {
       this.$copyText(this.stash);
     },
     onClickCard: function(stash) {
-      console.log(stash);
-      let routeData = this.$router.resolve({path: 'validatorStatus', query: {stash: stash}});
+      console.log(stash, this.coinName);
+      let routeData = this.$router.resolve({path: 'validatorStatus', query: {stash: stash, coin: this.coinName}});
       window.open(routeData.href, '_blank');
     },
     onClickFavorite: function(stash) {
       try{
         if(!this.favorite) {
-          let item = localStorage.getItem('ksm.validator.favorite');
+          let item = localStorage.getItem(this.localStoragePath);
           let favoriteValidators = [];
           if(item !== undefined && item !== null) {
             favoriteValidators = JSON.parse(item);
           }
           favoriteValidators.push(stash);
-          localStorage.setItem('ksm.validator.favorite', JSON.stringify(favoriteValidators));
+          localStorage.setItem(this.localStoragePath, JSON.stringify(favoriteValidators));
           this.$emit('update:favorite', true);
           this.$emit('favorite-clicked', true)
         } else {
-          let item = localStorage.getItem('ksm.validator.favorite');
+          let item = localStorage.getItem(this.localStoragePath);
           let favoriteValidators = [];
           if(item !== undefined && item !== null) {
             favoriteValidators = JSON.parse(item);
           }
           const index = favoriteValidators.indexOf(stash);
           favoriteValidators.splice(index, 1);
-          localStorage.setItem('ksm.validator.favorite', JSON.stringify(favoriteValidators));
+          localStorage.setItem(this.localStoragePath, JSON.stringify(favoriteValidators));
           this.$emit('update:favorite', false);
           this.$emit('favorite-clicked', false)
         }
-      } catch {
-        localStorage.removeItem('ksm.validator.favorite');
+      } catch(err){
+        console.error(err);
+        localStorage.removeItem(this.localStoragePath);
       }
       
     }

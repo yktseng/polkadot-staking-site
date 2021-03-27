@@ -133,6 +133,7 @@
 <script>
 import Identicon from '@polkadot/vue-identicon';
 const polkadot = require('../scripts/polkadot');
+const constants = require('../scripts/constants');
 export default {
   name: 'StakingGuide',
   props: {
@@ -178,9 +179,10 @@ export default {
   },
   methods: {
     _calculateFunds(accountInfo) {
-      console.log((accountInfo.data.free.toNumber() / 1000000000000).toFixed(3), (accountInfo.data.reserved.toNumber() / 1000000000000).toFixed(3), (accountInfo.data.feeFrozen.toNumber() / 1000000000000).toFixed(3), (accountInfo.data.miscFrozen.toNumber() / 1000000000000).toFixed(3));
-          this.freeFund = ((accountInfo.data.free - accountInfo.data.feeFrozen) / 1000000000000).toFixed(3);
-          this.stakedFund = (accountInfo.data.feeFrozen / 1000000000000).toFixed(3);
+      console.log((accountInfo.data.free.toNumber() / constants.KUSAMA_DECIMAL).toFixed(3), (accountInfo.data.reserved.toNumber() / constants.KUSAMA_DECIMAL).toFixed(3),
+      (accountInfo.data.feeFrozen.toNumber() / constants.KUSAMA_DECIMAL).toFixed(3), (accountInfo.data.miscFrozen.toNumber() / constants.KUSAMA_DECIMAL).toFixed(3));
+          this.freeFund = ((accountInfo.data.free - accountInfo.data.feeFrozen) / constants.KUSAMA_DECIMAL).toFixed(3);
+          this.stakedFund = (accountInfo.data.feeFrozen / constants.KUSAMA_DECIMAL).toFixed(3);
           this.stakeFund = this.stakedFund;
           this.maxFund = parseFloat(this.freeFund) + parseFloat(this.stakedFund); // minus 0.5 to make sure you have enough KSM to pay the fee
           if(this.maxFund < 0.5) {

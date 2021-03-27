@@ -30,6 +30,7 @@
       v-bind:favorite.sync="validator.isMissing"
       v-bind:apy="validator.info.apy"
       v-bind:commissionChange="commissionChange(validator)"
+      v-bind:coinName="coin"
       @favorite-clicked="onFavoriteClicked"/>
     </div>
     <sort-option-dialog v-if="showSortOptions" v-bind:open="showSortOptions"  @close-sorting-option="showSortOptions = false" @sorting-option="onSortingOptionChanged"/>
@@ -39,11 +40,15 @@
 
 <script>
 const Yaohsin = require('../../scripts/yaohsin');
+const constants = require('../../scripts/constants');
 import ValidatorCard from './ValidatorCard.vue';
 import AnalyticsDialog from './AnalyticsDialog.vue';
 import SortOptionDialog from './SortOptionDialog.vue';
 export default {
   name: 'nominatingStatus',
+  props: {
+    coin: String,
+  },
   data: function() {
     return {
       validators: [],
@@ -60,9 +65,18 @@ export default {
   mounted: async function() {
     this.showProgressBar = true;
     const yaohsin = new Yaohsin();
-    const result = await yaohsin.getAllValidatorAndNominators().catch(()=>{
+    let result = undefined;
+    if(this.coin === 'KSM') {
+      result = await yaohsin.getAllValidatorAndNominators().catch(()=>{
+        this.isError = true;
+      });
+    } else if(this.coin === 'DOT') {
+      result = await yaohsin.getAllValidatorAndNominators({coin: this.coin}).catch(()=>{
+        this.isError = true;
+      });
+    } else {
       this.isError = true;
-    });
+    }
     if(this.isError) {
       this.showProgressBar = false;
       return;
@@ -83,9 +97,9 @@ export default {
           display: v.id,
         };
       }
-      v.activeKSM = parseInt(v.info.exposure.total) / 1000000000000;
+      v.activeKSM = parseInt(v.info.exposure.total) / (this.coin === 'DOT'? constants.POLKADOT_DECIMAL: constants.KUSAMA_DECIMAL);
       v.inactiveKSM = v.info.nominators.reduce((acc, v_)=>{
-        acc += (parseInt(v_.balance.lockedBalance) / 1000000000000);
+        acc += (parseInt(v_.balance.lockedBalance) / (this.coin === 'DOT'? constants.POLKADOT_DECIMAL: constants.KUSAMA_DECIMAL));
         return acc;
       }, 0);
       this.displayValidators.push(v);
@@ -235,7 +249,7 @@ export default {
       this.displayValidators = this.displayValidators.sort((a, b) => a.identity.display.localeCompare(b.identity.display));
     },
     sortByFavorite: function() {
-      let item = localStorage.getItem('ksm.validator.favorite');
+      let item = localStorage.getItem(this.localStoragePath);
       if(item !== undefined) {
         if(item !== null) {
           const favoriteValidators = JSON.parse(item);
@@ -256,7 +270,14 @@ export default {
     }
   },
   computed: {
-    
+    localStoragePath: function() {
+      if(this.coinName === 'KSM') {
+        return 'ksm.validator.favorite';
+      } else if(this.coinName === 'DOT') {
+        return 'dot.validator.favorite';
+      }
+      return '';
+    }
   },
   components: {
     ValidatorCard,
