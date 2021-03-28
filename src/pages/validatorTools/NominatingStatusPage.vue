@@ -66,17 +66,9 @@ export default {
     this.showProgressBar = true;
     const yaohsin = new Yaohsin();
     let result = undefined;
-    if(this.coin === 'KSM') {
-      result = await yaohsin.getAllValidatorAndNominators().catch(()=>{
+    result = await yaohsin.getAllValidatorAndNominators({coin: this.coin}).catch(()=>{
         this.isError = true;
-      });
-    } else if(this.coin === 'DOT') {
-      result = await yaohsin.getAllValidatorAndNominators({coin: this.coin}).catch(()=>{
-        this.isError = true;
-      });
-    } else {
-      this.isError = true;
-    }
+    });
     if(this.isError) {
       this.showProgressBar = false;
       return;
@@ -116,8 +108,7 @@ export default {
     this.sortByCommissionChange();
     this.sortByFavorite();
     this.showProgressBar = false;
-
-    yaohsin.getAllNominators().then((nominators)=>{
+    yaohsin.getAllNominators({coin: this.coin}).then((nominators)=>{
       this.nominators = nominators;
     });
   },
@@ -271,9 +262,9 @@ export default {
   },
   computed: {
     localStoragePath: function() {
-      if(this.coinName === 'KSM') {
+      if(this.coin === 'KSM') {
         return 'ksm.validator.favorite';
-      } else if(this.coinName === 'DOT') {
+      } else if(this.coin === 'DOT') {
         return 'dot.validator.favorite';
       }
       return '';

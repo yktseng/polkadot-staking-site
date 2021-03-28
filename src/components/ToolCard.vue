@@ -3,7 +3,8 @@
     <md-card md-with-hover>
       <div @click="onClickCard">
       <md-card-media class="currency-img">
-        <img src="../assets/img/kusama-logo.svg" alt="KSM">
+        <img v-if="coinName === 'KSM'" src="../assets/img/kusama-logo.svg" alt="KSM">
+        <img v-if="coinName === 'DOT'" src="../assets/img/polkadot_logo.png" alt="DOT">
       </md-card-media>
 
       <md-card-header>
@@ -19,6 +20,7 @@
 export default {
   name: 'ToolCard',
   props: {
+    coinName: String,
     displayName: String,
     route: String
   },

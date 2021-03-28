@@ -14,8 +14,18 @@ class Yaohsin {
     }
   }
 
-  async getAllNominators() {
-    const result = await axios.get(`${path}/api/nominators`);
+  async getAllNominators(options) {
+    console.log(options);
+    if(options === undefined) {
+      options = {
+        coin: 'KSM',
+      };
+    }
+    let url = `${path}/api`;
+    if(options.coin === 'DOT') {
+      url += '/dot';
+    }
+    const result = await axios.get(`${url}/nominators`);
     if(result.status === 200) {
       return result.data;
     } else {

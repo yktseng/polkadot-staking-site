@@ -1,7 +1,7 @@
 <template>
   <div id="tool-cards" class="md-elevation-10">
     <div class='card-container md-layout' v-for="(tool, index) in tools" :key="index">
-      <tool-card v-bind:displayName="tool.displayName" v-bind:route="tool.route" />
+      <tool-card v-bind:displayName="tool.displayName" v-bind:route="tool.route" v-bind:coinName="tool.coinName" />
     </div>
   </div>
 </template>

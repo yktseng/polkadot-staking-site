@@ -16,13 +16,17 @@ export default {
       tools: [{
         displayName: 'Kusama One Thousand Validator Monitor',
         route: '/tools/oneKValidators',
+        coinName: 'KSM',
       }, {
         displayName: 'Kusama Validator / Nominator Status',
         route: '/tools/ksmVN',
-      },{
-        displayName: 'Polkadot Validator / Nominator Status',
-        route: '/tools/dotVN',
+        coinName: 'KSM',
       }]
+      // ,{
+      //   displayName: 'Polkadot Validator / Nominator Status',
+      //   route: '/tools/dotVN',
+      //   coinName: 'DOT',
+      // }
     }
   },
   components: {
