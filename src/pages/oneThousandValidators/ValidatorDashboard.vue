@@ -246,7 +246,7 @@ export default {
       } else if(this.coinName === 'DOT') {
         return constants.POLKADOT_DECIMAL;
       }
-      return 0;
+      return constants.KUSAMA_DECIMAL;
     }
   },
   components: {
