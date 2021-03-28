@@ -110,7 +110,7 @@ class Yaohsin {
   
   __parseTimeDiffrenceToString(timeDiff) {
     const timeDiffSeconds = timeDiff / 1000;
-    const timeDiffHour = (timeDiffSeconds / 3600).toFixed(0) % 24;
+    const timeDiffHour = (timeDiffSeconds / 3600).toFixed(0);
     // const timeDiffMinutes = (timeDiffSeconds / 60).toFixed(0) % 60;
     return this.__pad(timeDiffHour, 2) + ' hours';
   }
