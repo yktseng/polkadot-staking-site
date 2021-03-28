@@ -186,6 +186,9 @@ class Yaohsin {
         coin: 'KSM',
       };
     }
+    if(options.coin === undefined) {
+      options.coin = 'KSM';
+    }
     let url = `${path}/api`;
     if(options.coin === 'DOT') {
       url += '/dot';

@@ -97,7 +97,7 @@ export default {
   methods: {
     onClickAnalytic: function(stash) {
       console.log(stash);
-      let routeData = this.$router.resolve({path: 'validatorStatus', query: {stash: stash}});
+      let routeData = this.$router.resolve({path: 'validatorStatus', query: {stash: stash, coin: 'KSM'}});
       window.open(routeData.href, '_blank');
     },
     sortByNominationOrder: function() {
