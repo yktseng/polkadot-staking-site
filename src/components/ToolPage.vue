@@ -21,12 +21,11 @@ export default {
         displayName: 'Kusama Validator / Nominator Status',
         route: '/tools/ksmVN',
         coinName: 'KSM',
+      },{
+        displayName: 'Polkadot Validator / Nominator Status',
+        route: '/tools/dotVN',
+        coinName: 'DOT',
       }]
-      // ,{
-      //   displayName: 'Polkadot Validator / Nominator Status',
-      //   route: '/tools/dotVN',
-      //   coinName: 'DOT',
-      // }
     }
   },
   components: {
