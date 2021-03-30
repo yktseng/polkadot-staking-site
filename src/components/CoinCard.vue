@@ -12,7 +12,7 @@
       <md-card-expand>
         <md-card-actions md-alignment="space-between">
           <div>
-            <md-button @click="onClickStakingGuide">Stake With Us</md-button>
+            <md-button id="kusama-stake-with-us" @click="onClickStakingGuide">Stake With Us</md-button>
           </div>
           <md-card-expand-trigger>
             <md-button class="md-icon-button">
