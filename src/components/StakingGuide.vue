@@ -121,8 +121,8 @@
       </md-step>
     </md-steppers>
       <md-dialog-actions>
-        <md-button class="md-raised md-primary" @click="setDone(nextStep())" :disabled="(isLoading || ended) || (active === 'third' && stakeFund === 0)">Continue</md-button>
-        <md-button class="md-secondary" @click="$emit('close-guide')">Close</md-button>
+        <md-button id="kusama-stake-with-us-next" class="md-raised md-primary" @click="setDone(nextStep())" :disabled="(isLoading || ended) || (active === 'third' && stakeFund === 0)">Continue</md-button>
+        <md-button id="kusama-stake-with-us-end" class="md-secondary" @click="$emit('close-guide')">Close</md-button>
       </md-dialog-actions>
       </div>
       </md-dialog-content>
