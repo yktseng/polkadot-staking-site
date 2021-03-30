@@ -10,7 +10,7 @@
       </md-card-header>
 
       <md-card-expand>
-        <md-card-actions md-alignment="space-between">
+        <md-card-actions md-alignment="space-between" class="md-card-action-area">
           <div>
             <md-button id="kusama-stake-with-us" @click="onClickStakingGuide">Stake With Us</md-button>
           </div>
@@ -70,7 +70,7 @@ const showStakingGuide = function() {
     min-height: 268px;
     max-height: 268px;
     vertical-align: top;
-    
+    background-color: #1E1F21;
   }
 
   .currency-img {
@@ -78,5 +78,18 @@ const showStakingGuide = function() {
     max-height: 120px;
     margin: auto;
     padding-top: 10px;
+  }
+
+  .md-title {
+    color: #FFFFFF;
+  }
+
+  #kusama-stake-with-us {
+    background-color: #1E1F21;
+    color: #FFFFFF;
+  }
+
+  .md-card-action-area {
+    background-color: #1E1F21 !important;
   }
 </style>                               

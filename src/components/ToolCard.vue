@@ -46,7 +46,7 @@ export default {
     min-height: 268px;
     max-height: 268px;
     vertical-align: top;
-    
+    background-color: #1E1F21;
   }
 
   .currency-img {
@@ -54,5 +54,13 @@ export default {
     max-height: 120px;
     margin: auto;
     padding-top: 10px;
+  }
+
+  .md-title {
+    color: #FFFFFF;
+  }
+
+  .md-subhead {
+    color: #999999;
   }
 </style>                               
