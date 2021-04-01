@@ -1,6 +1,6 @@
 <template>
   <div id="validator-card">
-    <md-card md-with-hover v-bind:id="stash" v-bind:class="{'inactive-validator': activeKSM === 0}" md-ratio="4:3">
+    <md-card md-with-hover @click.native="onClickCard(stash)" v-bind:id="stash" v-bind:class="{'inactive-validator': activeKSM === 0}" md-ratio="4:3">
     
       <md-card-header>
         <div class="md-title">
@@ -10,7 +10,7 @@
           :value="stash"
         /> {{shortenedDisplayName}}
         </div>
-        <div @click="onClickCard(stash)">
+        <div>
           <div class="md-subhead small-font">{{activeKSM.toFixed(coinName === 'KSM'?3:0)}} {{coinName}} / 
             <span class="md-subhead small-font" v-if="!isLoading && allKSM !== undefined">{{allKSM.toFixed(coinName === 'KSM'?3:0)}} {{coinName}}</span>
           </div>
@@ -20,7 +20,7 @@
       </md-card-header>
 
       <md-card-content>
-        <div @click="onClickCard(stash)">
+        <div>
           Nominator Count: {{nominators.length}}<br>
           Commission: {{commission.toFixed(1)}}%
           <span v-if="this.commissionChange === 1"><md-icon style="color:#FF2D00">keyboard_arrow_up</md-icon></span>
@@ -84,8 +84,9 @@ export default {
       
   },
   methods: {
-    copy: function() {
+    copy: function(e) {
       this.$copyText(this.stash);
+      e.stopPropagation();
     },
     onClickCard: function(stash) {
       console.log(stash, this.coinName);

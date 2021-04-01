@@ -1,6 +1,6 @@
 <template>
   <div id="coin-card" class="md-layout-item" >
-    <md-card md-with-hover>
+    <md-card md-with-hover @click.native="onClickStakingGuide">
       <md-card-media class="currency-img">
         <img src="../assets/img/kusama-logo.svg" alt="KSM">
       </md-card-media>
