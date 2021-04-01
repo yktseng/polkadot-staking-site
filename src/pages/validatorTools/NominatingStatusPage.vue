@@ -1,8 +1,16 @@
 <template>
   <div id="nominatingStatus">
     <md-progress-bar md-mode="query" v-if="showProgressBar"></md-progress-bar>
-    <p v-if="showProgressBar">Loading validator and nominator status...</p>
-    <p v-if="isError">Fetching data from our server is failed. The site is probably syncing new era data. Please try again later</p>
+    <md-toolbar class="md-accent md-dense" v-if="showTooltips">
+        <h4 class="md-dense">
+          Tips: Click on each card to see detailed information of the validator. Click <md-icon>favorite</md-icon> to put your interested validators to the top
+        </h4>
+        <div class="md-toolbar-section-end md-dense">
+          <md-button class="md-icon-button" @click="onClickCloseTooltips">
+            <md-icon>close</md-icon>
+          </md-button>
+        </div>
+    </md-toolbar>
     <md-toolbar v-if="!showProgressBar && !isError">
       <div class="md-toolbar-row">
       <div class='md-toolbar-section-start search-bar '> 
@@ -17,9 +25,12 @@
         <md-button class="md-icon-button" @click="onClickSorting">
           <md-icon >sort</md-icon>
         </md-button>
+        <md-button class="md-icon-button" v-if="!showTooltips" @click="onClickShowTooltips"><md-icon>info</md-icon></md-button>
       </div>
       </div>
     </md-toolbar>
+    <p v-if="showProgressBar">Loading validator and nominator status...</p>
+    <p v-if="isError">Fetching data from our server is failed. The site is probably syncing new era data. Please try again later</p>
     <div class='card-container' v-for="(validator, index) in displayValidators" :key="index">
       <validator-card v-bind:displayName="validator.identity.display || validator.id" v-bind:activeKSM="validator.activeKSM || 0"
       v-bind:allKSM="validator.inactiveKSM || 0"
@@ -60,6 +71,7 @@ export default {
       showAnalytics: false,
       showSortOptions: false,
       isError: false,
+      showTooltips: true,
     }
   },
   mounted: async function() {
@@ -187,6 +199,12 @@ export default {
         this.sortByFavorite();
       }
     },
+    onClickCloseTooltips: function() {
+      this.showTooltips = false;
+    },
+    onClickShowTooltips: function() {
+      this.showTooltips = true;
+    },
     onSortingOptionChanged: function(option) {
       const sortBy = option.sortBy;
       if(sortBy === 'alphabetical' || sortBy === 'default') {
@@ -295,9 +313,6 @@ export default {
   max-width: 600px;
   height: 40px;
   vertical-align: middle;
-}
-
-.tool-bar-icon {
 }
 
 </style>
