@@ -5,7 +5,7 @@
     
     <div class="info-panel md-layout">
       <div class="info-text md-layout-item">
-        <div class=md-title>{{this.displayName || this.stash}}</div>
+        <div id="stash-name" class=md-title>{{this.displayName || this.stash}}</div>
         <md-divider/>
         <md-table>
           <md-table-row>
@@ -33,34 +33,68 @@
       <apexchart id="apy-trend" ref="apy-trend" width="500" type="line" :options="apyOptions" :series="apySeries" class="md-layout-item"></apexchart>
     </div>
     <div class="nominator-list">
-      <div class="nominator" v-for="(nominator, index) in nominators" :key="index">
-        <Identicon class="ident-icon" @click.native="copy(nominator.address)"
-            :size="32"
-            :theme="'polkadot'"
-            :value="nominator.address"
-        />
-        <div class="detail">
-          <div class="stash-id">{{nominator.address.substr(0, 5)}}......{{nominator.address.substr(nominator.address.length - 5)}}</div>
-          <div class="bonding" v-if="balances[index] !== null && balances[index] !== undefined">
-            {{(balances[index] / decimal).toFixed(3)}} {{coinName}}
+      <md-toolbar md-elevation="0" md-theme-dark class="md-dense"> <h3 class="md-title">Active Nominators</h3></md-toolbar>
+      <div class="nominator-block">
+        <div class="nominator" v-for="(nominator, index) in activeNominators" :key="index">
+          <Identicon class="ident-icon" @click.native="copy(nominator.address)"
+              :size="32"
+              :theme="'polkadot'"
+              :value="nominator.address"
+          />
+          <div class="detail">
+            <div class="stash-id">{{nominator.address.substr(0, 5)}}......{{nominator.address.substr(nominator.address.length - 5)}}</div>
+            <div class="bonding" v-if="balances[index] !== null && balances[index] !== undefined">
+              {{(balances[index] / decimal).toFixed(3)}} {{coinName}}
+            </div>
+            <div class="bonding" v-if="balances[index] === null || balances[index] === undefined">
+              ? {{coinName}}
+            </div>
           </div>
-          <div class="bonding" v-if="balances[index] === null || balances[index] === undefined">
-            ? {{coinName}}
+        </div>
+      </div>
+
+      <md-toolbar md-elevation="0" md-theme-dark class="md-dense"> <h3 class="md-title">Inactive Nominators</h3></md-toolbar>
+      <div class="nominator-block">
+        <div class="nominator" v-for="(nominator, index) in inactiveNominators" :key="index">
+          <Identicon class="ident-icon" @click.native="copy(nominator.address)"
+              :size="32"
+              :theme="'polkadot'"
+              :value="nominator.address"
+          />
+          <div class="detail">
+            <div class="stash-id">{{nominator.address.substr(0, 5)}}......{{nominator.address.substr(nominator.address.length - 5)}}</div>
+            <div class="bonding" v-if="balances[index] !== null && balances[index] !== undefined">
+              {{(balances[index] / decimal).toFixed(3)}} {{coinName}}
+            </div>
+            <div class="bonding" v-if="balances[index] === null || balances[index] === undefined">
+              ? {{coinName}}
+            </div>
           </div>
         </div>
       </div>
     </div>
+    <nominator-dashboard v-if="showNominatorDashboard" v-bind:open="showNominatorDashboard"
+    v-bind:validators="nominatedValidators"
+    v-bind:nominator="selectedNominator"
+    @close-guide="showNominatorDashboard = false"/>
   </div>
 </template>
 
 <script>
 const Yaohsin = require('../../scripts/yaohsin');
 const constants = require('../../scripts/constants');
+import NominatorDashboard from './NominatorDashboardDialog';
 import Identicon from '@polkadot/vue-identicon';
 export default {
   name: 'validatorStatus',
+  props: {
+    coinName: String,
+  },
   data: function() {
     return {
+      nominatedValidators: [],
+      selectedNominator: {},
+      showNominatorDashboard: false,
       nominators: [],
       balances: [],
       displayName: '',
@@ -69,6 +103,8 @@ export default {
       stash: "",
       apyTrend: [],
       eraCommission: 0,
+      activeNominators: [],
+      inactiveNominators: [],
       options: {
         chart: {
           id: 'vuechart-example'
@@ -190,6 +226,7 @@ export default {
       });
       this.apyTrend.push(eraData.apy * 100);
     });
+    const eraExposure = data.info[data.info.length - 1].exposure;
     this.eraCommission = this.commissions[this.commissions.length - 1];
     if(this.eraCommission < 0.0001) {
       this.eraCommission = 0;
@@ -207,6 +244,27 @@ export default {
       return acc;
     }, 0);
     this.inactiveKSM = this.inactiveKSM.toFixed(3);
+    // use exposure to decide who is active
+    if(eraExposure.others.length > 0) {
+      eraExposure.others.forEach((activeNominator)=>{
+        this.activeNominators = this.nominators.filter((n)=>{
+          let active = false;
+          if(n.address === activeNominator.who) {
+            active = true;
+          }
+          return active;
+        });
+      });
+    }
+    this.inactiveNominators = this.nominators.filter((n)=>{
+      let active = false;
+      this.activeNominators.forEach((a)=>{
+        if(a.who === n.address) {
+          active = true;
+        }
+      });
+      return !active;
+    });
     this.showProgressBar = false;
   },
   methods: {
@@ -238,6 +296,18 @@ export default {
     copy: function(nominator) {
       this.$copyText(nominator);
     },
+    onClickNominatorId: function(nominator) {
+      this.selectedNominator = nominator;
+      let promise = Promise.resolve();
+      nominator.targets.forEach((v)=>{
+        promise = promise.then(()=>{
+          return this.yaohsin.getValidatorStatusOfCurrentEra(v);
+        });
+      });
+      promise.then(()=>{
+        this.showNominatorDashboard = true;
+      });
+    }
   },
   computed: {
     decimal: function() {
@@ -250,7 +320,8 @@ export default {
     }
   },
   components: {
-    Identicon
+    Identicon,
+    NominatorDashboard
   },
 }
 </script>
@@ -262,14 +333,10 @@ export default {
 .nominator-list {
   text-align: left;
   padding-top: 20px;
-  padding-left: 20px;
 }
 .info-text {
   vertical-align: top;
   display: inline-block;
-}
-.validator-info {
-  vertical-align: top;
 }
 .info-panel {
   padding-top: 30px;
@@ -285,6 +352,9 @@ export default {
   text-align: left;
   overflow:auto;
   min-width: 150px;
+}
+.nominator-block {
+    padding-top: 20px;
 }
 .ident-icon {
   display: inline-block;
@@ -302,5 +372,13 @@ export default {
   display: inline-block;
   font-size: 10px;
   vertical-align: super;
+  padding-left: 8px;
+}
+#stash-name {
+  padding-left: 24px;
+  padding-bottom: 20px;
+}
+tr {
+  background-color:#fafafa;
 }
 </style>

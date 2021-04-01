@@ -16,7 +16,7 @@
           <h1 class="md-title">Kusama 1k validator info and status</h1>
         </md-table-toolbar>
         <md-table-row slot="md-table-row" slot-scope="{ item }">
-          <md-table-cell><md-button @click="onClickAnalytic(item.stash)"><md-icon>analytics</md-icon></md-button></md-table-cell>
+          <md-table-cell md-label="Validator Dashboard"><md-button @click="onClickAnalytic(item.stash)"><md-icon>analytics</md-icon></md-button></md-table-cell>
           <!--<md-table-cell>
             <md-icon v-if="item.elected === true && item.oneKVNominated === false" class="waiting">celebration</md-icon>
             <md-icon v-if="item.elected === false && item.oneKVNominated === true" class="nominated">mood_bad</md-icon>
