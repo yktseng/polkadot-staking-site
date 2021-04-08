@@ -1,5 +1,5 @@
 const axios = require('axios');
-const path = process.env.VUE_APP_BACKEND_PATH || 'http://127.0.0.1:3000';
+const path = process.env.VUE_APP_BACKEND_PATH || 'http://127.0.0.1:3030';
 console.log(`path = ${path}`);
 class Yaohsin {
   constructor() {
@@ -194,6 +194,25 @@ class Yaohsin {
       url += '/dot';
     }
     return axios.get(`${url}/validator/${stash}/trend`).then((result)=>{
+      return result;
+    });
+  }
+
+  async getValidatorStatusOfCurrentEra(stash, options) {
+    console.log(options);
+    if(options === undefined) {
+      options = {
+        coin: 'KSM',
+      };
+    }
+    if(options.coin === undefined) {
+      options.coin = 'KSM';
+    }
+    let url = `${path}/api`;
+    if(options.coin === 'DOT') {
+      url += '/dot';
+    }
+    return axios.get(`${url}/validator/${stash}`).then((result)=>{
       return result;
     });
   }

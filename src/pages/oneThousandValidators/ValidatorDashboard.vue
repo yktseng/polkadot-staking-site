@@ -43,10 +43,10 @@
           />
           <div class="detail">
             <div class="stash-id">{{nominator.address.substr(0, 5)}}......{{nominator.address.substr(nominator.address.length - 5)}}</div>
-            <div class="bonding" v-if="balances[index] !== null && balances[index] !== undefined">
-              {{(balances[index] / decimal).toFixed(3)}} {{coinName}}
+            <div class="bonding" v-if="nominator.balance.lockedBalance !== null && nominator.balance.lockedBalance !== undefined">
+              {{(nominator.balance.lockedBalance / decimal).toFixed(3)}} {{coinName}}
             </div>
-            <div class="bonding" v-if="balances[index] === null || balances[index] === undefined">
+            <div class="bonding" v-if="nominator.balance.lockedBalance === null || nominator.balance.lockedBalance === undefined">
               ? {{coinName}}
             </div>
           </div>
@@ -63,10 +63,10 @@
           />
           <div class="detail">
             <div class="stash-id">{{nominator.address.substr(0, 5)}}......{{nominator.address.substr(nominator.address.length - 5)}}</div>
-            <div class="bonding" v-if="balances[index] !== null && balances[index] !== undefined">
-              {{(balances[index] / decimal).toFixed(3)}} {{coinName}}
+            <div class="bonding" v-if="nominator.balance.lockedBalance !== null && nominator.balance.lockedBalance !== undefined">
+              {{(nominator.balance.lockedBalance / decimal).toFixed(3)}} {{coinName}}
             </div>
-            <div class="bonding" v-if="balances[index] === null || balances[index] === undefined">
+            <div class="bonding" v-if="nominator.balance.lockedBalance === null || nominator.balance.lockedBalance === undefined">
               ? {{coinName}}
             </div>
           </div>
@@ -247,23 +247,42 @@ export default {
     // use exposure to decide who is active
     if(eraExposure.others.length > 0) {
       eraExposure.others.forEach((activeNominator)=>{
-        this.activeNominators = this.nominators.filter((n)=>{
+        const filtered = this.nominators.filter((n)=>{
           let active = false;
           if(n.address === activeNominator.who) {
             active = true;
           }
           return active;
         });
+        if(filtered.length > 0) {
+          this.activeNominators.push(filtered[0]);
+        }
       });
     }
     this.inactiveNominators = this.nominators.filter((n)=>{
       let active = false;
       this.activeNominators.forEach((a)=>{
-        if(a.who === n.address) {
+        if(a.address === n.address) {
           active = true;
         }
       });
       return !active;
+    });
+    this.activeNominators = this.activeNominators.sort((a, b)=>{
+      if(a.balance.lockedBalance > b.balance.lockedBalance) {
+        return -1;
+      } else if(a.balance.lockedBalance < b.balance.lockedBalance) {
+        return 1;
+      }
+      return 0;
+    });
+    this.inactiveNominators = this.inactiveNominators.sort((a, b)=>{
+      if(a.balance.lockedBalance > b.balance.lockedBalance) {
+        return -1;
+      } else if(a.balance.lockedBalance < b.balance.lockedBalance) {
+        return 1;
+      }
+      return 0;
     });
     this.showProgressBar = false;
   },
