@@ -1,5 +1,5 @@
 const axios = require('axios');
-const path = process.env.VUE_APP_BACKEND_PATH || 'http://127.0.0.1:3000';
+const path = process.env.VUE_APP_BACKEND_PATH || 'http://127.0.0.1:3030';
 console.log(`path = ${path}`);
 class Yaohsin {
   constructor() {
@@ -75,7 +75,11 @@ class Yaohsin {
       detailInfo.forEach(detail => {
         if(detail.stakingInfo !== undefined && detail.stakingInfo !== null) {
           if(detail.name === name) {
-            element.electedRate = detail.electedRate;
+            if(detail.electedRate !== undefined) {
+              element.electedRate = detail.electedRate;
+            } else {
+              element.electedRate = detail.inclusion;
+            }
             if(detail.stakingInfo.stakingLedger !== undefined) {
               element.commission = detail.stakingInfo.validatorPrefs.commission;
               element.stakeSize = detail.stakingInfo.stakingLedger.total;
