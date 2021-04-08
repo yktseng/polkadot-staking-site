@@ -111,9 +111,9 @@ export default {
             return -1;
           }
         }
-        if(a.aggregate > b.aggregate) {
+        if(a.aggregate?.aggregate > b.aggregate?.aggregate) {
           return -1;
-        } else if(a.aggregate < b.aggregate) {
+        } else if(a.aggregate?.aggregate < b.aggregate?.aggregate) {
           return 1;
         }
         return 0;
