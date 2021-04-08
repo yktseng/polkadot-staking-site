@@ -10,8 +10,23 @@
       yktseng<br>
       iisaint
     </div>
-    <div class="ksm-stash">
-      Official Kusama Validators <sub class='sub-head'>Nominate to support us</sub><br>---------------------------------------------------------------------
+    <div class="official-stash">
+      <img src="../assets/logo_dot_small.png"/>
+      Official Polkadot Validators <br>---------------------------------------------------------------------
+      <table id="kusama-table">
+        <tr>
+          <td class="ident-icon-column"><Identicon @click.native="copy('14AzFH6Vq1Vefp6eQYPK8DWuvYuUm3xVAvcN9wS352QsCH8L')" class="ident-icon"
+          :size="32"
+          :theme="'polkadot'"
+          :value="'14AzFH6Vq1Vefp6eQYPK8DWuvYuUm3xVAvcN9wS352QsCH8L'"/></td>
+          <td>Cryptolab.Network</td>
+          <td>14AzFH6Vq1Vefp6eQYPK8DWuvYuUm3xVAvcN9wS352QsCH8L</td>
+        </tr>
+      </table>
+    </div>
+    <div class="official-stash">
+      <img src="../assets/logo_ksm_small.png"/>
+      Official Kusama Validators <br>---------------------------------------------------------------------
       <table id="kusama-table">
         <tr>
           <td class="ident-icon-column"><Identicon @click.native="copy('GA1WBfVMBReXjWKGnXneC682ZZYustFoc8aTsqXv5fFvi2e')" class="ident-icon"
@@ -22,8 +37,9 @@
           <td>GA1WBfVMBReXjWKGnXneC682ZZYustFoc8aTsqXv5fFvi2e</td>
         </tr>
       </table>
-      <br><br>
-      Personal Kusama Validators <sub class='sub-head'>Nominate to support us</sub><br>---------------------------------------------------------------------
+    </div>
+    <div class="personal-stash">
+      Personal Kusama Validators <br>---------------------------------------------------------------------
       <table id="kusama-table">
         <tr>
           <td class="ident-icon-column"><Identicon @click.native="copy('H4EeouHL5LawTqq2itu6auF62hDRX2LEBYk1TxS6QMrn9Hg')" class="ident-icon"
@@ -113,9 +129,11 @@ export default {
     padding-top:50px;
     color: #61ba89;
   }
-  .ksm-stash {
+  .official-stash {
     padding-top:50px;
+    padding-right: 5vw;
     color: #61ba89;
+    display: inline-block;
   }
   #kusama-table {
     padding-top: 20px;
@@ -131,5 +149,9 @@ export default {
   }
   .sub-head {
     font-size: 8px;
+  }
+  .personal-stash {
+    color: #61ba89;
+    padding-top: 5vh;
   }
 </style>
