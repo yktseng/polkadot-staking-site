@@ -5,7 +5,7 @@
         <img v-if="currentRoute !== '/tools/ksmVN' && currentRoute !== '/tools/dotVN'" src="../assets/logo_small.png"/>
         <img v-if="currentRoute === '/tools/ksmVN'" src="../assets/logo_ksm_small.png"/>
         <img v-if="currentRoute === '/tools/dotVN'" src="../assets/logo_dot_small.png"/>
-      <span class="md-title" @click="onClickTitle"><span style="color:#61ba89">Crypto</span><span style="color:#FAFAFA">Currency</span><span style="color:#61ba89">Lab</span></span>
+      <span class="md-title" @click="onClickTitle"><span style="color:#61ba89">Crypto</span><span style="color:#61ba89">Lab</span></span>
       <div class="md-toolbar-section-end">
         <md-button class="md-button nav-button" @click="onClickTool">
           Tools
