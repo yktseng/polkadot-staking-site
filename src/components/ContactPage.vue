@@ -10,6 +10,7 @@
       yktseng<br>
       iisaint
     </div>
+    <div v-if="isMobile === false">
     <div class="official-stash">
       <img src="../assets/logo_dot_small.png"/>
       Official Polkadot Validators <br>---------------------------------------------------------------------
@@ -83,15 +84,21 @@
         </tr>
       </table>
     </div>
+    </div>
+    <div v-else>
+      <br><br><span class="search-for">Search for <span class="cryptolab">Cryptolab.network</span> on Polkadot APP to nominate us!</span>
+    </div> 
   </div>
 </template>
 
 <script>
 import Identicon from '@polkadot/vue-identicon';
+const constants = require('../scripts/constants');
 export default {
   name: 'contactPage',
   data: ()=>{
     return {
+      isMobile: constants.isMobile(),
       ksmStashes: [
         {
           name: 'DRAGONLANCE',
@@ -153,5 +160,11 @@ export default {
   .personal-stash {
     color: #61ba89;
     padding-top: 5vh;
+  }
+  .search-for {
+    color: #61ba89;
+  }
+  .cryptolab {
+    color: #ffffff;
   }
 </style>
