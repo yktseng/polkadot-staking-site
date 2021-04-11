@@ -3,6 +3,8 @@ const path = process.env.VUE_APP_BACKEND_PATH || 'http://127.0.0.1:3030';
 console.log(`path = ${path}`);
 class Yaohsin {
   constructor() {
+    this.ksmNominatorCache = [];
+    this.dotNominatorCache = [];
   }
 
   async getOneKVOfficialNominators() {
@@ -25,8 +27,22 @@ class Yaohsin {
     if(options.coin === 'DOT') {
       url += '/dot';
     }
+    if(options.coin === 'KSM') {
+      if(this.ksmNominatorCache.length > 0) {
+        return this.ksmNominatorCache;
+      }
+    } else if(options.coin === 'DOT') {
+      if(this.dotNominatorCache.length > 0) {
+        return this.dotNominatorCache;
+      }
+    }
     const result = await axios.get(`${url}/nominators`);
     if(result.status === 200) {
+      if(options.coin === 'KSM') {
+        this.ksmNominatorCache = result.data;
+      } else if(options.coin === 'DOT') {
+        this.dotNominatorCache = result.data;
+      }
       return result.data;
     } else {
       throw new Error('Failed to retrieve data: ' + result.status);
@@ -60,15 +76,6 @@ class Yaohsin {
     return result;
   }
 
-  async getCurrentNominatingStatus() {
-    const result = await axios.get(`${path}/api/nominators`);
-    if(result.status === 200) {
-      return result.data;
-    } else {
-      throw new Error('Failed to retrieve data: ' + result.status);
-    }
-  }
-  
   mergeOneKVList(onekv, detailInfo, oneKVNominators) {
     onekv.forEach(element => {
       const name = element.name;

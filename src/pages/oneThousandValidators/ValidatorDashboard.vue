@@ -44,7 +44,7 @@
           <div class="detail">
             <div class="stash-id">{{nominator.address.substr(0, 5)}}......{{nominator.address.substr(nominator.address.length - 5)}}</div>
             <div class="bonding" v-if="nominator.balance.lockedBalance !== null && nominator.balance.lockedBalance !== undefined">
-              {{(nominator.balance.lockedBalance / decimal).toFixed(3)}} {{coinName}}
+              {{(nominator.balance.lockedBalance / decimal).toFixed(3)}} {{coinName}} / {{nominator.targetCount}}
             </div>
             <div class="bonding" v-if="nominator.balance.lockedBalance === null || nominator.balance.lockedBalance === undefined">
               ? {{coinName}}
@@ -64,7 +64,7 @@
           <div class="detail">
             <div class="stash-id">{{nominator.address.substr(0, 5)}}......{{nominator.address.substr(nominator.address.length - 5)}}</div>
             <div class="bonding" v-if="nominator.balance.lockedBalance !== null && nominator.balance.lockedBalance !== undefined">
-              {{(nominator.balance.lockedBalance / decimal).toFixed(3)}} {{coinName}}
+              {{(nominator.balance.lockedBalance / decimal).toFixed(3)}} {{coinName}} / {{nominator.targetCount}}
             </div>
             <div class="bonding" v-if="nominator.balance.lockedBalance === null || nominator.balance.lockedBalance === undefined">
               ? {{coinName}}
@@ -234,6 +234,14 @@ export default {
     this.updateSeriesLine();
     this.balances = this.nominators.map((nominator) => {
       return nominator.balance.lockedBalance;
+    });
+    const allNominators = await this.yaohsin.getAllNominators({coin: this.coinName});
+    this.nominators.map((nominator) => {
+      allNominators.forEach((n)=>{
+        if(n.accountId === nominator.address) {
+          nominator.targetCount = n.targets.length;
+        }
+      });
     });
 
     this.inactiveKSM = this.balances.reduce((acc, b)=>{
