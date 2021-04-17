@@ -30,7 +30,6 @@ const landingPage = Vue.component('landingPage', require('./components/LandingPa
 const toolPage = Vue.component('toolPage', require('./components/ToolPage.vue').default);
 const contactPage = Vue.component('contactPane', require('./components/ContactPage.vue').default);
 
-
 const router = new VueRouter({
   mode: 'history',
   routes: [

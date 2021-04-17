@@ -95,7 +95,7 @@ export default {
       const v = this.validators[i];
       v.isLoading = true;
      
-      if(v.identity === undefined) {
+      if(v.identity === undefined || v.identity === null) {
         v.identity = {
           display: v.id,
         };

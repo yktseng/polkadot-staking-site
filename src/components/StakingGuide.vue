@@ -6,7 +6,7 @@
       <md-dialog-content>
       <div v-if="$isMobile()">
         <div class="md-body-1 desc">
-          Nominate the following validators to support us. Or use desktop to try our auto nomination tool.
+          Search for the validator on <a href="https://polkadot.js.org/apps/#/staking/waiting">Polkadot App</a> and nominate them.
         </div>
           <table id="kusama-table">
             <tr>

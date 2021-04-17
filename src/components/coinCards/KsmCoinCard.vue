@@ -1,12 +1,12 @@
 <template>
-  <div id="coin-card" class="md-layout-item" >
+  <div id="ksm-coin-card" class="md-layout-item" >
     <md-card md-with-hover @click.native="onClickStakingGuide">
       <md-card-media class="currency-img">
-        <img src="../assets/img/kusama-logo.svg" alt="KSM">
+        <img src="../../assets/img/kusama-logo.svg" alt="KSM">
       </md-card-media>
 
       <md-card-header>
-        <div class="md-title">{{displayName}}</div>
+        <div class="md-title">Kusama</div>
       </md-card-header>
 
       <md-card-expand>
@@ -33,12 +33,9 @@
 </template>
 
 <script>
-import StakingGuide from './StakingGuide.vue'
+import StakingGuide from '../StakingGuide.vue'
 export default {
-  name: 'ValidatorCard',
-  props: {
-    displayName: String,
-  },
+  name: 'KsmCoinCard',
   data: function() {
     return {
       isShowGuide: this.isShowGuide
@@ -91,5 +88,9 @@ const showStakingGuide = function() {
 
   .md-card-action-area {
     background-color: #1E1F21 !important;
+  }
+
+  #ksm-coin-card {
+    max-width: 368px;
   }
 </style>                               
