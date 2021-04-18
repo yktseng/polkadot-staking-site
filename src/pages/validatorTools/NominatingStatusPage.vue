@@ -44,6 +44,7 @@
       v-bind:favorite.sync="validator.isMissing"
       v-bind:apy="validator.info.apy"
       v-bind:commissionChange="commissionChange(validator)"
+      v-bind:stalePayouts="validator.info.unclaimed_eras.length >= 20"
       v-bind:coinName="coin"
       @favorite-clicked="onFavoriteClicked"/>
     </div>
@@ -94,7 +95,6 @@ export default {
     // this.validators.forEach((v)=>{
       const v = this.validators[i];
       v.isLoading = true;
-     
       if(v.identity === undefined || v.identity === null) {
         v.identity = {
           display: v.id,

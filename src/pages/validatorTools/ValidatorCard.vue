@@ -8,7 +8,9 @@
           :size="32"
           :theme="'polkadot'"
           :value="stash"
-        /> {{shortenedDisplayName}}
+        /> {{shortenedDisplayName}} <md-icon v-if="stalePayouts" class="stale-payouts">
+          <md-tooltip md-direction="bottom">More than 20 unclaimed payouts</md-tooltip>
+          paid</md-icon>
         </div>
         <div>
           <div class="md-subhead small-font">{{activeKSM.toFixed(coinName === 'KSM'?3:0)}} {{coinName}} / 
@@ -53,7 +55,8 @@ export default {
     favorite: Boolean,
     apy: Number,
     commissionChange: Number,
-    coinName: String
+    coinName: String,
+    stalePayouts: Boolean,
   },
   computed: {
     shortenedDisplayName: function() {
@@ -154,5 +157,9 @@ export default {
   }
   .small-font {
     font-size: 10px;
+  }
+
+  .stale-payouts {
+    color: #f07178 !important;
   }
 </style>
