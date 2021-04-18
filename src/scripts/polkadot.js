@@ -76,8 +76,9 @@ class Polkadot {
       });
       const onekvList = onekvDetailedList.valid.reduce((acc, v)=>{
         if(v.stakingInfo !== undefined && v.stakingInfo !== null) {
+          console.log(v.stakingInfo);
           acc.push({
-            addr: v.stakingInfo.accountId,
+            addr: v.stakingInfo.stashId,
             displayName: v.name,
           });
         }
