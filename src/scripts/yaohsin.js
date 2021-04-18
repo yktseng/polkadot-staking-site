@@ -190,6 +190,27 @@ class Yaohsin {
     });
   }
 
+  async getValidatorUnclaimedEras(stash, options) {
+    console.log(options);
+    if(options === undefined) {
+      options = {
+        coin: 'KSM',
+      };
+    }
+    if(options.coin === undefined) {
+      options.coin = 'KSM';
+    }
+    let url = `${path}/api`;
+    if(options.coin === 'DOT') {
+      url += '/dot';
+    }
+    return axios.get(`${url}/validator/${stash}/unclaimedEras`).then((result)=>{
+      return result.data;
+    }).catch(()=>{
+      return [];
+    });
+  }
+
   async getValidatorStatus(stash, options) {
     console.log(options);
     if(options === undefined) {

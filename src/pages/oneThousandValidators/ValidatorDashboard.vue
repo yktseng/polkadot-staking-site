@@ -27,6 +27,10 @@
             <md-table-cell class="validator-info">Commission </md-table-cell> 
             <md-table-cell style="color: #5f6368">{{eraCommission.toFixed(1)}}%</md-table-cell>
           </md-table-row>
+          <md-table-row>
+            <md-table-cell class="unclaim-eras">Unclaimed Payout Eras </md-table-cell> 
+            <md-table-cell style="color: #5f6368">{{unclaimedEraString}}</md-table-cell>
+          </md-table-row>
         </md-table>
       </div>
       <apexchart id="nomination-trend" ref="nomination-trend" width="500" type="line" :options="options" :series="series" class="md-layout-item"></apexchart>
@@ -105,6 +109,8 @@ export default {
       eraCommission: 0,
       activeNominators: [],
       inactiveNominators: [],
+      unclaimedEras: [],
+      unclaimedEraString: '',
       options: {
         chart: {
           id: 'vuechart-example'
@@ -199,6 +205,9 @@ export default {
     this.coinName = this.$route.query.coin;
     console.log(this.$route);
     const validatorHistory = await this.yaohsin.getValidatorStatus(this.stash, {coin: this.coinName});
+    const unclaimedEras = await this.yaohsin.getValidatorUnclaimedEras(this.stash, {coin: this.coinName});
+    this.unclaimedEras = unclaimedEras;
+    this.unclaimedEraString = this.handleUnclaimedEraString(this.unclaimedEras);
     this.xaxisCatagory= [];
     this.exposures = [];
     this.nominatorCounts = [];
@@ -248,7 +257,11 @@ export default {
       if(b === null) {
         return acc;
       }
-      acc += parseFloat((parseFloat(b / constants.KUSAMA_DECIMAL)).toFixed(3));
+      if(this.coinName === 'KSM') {
+        acc += parseFloat((parseFloat(b / constants.KUSAMA_DECIMAL)).toFixed(3));
+      } else if(this.coinName === 'DOT') {
+        acc += parseFloat((parseFloat(b / constants.POLKADOT_DECIMAL)).toFixed(3));
+      }
       return acc;
     }, 0);
     this.inactiveKSM = this.inactiveKSM.toFixed(3);
@@ -295,6 +308,17 @@ export default {
     this.showProgressBar = false;
   },
   methods: {
+    handleUnclaimedEraString(unclaimedEras) {
+      if(unclaimedEras.length === 0) {
+        return 'None';
+      }
+      let unclaimedEraString = unclaimedEras.toString();
+      if(unclaimedEras.length > 10) {
+        unclaimedEraString = unclaimedEras.slice(0, 10).toString() + ' and ' +
+          (unclaimedEras.length - 10).toString() + ' eras more';
+      }
+      return unclaimedEraString;
+    },
     updateSeriesLine() {
       this.$refs['nomination-trend'].updateSeries([{
         data: this.nominatorCounts

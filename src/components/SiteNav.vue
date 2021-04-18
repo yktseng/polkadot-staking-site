@@ -26,8 +26,23 @@
 </template>
 
 <script>
+import Vue from 'vue'
+import VueMeta from 'vue-meta'
+import MetaInfo from 'vue-meta-info';
+Vue.use(MetaInfo);
+Vue.use(VueMeta, {
+  // optional pluginOptions
+  refreshOnceOnNavigation: true
+});
 export default {
   name: 'SiteNav',
+  metaInfo: {
+    meta: [
+      {
+        name:'viewport', content: 'width=device-width, user-scalable=yes, initial-scale=1.0, maximum-scale=3.0, minimum-scale=1.0'
+      }
+    ]
+  },
   data: function() {
     return {
       currentRoute: '/',
