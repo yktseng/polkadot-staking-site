@@ -29,6 +29,7 @@ const ksmBotGuide = Vue.component('ksmBotGuide', require('./pages/botGuide/Kusam
 const landingPage = Vue.component('landingPage', require('./components/LandingPage.vue').default);
 const toolPage = Vue.component('toolPage', require('./components/ToolPage.vue').default);
 const contactPage = Vue.component('contactPane', require('./components/ContactPage.vue').default);
+const rewardQuerierPage = Vue.component('rewardQuerierPage', require('./pages/nomintorTools/rewardQuerier.vue').default);
 
 const router = new VueRouter({
   mode: 'history',
@@ -45,6 +46,12 @@ const router = new VueRouter({
       coin: 'DOT'
     }},
     { path: '/tools/ksmBotGuide', component: ksmBotGuide, name: 'kusamaBotGuidePage'},
+    { path: '/tools/ksmSR', component: rewardQuerierPage, name: 'rewardQuerierPage', props: {
+      coinName: 'KSM'
+    }},
+    { path: '/tools/dotSR', component: rewardQuerierPage, name: 'rewardQuerierPage', props: {
+      coinName: 'DOT'
+    }},
   ],
 });
 

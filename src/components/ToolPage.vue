@@ -25,6 +25,14 @@ export default {
         displayName: 'Polkadot Validator / Nominator Status',
         route: '/tools/dotVN',
         coinName: 'DOT',
+      },{
+        displayName: 'Kusama Staking Rewards',
+        route: '/tools/ksmSR',
+        coinName: 'KSM',
+      },{
+        displayName: 'Polkadot Staking Rewards',
+        route: '/tools/dotSR',
+        coinName: 'DOT',
       }]
     }
   },

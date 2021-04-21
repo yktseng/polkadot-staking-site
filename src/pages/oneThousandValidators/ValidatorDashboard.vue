@@ -7,7 +7,7 @@
       <div class="info-text md-layout-item">
         <div id="stash-name" class=md-title>{{this.displayName || this.stash}}</div>
         <md-divider/>
-        <md-table>
+        <md-table md-card class="stash-info">
           <md-table-row>
             <md-table-cell>Stash ID</md-table-cell>
             <md-table-cell>
@@ -379,6 +379,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
+.stash-info {
+  margin-left: 16px;
+}
 #validatorStatus {
 }
 .nominator-list {

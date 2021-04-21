@@ -212,53 +212,41 @@ class Yaohsin {
   }
 
   async getValidatorStatus(stash, options) {
-    console.log(options);
-    if(options === undefined) {
-      options = {
-        coin: 'KSM',
-      };
-    }
-    if(options.coin === undefined) {
-      options.coin = 'KSM';
-    }
-    let url = `${path}/api`;
-    if(options.coin === 'DOT') {
-      url += '/dot';
-    }
+    let url;
+    ({ url, options } = this.fillUrlByCoinName(options));
     return axios.get(`${url}/validator/${stash}/trend`).then((result)=>{
       return result;
     });
   }
 
   async getValidatorStatusOfCurrentEra(stash, options) {
-    console.log(options);
-    if(options === undefined) {
-      options = {
-        coin: 'KSM',
-      };
-    }
-    if(options.coin === undefined) {
-      options.coin = 'KSM';
-    }
-    let url = `${path}/api`;
-    if(options.coin === 'DOT') {
-      url += '/dot';
-    }
+    let url;
+    ({ url, options } = this.fillUrlByCoinName(options));
     return axios.get(`${url}/validator/${stash}`).then((result)=>{
       return result;
     });
   }
 
-  async getAllValidatorAndNominators(options) {
-    if(options === undefined) {
+  fillUrlByCoinName(options) {
+    console.log(options);
+    if (options === undefined) {
       options = {
         coin: 'KSM',
       };
     }
+    if (options.coin === undefined) {
+      options.coin = 'KSM';
+    }
     let url = `${path}/api`;
-    if(options.coin === 'DOT') {
+    if (options.coin === 'DOT') {
       url += '/dot';
     }
+    return { url, options };
+  }
+
+  async getAllValidatorAndNominators(options) {
+    let url;
+    ({ url, options } = this.fillUrlByCoinName(options));
     return axios.get(`${url}/allValidators?size=1500`).then((result)=>{
       return result.data;
     });
@@ -279,6 +267,17 @@ class Yaohsin {
       results = results.concat(tmp);
     }
     return results;
+  }
+
+  async getStashRewards(id, options) {
+    let url;
+    ({ url, options } = this.fillUrlByCoinName(options));
+    const result = await axios.get(`${url}/stash/${id}/rewards`).then((result)=>{
+      return result.data;
+    }).catch(()=>{
+      return undefined;
+    });
+    return result;
   }
 
   __splitNominatorArray(array) {
