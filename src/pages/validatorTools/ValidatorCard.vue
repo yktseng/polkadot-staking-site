@@ -1,8 +1,8 @@
 <template>
   <div id="validator-card">
-    <md-card md-with-hover @click.native="onClickCard(stash)" v-bind:id="stash" v-bind:class="{'inactive-validator': activeKSM === 0}" md-ratio="4:3">
+    <md-card md-with-hover v-bind:id="stash" v-bind:class="{'inactive-validator': activeKSM === 0}" md-ratio="4:3">
     
-      <md-card-header>
+      <md-card-header @click.native="onClickCard(stash)" >
         <div class="md-title">
           <Identicon @click.native="copy" class="ident-icon"
           :size="32"
@@ -22,7 +22,7 @@
       </md-card-header>
 
       <md-card-content>
-        <div>
+        <div @click.native="onClickCard(stash)" >
           Nominator Count: {{nominators.length}}<br>
           Commission: {{commission.toFixed(1)}}%
           <span v-if="this.commissionChange === 1"><md-icon style="color:#FF2D00">keyboard_arrow_up</md-icon></span>
