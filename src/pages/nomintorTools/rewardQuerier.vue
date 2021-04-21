@@ -63,9 +63,6 @@ const Yaohsin = require('../../scripts/yaohsin');
 import Identicon from '@polkadot/vue-identicon';
 export default {
   name: 'RewardQuerier',
-  props: {
-    coinName: String,
-  },
   mounted: function() {
     if(localStorage.getItem(this.localStorageKey) !== undefined && localStorage.getItem(this.localStorageKey) !== null) {
       let storage = JSON.parse(localStorage.getItem(this.localStorageKey));
@@ -84,6 +81,7 @@ export default {
   },
   data: function() {
     return {
+      coinName: '',
       yaohsin: new Yaohsin(),
       selectedStash: '',
       isStashValid: false,
@@ -95,7 +93,7 @@ export default {
       historicalQuery: [],
       showSnakeBar: false,
       eraRewards: [],
-      localStorageKey: 'queriedStashes' + '_' + this.coinName,
+      localStorageKey: 'queriedStashes',
     }
   },
   methods: {
@@ -124,6 +122,8 @@ export default {
       localStorage.setItem(this.localStorageKey, JSON.stringify(queried));
     },
     calcTotalRewards(eraRewards) {
+      this.startEra = 0;
+      this.endEra = 0;
       this.totalRewards = eraRewards.eraRewards.reduce((acc, era)=>{
         acc += era.amount;
         return acc;
@@ -167,6 +167,11 @@ export default {
         this.inDelay = false;
       }, 1000);
       this.showSnakeBar = false;
+      if(stash.startsWith('1')) {
+        this.coinName = 'DOT';
+      } else if(stash.charCodeAt(0) >= 65 && stash.charCodeAt(0) <= 90) {
+        this.coinName = 'KSM';
+      }
       const eraRewards = await this.yaohsin.getStashRewards(stash, {coin: this.coinName});
       if(eraRewards !== undefined) {
         this.isStashValid = true;
