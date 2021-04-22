@@ -1,6 +1,6 @@
 <template>
   <div id="reward-chart">
-    <apexchart ref="reward-distribution" id="reward-distribution" width='100%' type="bar" :options="rewardOptions" :series="rewardSeries"/>
+    <apexchart ref="reward-distribution" id="reward-distribution" width='100%' type="line" :options="rewardOptions" :series="rewardSeries"/>
   </div>
 </template>
 
@@ -28,6 +28,9 @@ export default {
         fill: {
           colors: ['#61ba89']
         },
+        colors: [
+          '#61ba89'
+        ],
         title: {
           text: this.title,
            style: {
@@ -49,12 +52,13 @@ export default {
             seriesName: 'Rewards'
           },
         ],
-        dataLabels: {
-          enabled: true,
-          formatter: (val) => {
-              return val + ' ' + this.coinName;
-          },
-        },
+        tooltip: {
+          y: {
+            formatter: (value) => {
+              return value + ' ' + this.coinName;
+            }
+          }
+        }
       },
       rewardSeries: [{
         name: 'Rewards',
@@ -101,7 +105,15 @@ export default {
         },
         title: {
           text: this.title,
-        }
+        },
+        yaxis: [
+          {
+            min: 0,
+            title: {
+              text: this.coinName,
+            },
+          },
+        ],
       });
     }
   },
