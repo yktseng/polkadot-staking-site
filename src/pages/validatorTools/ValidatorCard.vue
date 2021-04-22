@@ -22,7 +22,7 @@
       </md-card-header>
 
       <md-card-content>
-        <div @click.native="onClickCard(stash)" >
+        <div @click="onClickCard(stash)" >
           Nominator Count: {{nominators.length}}<br>
           Commission: {{commission.toFixed(1)}}%
           <span v-if="this.commissionChange === 1"><md-icon style="color:#FF2D00">keyboard_arrow_up</md-icon></span>
