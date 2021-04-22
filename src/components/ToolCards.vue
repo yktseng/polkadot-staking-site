@@ -41,7 +41,8 @@ export default {
     max-height: 268px;
     margin-bottom: 40px;
     position: relative;
-    display: inline-block;
+    float: left;
+    display: inline;
     vertical-align: top;
   }
 </style>

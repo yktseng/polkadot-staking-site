@@ -14,10 +14,6 @@ export default {
     return {
       validators: [],
       tools: [{
-        displayName: 'Kusama One Thousand Validator Monitor',
-        route: '/tools/oneKValidators',
-        coinName: 'KSM',
-      }, {
         displayName: 'Kusama Validator / Nominator Status',
         route: '/tools/ksmVN',
         coinName: 'KSM',
@@ -26,13 +22,13 @@ export default {
         route: '/tools/dotVN',
         coinName: 'DOT',
       },{
-        displayName: 'Kusama Staking Rewards',
-        route: '/tools/ksmSR',
-        coinName: 'KSM',
-      },{
-        displayName: 'Polkadot Staking Rewards',
+        displayName: 'Polkadot / Kusama Staking Rewards',
         route: '/tools/dotSR',
         coinName: 'DOT',
+      },{
+        displayName: 'Kusama One Thousand Validator Monitor',
+        route: '/tools/oneKValidators',
+        coinName: 'KSM',
       }]
     }
   },
