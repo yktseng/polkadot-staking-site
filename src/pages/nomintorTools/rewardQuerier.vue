@@ -11,7 +11,7 @@
       </div>
   </md-toolbar>
   <div v-if="isStashValid" class="content">
-    <div class="md-title stash-info-title">Stash Information</div>
+    <div class="md-title stash-info-title" style="margin-left:32px">Stash Information</div>
     <md-table class="general-info-table" md-card>
       <md-table-row>
         <md-table-cell>Stash ID</md-table-cell>
@@ -31,17 +31,25 @@
         <md-table-cell>Total Rewards</md-table-cell>
         <md-table-cell>
           <div class='total-rewards'>{{totalRewards.toFixed(4)}} {{coinName}}</div>
-          <div><span class="md-caption era-caption">(From era {{startEra}} to era {{endEra}})</span></div>
+          <div><span class="md-caption era-caption">(From <i>{{startDate}}</i> to <i>{{endDate}}</i>)</span></div>
         </md-table-cell>
       </md-table-row>
     </md-table>
-    <div class="md-title stash-info-title">Era Rewards</div>
-    <md-table v-model="eraRewards" class="era-reward-table" md-card>
-      <md-table-row slot="md-table-row" slot-scope="{ item }">
-        <md-table-cell md-label="Era" md-sort-by="era" md-numeric>{{ item.era }}</md-table-cell>
-        <md-table-cell md-label="Amount" md-sort-by="amount" md-numeric>{{ item.amount.toFixed(4) }} {{coinName}}</md-table-cell>
-      </md-table-row>
-    </md-table>
+    <div class='md-layout md-alignment-top table'>
+      <div class='md-layout-item md-medium-size-55 md-medium-size-90 md-xsmall-size-90' v-bind:class="[ $isMobile() ? 'era-reward-table-mobile' : 'era-reward-table']">
+        <div class="md-title stash-info-title">Era Rewards</div>
+        <md-table  v-model="eraRewards" md-card>
+          <md-table-row slot="md-table-row" slot-scope="{ item }">
+            <md-table-cell width="20%" md-label="Era" md-sort-by="era" md-numeric>{{ item.era }}</md-table-cell>
+            <md-table-cell width="20%" md-label="Payout Date" md-sort-by="era">{{ item.date }}</md-table-cell>
+            <md-table-cell md-label="Amount" md-sort-by="amount" md-numeric>{{ item.amount.toFixed(4) }} {{coinName}}</md-table-cell>
+          </md-table-row>
+        </md-table>
+      </div>
+      <div class='md-layout-item md-medium-size-35 md-medium-size-90 md-xsmall-size-90 charts'>
+        <reward-chart v-bind:eraRewards="eraRewards.slice().reverse()" v-bind:series="'weekly'" v-bind:coinName="coinName"/>
+      </div>
+    </div>
   </div>
   <div v-else>
     <md-empty-state class="empty-state-view"
@@ -61,6 +69,8 @@
 <script>
 const Yaohsin = require('../../scripts/yaohsin');
 import Identicon from '@polkadot/vue-identicon';
+import moment from 'moment';
+import RewardChart from './rewardChart.vue';
 export default {
   name: 'RewardQuerier',
   mounted: function() {
@@ -87,8 +97,8 @@ export default {
       isStashValid: false,
       stash: '',
       totalRewards: 0,
-      startEra: 0,
-      endEra: 0,
+      startDate: 0,
+      endDate: 0,
       inDelay: false,
       historicalQuery: [],
       showSnakeBar: false,
@@ -122,37 +132,45 @@ export default {
       localStorage.setItem(this.localStorageKey, JSON.stringify(queried));
     },
     calcTotalRewards(eraRewards) {
-      this.startEra = 0;
-      this.endEra = 0;
+      this.startDate = 0;
+      this.endDate = 0;
       this.totalRewards = eraRewards.eraRewards.reduce((acc, era)=>{
         acc += era.amount;
         return acc;
       }, 0);
-      eraRewards.eraRewards.map((era)=>{
-        if(era.era < this.startEra || this.startEra === 0) {
-          this.startEra = era.era
+
+      eraRewards.eraRewards.map((reward)=>{
+        if(reward.timestamp < this.startDate || this.startDate === 0) {
+          this.startDate = reward.timestamp;
         }
-        if(era.era > this.endEra || this.endEra === 0) {
-          this.endEra = era.era
+        if(reward.timestamp > this.endDate || this.endDate === 0) {
+          this.endDate = reward.timestamp;
         }
       });
+      this.startDate = moment(this.startDate).format('L');
+      this.endDate = moment(this.endDate).format('L');
     },
     mergeEraRewards(eraRewards) {
       const _eraRewards = {};
       eraRewards.map((reward)=>{
         if(_eraRewards[reward.era] === undefined){
-          _eraRewards[reward.era] = reward.amount;
+          _eraRewards[reward.era] = {
+            amount: reward.amount,
+            timestamp: reward.timestamp,
+          }
         } else {
-          _eraRewards[reward.era] += reward.amount;
+          _eraRewards[reward.era].amount += reward.amount;
         }
       });
-      const result = [];
+      let result = [];
       Object.keys(_eraRewards).map((era)=>{
         result.push({
           era: era,
-          amount: _eraRewards[era],
+          amount: _eraRewards[era].amount,
+          date: moment(_eraRewards[era].timestamp).format('L'),
         })
       });
+      result.reverse();
       return result;
     }
   },
@@ -187,29 +205,49 @@ export default {
   },
   components: {
     Identicon,
+    RewardChart,
   },
 }
 </script>
+    RewardChart
 
 <style lang="scss" scoped>
+tr:nth-child(even){
+  background-color:#fafafa;
+}
+tr:nth-child(odd){
+  background-color: #e7e7e7;
+}
 .stash-info-title {
   text-align: left;
   padding-bottom: 12px;
   padding-top: 32px;
-  margin-left: 32px;
 }
 #reward-querier {
   min-height: 88vh;
 }
+.charts {
+  padding-left: 32px;
+  padding-top: 32px;
+}
+.table {
+  padding-left: 32px;
+}
+
 .general-info-table {
   margin-left: 32px;
   margin-right: 32px;
 }
 
-.era-reward-table {
+.general-info-table-mobile {
   margin-left: 32px;
   margin-right: 32px;
 }
+
+.era-reward-table {
+  min-width: 60vw;
+}
+
 .empty-state-view {
   position: absolute;
   top: 50%;
