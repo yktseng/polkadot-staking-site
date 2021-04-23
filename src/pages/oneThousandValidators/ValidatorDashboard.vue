@@ -3,41 +3,64 @@
     <md-progress-bar md-mode="query" v-if="showProgressBar"></md-progress-bar>
     <p v-if="showProgressBar">Loading Nominator Info...</p>
     
-    <div class="info-panel md-layout">
-      <div class="info-text md-layout-item">
-        <div id="stash-name" class=md-title>{{this.displayName || this.stash}}</div>
-        <md-divider/>
-        <md-table md-card class="stash-info">
-          <md-table-row>
-            <md-table-cell>Stash ID</md-table-cell>
-            <md-table-cell>
-            <Identicon class="ident-icon" @click.native="copy(stash)"
+    <div class="info-panel">
+      <div class="d-flex info-text pt-4 pb-2 header-card">
+        <Identicon class="ident-icon align-center ml-4" @click.native="copy(stash)"
               :size="32"
               :theme="'polkadot'"
               :value="stash"
-            />
-            <div id="validator-id">{{stash}}</div>
-            </md-table-cell>
-          </md-table-row>
-          <md-table-row>
-            <md-table-cell class="validator-info">Total Nomination Amount </md-table-cell> 
-            <md-table-cell style="color: #5f6368">{{inactiveKSM}} {{coinName}}</md-table-cell>
-          </md-table-row>
-          <md-table-row>
-            <md-table-cell class="validator-info">Commission </md-table-cell> 
-            <md-table-cell style="color: #5f6368">{{eraCommission.toFixed(1)}}%</md-table-cell>
-          </md-table-row>
-          <md-table-row>
-            <md-table-cell class="unclaim-eras">Unclaimed Payout Eras </md-table-cell> 
-            <md-table-cell style="color: #5f6368">{{unclaimedEraString}}</md-table-cell>
-          </md-table-row>
-        </md-table>
+        />
+        <div id="stash-name" class="md-title">{{this.displayName || this.stash}}</div>
       </div>
-      <apexchart id="nomination-trend" ref="nomination-trend" width="500" type="line" :options="options" :series="series" class="md-layout-item"></apexchart>
-      <apexchart id="apy-trend" ref="apy-trend" width="500" type="line" :options="apyOptions" :series="apySeries" class="md-layout-item"></apexchart>
+        <md-divider/>
+        <div class="d-sm-flex mb-4 mt-4">
+          <v-card class='elevation-4 info-card'>
+          <v-simple-table>
+            <template v-slot:default>
+              <tbody>
+                <tr>
+                  <td style="text-align: left">Stash ID</td>
+                  <td>
+                    <div class="d-flex flex-row">
+                      <div v-if="!$isMobile()" style="font-size: 8px">{{stash}}</div>
+                      <div v-else class="align-self-center ml-2">{{stash.substr(0, 5) + '......' + stash.substr(stash.length - 5)}}</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="text-align: left">Total Nomination Amount</td>
+                  <td>
+                    <div class="d-flex flex-row">
+                      {{inactiveKSM}} {{coinName}}
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="text-align: left">Commission</td>
+                  <td>
+                    <div class="d-flex flex-row">
+                      {{eraCommission.toFixed(1)}}%
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="text-align: left">Unclaimed Payout Eras</td>
+                  <td>
+                    <div class="d-flex flex-row">
+                      {{unclaimedEraString}}
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </template>
+          </v-simple-table>
+          </v-card>
+        <apexchart id="nomination-trend" ref="nomination-trend" width="410px" type="line" :options="options" :series="series"></apexchart>
+        <apexchart id="apy-trend" ref="apy-trend" width="410px" type="line" :options="apyOptions" :series="apySeries"></apexchart>\
+        </div>
     </div>
     <div class="nominator-list">
-      <md-toolbar md-elevation="0" md-theme-dark class="md-dense"> <h3 class="md-title">Active Nominators</h3></md-toolbar>
+      <div class="header-card elevation-2 pt-4 pb-4 pl-4"> <h3 class="md-title">Active Nominators</h3></div>
       <div class="nominator-block">
         <div class="nominator" v-for="(nominator, index) in activeNominators" :key="index">
           <Identicon class="ident-icon" @click.native="copy(nominator.address)"
@@ -57,7 +80,7 @@
         </div>
       </div>
 
-      <md-toolbar md-elevation="0" md-theme-dark class="md-dense"> <h3 class="md-title">Inactive Nominators</h3></md-toolbar>
+      <div class="header-card elevation-2 pt-4 pb-4 pl-4"> <h3 class="md-title">Inactive Nominators</h3></div>
       <div class="nominator-block">
         <div class="nominator" v-for="(nominator, index) in inactiveNominators" :key="index">
           <Identicon class="ident-icon" @click.native="copy(nominator.address)"
@@ -379,23 +402,29 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
+
+.info-card {
+  background-color: #fafafa;
+}
+.header-card {
+  background-color:#293031;
+  color: #fafafa;
+}
 .stash-info {
   margin-left: 16px;
 }
 #validatorStatus {
+  min-height: 88vh;
+  background-color: #fafafa;
+}
+.info-panel {
+  background-color: #fafafa;
 }
 .nominator-list {
   text-align: left;
-  padding-top: 20px;
 }
 .info-text {
-  vertical-align: top;
-  display: inline-block;
-}
-.info-panel {
-  padding-top: 30px;
-  text-align: left;
-  vertical-align: top;
+  vertical-align: center;
 }
 #nomination-trend {
   display: inline-block;
@@ -432,7 +461,20 @@ export default {
   padding-left: 24px;
   padding-bottom: 20px;
 }
-tr {
-  background-color:#fafafa;
-}
+::v-deep tbody tr:nth-of-type(even) {
+    background-color: #e1e2e3;
+  }
+
+  ::v-deep tbody tr:nth-of-type(odd) {
+    background-color: #fafafa;
+  }
+
+  ::v-deep .v-data-table-header {
+    background-color: #e1e2e3;
+
+  }
+
+  ::v-deep .v-data-footer {
+    background-color: #fafafa;
+  }
 </style>

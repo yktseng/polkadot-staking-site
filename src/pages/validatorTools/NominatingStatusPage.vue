@@ -1,7 +1,14 @@
 <template>
   <div id="nominatingStatus">
-    <md-progress-bar md-mode="query" v-if="showProgressBar"></md-progress-bar>
-    <md-toolbar class="md-primary md-dense" v-if="showTooltips">
+    <v-layout class="pt-8" v-if="showProgressBar" justify-center align-center>
+      <v-progress-circular 
+      indeterminate
+      color=#61ba89
+      v-if="showProgressBar">
+      </v-progress-circular>
+    </v-layout>
+    
+    <md-toolbar class="md-primary md-dense" v-if="showTooltips && !showProgressBar">
         <h4 class="md-dense" v-if="randomSeed < 0.7">
           Tips: Click on each card to see detailed information of the validator. Click <md-icon>favorite</md-icon> to put your interested validators to the top
         </h4>
@@ -317,6 +324,10 @@ export default {
   max-width: 600px;
   height: 40px;
   vertical-align: middle;
+}
+#nominatingStatus {
+  min-height: 88vh;
+  background-color: #fafafa;
 }
 
 </style>

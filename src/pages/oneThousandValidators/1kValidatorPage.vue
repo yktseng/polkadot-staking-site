@@ -23,25 +23,25 @@
         }"
         :mobile-breakpoint=0
         class="elevation-2 era-reward-table mb-4">
-        <template v-slot:item.dashboard="{ item }">
+        <template v-slot:[`item.dashboard`]="{ item }">
           <md-button @click="onClickAnalytic(item.stash)"><md-icon>analytics</md-icon></md-button>
         </template>
-        <template v-slot:item.commission="{ item }">
+        <template v-slot:[`item.commission`]="{ item }">
           {{ item.commissionZero? 0 : (item.commission / 10000000).toFixed(1) }} %
         </template>
-        <template v-slot:item.stakeSize="{ item }">
+        <template v-slot:[`item.stakeSize`]="{ item }">
           {{ Number.parseFloat(item.stakeSize / 1000000000000).toFixed(3) }} KSM
         </template>
-        <template v-slot:item.elected="{ item }">
+        <template v-slot:[`item.elected`]="{ item }">
           <md-icon v-if="item.elected === true" class="nominated">check</md-icon>
           <md-icon v-if="item.elected === false" class="waiting">close</md-icon>
         </template>
-        <template v-slot:item.oneKVNominated="{ item }">
+        <template v-slot:[`item.oneKVNominated`]="{ item }">
           <md-icon v-if="item.oneKVNominated === true" class="nominated onekv-nominated-cell">check</md-icon>
           <div v-if="item.oneKVNominated === true" class="onekv-nominated-cell">({{item.nominatedFor}})</div>
           <md-icon v-if="item.oneKVNominated === false" class="waiting">close</md-icon>
         </template>
-        <template v-slot:item.electedRate="{ item }">
+        <template v-slot:[`item.electedRate`]="{ item }">
           {{ Number.parseFloat(item.electedRate * 100).toFixed(2) }} %
         </template>
       </v-data-table>
@@ -213,7 +213,7 @@ export default {
   }
   
   ::v-deep tbody tr:nth-of-type(even) {
-    background-color: #d1d2d3;
+    background-color: #fafafa;
   }
 
   ::v-deep tbody tr:nth-of-type(odd) {
@@ -221,15 +221,15 @@ export default {
   }
 
   ::v-deep .v-data-table-header {
-    background-color: #e1e2e3;
+    background-color: #fafafa;
 
   }
 
   ::v-deep .v-data-footer {
-    background-color: #e1e2e3;
+    background-color: #fafafa;
   }
 
-  .theme--light.v-data-table thead tr th {
+  ::v-deep .theme--light.v-data-table thead tr th {
     color: #fafafa;
   }
 </style>

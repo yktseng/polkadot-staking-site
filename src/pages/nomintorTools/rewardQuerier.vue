@@ -241,6 +241,7 @@ export default {
 }
 #reward-querier {
   min-height: 88vh;
+  background-color: #fafafa;
 }
 .charts {
   padding-top: 32px;
