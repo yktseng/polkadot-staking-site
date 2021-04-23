@@ -9,7 +9,7 @@ import VueMaterialSlider from 'vue-material-slider';
 import VueApexCharts from 'vue-apexcharts'
 import VueClipboard from 'vue-clipboard2'
 import VueMobileDetection from "vue-mobile-detection";
-
+import vuetify from './plugins/vuetify'
  
 Vue.use(VueClipboard)
 Vue.use(VueApexCharts)
@@ -58,4 +58,5 @@ const router = new VueRouter({
 new Vue({
   render: h => h(App),
   router: router,
+  vuetify,
 }).$mount('#app')

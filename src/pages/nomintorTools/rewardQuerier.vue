@@ -11,42 +11,53 @@
       </div>
   </md-toolbar>
   <div v-if="isStashValid" class="content">
-    <div class="md-title stash-info-title" style="margin-left:32px">Stash Information</div>
-    <md-table class="general-info-table" md-card>
-      <md-table-row>
-        <md-table-cell>Stash ID</md-table-cell>
-        <md-table-cell>
-        <div>
-        <Identicon class="ident-icon" @click.native="copy(stash)"
-          :size="32"
-          :theme="'polkadot'"
-          :value="stash"
-        />
-        <div v-if="$isMobile()" id="validator-id">{{stash.substr(0, 5) + '......' + stash.substr(stash.length - 5)}}</div>
-        <div v-else id="validator-id">{{stash}}</div>
-        </div>
-        </md-table-cell>
-      </md-table-row>
-       <md-table-row>
-        <md-table-cell>Total Rewards</md-table-cell>
-        <md-table-cell>
-          <div class='total-rewards'>{{totalRewards.toFixed(4)}} {{coinName}}</div>
-          <div><span class="md-caption era-caption">(From <i>{{startDate}}</i> to <i>{{endDate}}</i>)</span></div>
-        </md-table-cell>
-      </md-table-row>
-    </md-table>
-    <div class='md-layout md-alignment-top table'>
-      <div class='md-layout-item md-medium-size-55 md-medium-size-90 md-xsmall-size-90' v-bind:class="[ $isMobile() ? 'era-reward-table-mobile' : 'era-reward-table']">
-        <div class="md-title stash-info-title">Era Rewards</div>
-        <md-table  v-model="eraRewards" md-card>
-          <md-table-row slot="md-table-row" slot-scope="{ item }">
-            <md-table-cell width="20%" md-label="Era" md-sort-by="era" md-numeric>{{ item.era }}</md-table-cell>
-            <md-table-cell width="20%" md-label="Payout Date" md-sort-by="era">{{ item.date }}</md-table-cell>
-            <md-table-cell md-label="Amount" md-sort-by="amount" md-numeric>{{ item.amount.toFixed(4) }} {{coinName}}</md-table-cell>
-          </md-table-row>
-        </md-table>
+    <div class="md-title pt-8 pb-2 stash-info-title">Stash Information</div>
+    <v-simple-table class="elevation-2">
+      <template v-slot:default>
+        <tbody>
+          <tr>
+            <td>Stash ID</td>
+            <td>
+              <div class="d-flex flex-row">
+                <div>
+                  <Identicon class="ident-icon" @click.native="copy(stash)"
+                  :size="32"
+                  :theme="'polkadot'"
+                  :value="stash" />
+                </div>
+                <div v-if="!$isMobile()" class="align-self-center ml-2">{{stash}}</div>
+                <div v-else class="align-self-center ml-2">{{stash.substr(0, 5) + '......' + stash.substr(stash.length - 5)}}</div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Total Rewards</td>
+            <td>
+              <div class="d-flex flex-row">
+                <div class='total-rewards'>{{totalRewards.toFixed(4)}} {{coinName}}</div>
+                <div><span class="md-caption era-caption">(From <i>{{startDate}}</i> to <i>{{endDate}}</i>)</span></div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </template>
+    </v-simple-table>
+    <div class='md-layout md-alignment-top md-gutter'>
+      <div class='md-layout-item md-medium-size-55 md-medium-size-100 md-xsmall-size-100'>
+        <div class="md-title md-title pt-8 pb-2 stash-info-title">Era Rewards</div>
+        <v-data-table
+          :headers="eraRewardHeaders"
+          :items="eraRewards"
+          :items-per-page="10"
+          :footer-props="{
+            'items-per-page-options': itemsPerPageOptions,
+          }"
+          :dense=true
+          :mobile-breakpoint=0
+          class="elevation-2 era-reward-table mb-4">
+        </v-data-table>
       </div>
-      <div class='md-layout-item md-medium-size-35 md-medium-size-90 md-xsmall-size-90 charts'>
+      <div class='md-layout-item md-medium-size-35 md-medium-size-100 md-xsmall-size-100 charts'>
         <reward-chart v-bind:eraRewards="eraRewards.slice().reverse()" v-bind:series="'weekly'" v-bind:coinName="coinName"/>
       </div>
     </div>
@@ -104,6 +115,16 @@ export default {
       showSnakeBar: false,
       eraRewards: [],
       localStorageKey: 'queriedStashes',
+
+      itemsPerPageOptions: [10, 20, 50, -1],
+      eraRewardHeaders: [
+        {
+          text: 'Era',
+          value: 'era',
+        },
+        { text: 'Payout Date', value: 'date' },
+        { text: 'Amount', value: 'amount' },
+      ],
     }
   },
   methods: {
@@ -212,12 +233,7 @@ export default {
     RewardChart
 
 <style lang="scss" scoped>
-tr:nth-child(even){
-  background-color:#fafafa;
-}
-tr:nth-child(odd){
-  background-color: #e7e7e7;
-}
+
 .stash-info-title {
   text-align: left;
   padding-bottom: 12px;
@@ -227,21 +243,7 @@ tr:nth-child(odd){
   min-height: 88vh;
 }
 .charts {
-  padding-left: 32px;
   padding-top: 32px;
-}
-.table {
-  padding-left: 32px;
-}
-
-.general-info-table {
-  margin-left: 32px;
-  margin-right: 32px;
-}
-
-.general-info-table-mobile {
-  margin-left: 32px;
-  margin-right: 32px;
 }
 
 .era-reward-table {
@@ -261,10 +263,6 @@ tr:nth-child(odd){
   height: 40px;
   vertical-align: middle;
 }
-.content {
-  padding-top: 32px;
-  padding-bottom: 32px;
-}
 .ident-icon {
   display: inline-block;
   cursor: copy;
@@ -282,4 +280,21 @@ tr:nth-child(odd){
 .total-reward {
   display: inline-block;
 }
+
+  ::v-deep tbody tr:nth-of-type(even) {
+    background-color: #e1e2e3;
+  }
+
+  ::v-deep tbody tr:nth-of-type(odd) {
+    background-color: #fafafa;
+  }
+
+  ::v-deep .v-data-table-header {
+    background-color: #e1e2e3;
+
+  }
+
+  ::v-deep .v-data-footer {
+    background-color: #fafafa;
+  }
 </style>

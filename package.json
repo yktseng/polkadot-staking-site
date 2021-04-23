@@ -27,7 +27,8 @@
     "vue-meta": "^2.4.0",
     "vue-meta-info": "^0.1.7",
     "vue-mobile-detection": "^1.0.0",
-    "vue-router": "^3.4.9"
+    "vue-router": "^3.4.9",
+    "vuetify": "^2.4.11"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
@@ -35,11 +36,13 @@
     "@vue/cli-service": "~4.5.0",
     "anymatch": "^3.1.1",
     "babel-eslint": "^10.1.0",
+    "deepmerge": "^4.2.2",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
-    "sass": "^1.30.0",
-    "sass-loader": "^10.1.0",
+    "sass": "^1.32.8",
+    "sass-loader": "^10.1.1",
     "vue-template-compiler": "^2.6.11",
+    "vuetify-loader": "^1.7.2",
     "webpack": "^4.44.2"
   },
   "eslintConfig": {
