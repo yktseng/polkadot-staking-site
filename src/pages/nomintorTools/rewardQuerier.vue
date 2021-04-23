@@ -11,8 +11,8 @@
       </div>
   </md-toolbar>
   <div v-if="isStashValid" class="content">
-    <div class="md-title pt-8 pb-2 stash-info-title">Stash Information</div>
-    <v-simple-table class="elevation-2">
+    <div class="md-title stash-info-title mt-2 pt-4 pb-4 pl-4 header-card-light">Stash Information</div>
+    <v-simple-table class="elevation-2 mt-4 mb-8">
       <template v-slot:default>
         <tbody>
           <tr>
@@ -44,7 +44,7 @@
     </v-simple-table>
     <div class='md-layout md-alignment-top md-gutter'>
       <div class='md-layout-item md-medium-size-55 md-medium-size-100 md-xsmall-size-100'>
-        <div class="md-title md-title pt-8 pb-2 stash-info-title">Era Rewards</div>
+        <div class="md-title stash-info-title pt-4 pb-4 pl-4 header-card-light">Era Rewards</div>
         <v-data-table
           :headers="eraRewardHeaders"
           :items="eraRewards"
@@ -54,7 +54,7 @@
           }"
           :dense=true
           :mobile-breakpoint=0
-          class="elevation-2 era-reward-table mb-4">
+          class="elevation-2 era-reward-table mb-4 mt-4">
         </v-data-table>
       </div>
       <div class='md-layout-item md-medium-size-35 md-medium-size-100 md-xsmall-size-100 charts'>
@@ -236,8 +236,6 @@ export default {
 
 .stash-info-title {
   text-align: left;
-  padding-bottom: 12px;
-  padding-top: 32px;
 }
 #reward-querier {
   min-height: 88vh;
@@ -297,5 +295,13 @@ export default {
 
   ::v-deep .v-data-footer {
     background-color: #fafafa;
+  }
+  .header-card {
+  background-color:#293031;
+  color: #fafafa;
+  }
+  .header-card-light {
+    background-color:#61ba89;
+    color: #fafafa;
   }
 </style>

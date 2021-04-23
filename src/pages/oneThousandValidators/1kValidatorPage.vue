@@ -6,7 +6,7 @@
     <div v-if="readyToDisplay && !isError">
       <v-card class="pt-4 pb-2 mb-4 elevation-2 header-card">
         
-        <div class="headline ma-2"><span style="color:#61ba89">Kusama One Thousand Validator Monitor</span></div>
+        <div class="headline ma-2"><span style="color:#fafafa">Kusama One Thousand Validator Monitor</span></div>
         <div class="d-inline-flex">
         <div class="heading-6 ma-2 mb-2"><span style="color:#61ba89" class="mr-2">Total validators: </span>{{oneKVStatus.length}}</div>
         <!--<p>Total nominators: {{currentNominatingStatus.nominators.length}}</p>-->
@@ -28,9 +28,6 @@
         </template>
         <template v-slot:[`item.commission`]="{ item }">
           {{ item.commissionZero? 0 : (item.commission / 10000000).toFixed(1) }} %
-        </template>
-        <template v-slot:[`item.stakeSize`]="{ item }">
-          {{ Number.parseFloat(item.stakeSize / 1000000000000).toFixed(3) }} KSM
         </template>
         <template v-slot:[`item.elected`]="{ item }">
           <md-icon v-if="item.elected === true" class="nominated">check</md-icon>
@@ -101,12 +98,11 @@ export default {
         },
         { text: 'Name', value: 'name', align: 'center'},
         { text: 'Commission', value: 'commission', align: 'right'},
-        { text: 'Total Nominators', value: 'totalNominators', align: 'right d-none d-lg-table-cell' },
-        { text: 'Active Nominators', value: 'activeNominators', align: 'right d-none d-lg-table-cell' },
-        { text: 'Self Stash', value: 'stakeSize', align: 'right d-none d-lg-table-cell' },
         { text: 'Active', value: 'elected', align: 'center'},
         { text: '1KV Nominated (Nominated For)', value: 'oneKVNominated', align: 'center'},
         { text: 'Nomination Order', value: 'order', align: 'right' },
+        { text: 'Total Nominators', value: 'totalNominators', align: 'right d-none d-lg-table-cell' },
+        { text: 'Active Nominators', value: 'activeNominators', align: 'right d-none d-lg-table-cell' },
         { text: 'Rank', value: 'rank', align: 'right d-none d-lg-table-cell' },
         { text: 'Elected Rate', value: 'electedRate', align: 'right' },
       ],

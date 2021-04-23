@@ -4,29 +4,31 @@
     <p v-if="showProgressBar">Loading Nominator Info...</p>
     
     <div class="info-panel">
-      <div class="d-flex info-text pt-4 pb-2 header-card">
+      <div class="d-flex flex-row info-text pt-4 pb-2 header-card-light">
         <Identicon class="ident-icon align-center ml-4" @click.native="copy(stash)"
               :size="32"
               :theme="'polkadot'"
               :value="stash"
         />
-        <div id="stash-name" class="md-title">{{this.displayName || this.stash}}</div>
+        <div class="ml-4 align-center title">{{this.displayName || this.stash}}</div>
+        <!--<div class="d-none d-lg-flex ml-8 title" v-if="displayName !== stash">{{stash}}</div>-->
       </div>
         <md-divider/>
-        <div class="d-sm-flex mb-4 mt-4">
+        <div class="d-sm-flex-column d-md-flex mb-4 mt-4 ">
           <v-card class='elevation-4 info-card'>
           <v-simple-table>
             <template v-slot:default>
-              <tbody>
+              <thead>
                 <tr>
-                  <td style="text-align: left">Stash ID</td>
-                  <td>
-                    <div class="d-flex flex-row">
-                      <div v-if="!$isMobile()" style="font-size: 8px">{{stash}}</div>
-                      <div v-else class="align-self-center ml-2">{{stash.substr(0, 5) + '......' + stash.substr(stash.length - 5)}}</div>
-                    </div>
-                  </td>
+                  <th class="text-left">
+                    
+                  </th>
+                  <th class="text-left">
+
+                  </th>
                 </tr>
+              </thead>
+              <tbody>
                 <tr>
                   <td style="text-align: left">Total Nomination Amount</td>
                   <td>
@@ -55,12 +57,16 @@
             </template>
           </v-simple-table>
           </v-card>
-        <apexchart id="nomination-trend" ref="nomination-trend" width="410px" type="line" :options="options" :series="series"></apexchart>
-        <apexchart id="apy-trend" ref="apy-trend" width="410px" type="line" :options="apyOptions" :series="apySeries"></apexchart>\
+          <v-card class="ml-md-4 mt-sm-4">
+            <apexchart id="nomination-trend" ref="nomination-trend" width="380px" type="line" :options="options" :series="series"></apexchart>
+          </v-card>
+          <v-card class="ml-md-4 mt-sm-4">
+            <apexchart id="apy-trend" ref="apy-trend" width="380px" type="line" :options="apyOptions" :series="apySeries"></apexchart>
+          </v-card>
         </div>
     </div>
     <div class="nominator-list">
-      <div class="header-card elevation-2 pt-4 pb-4 pl-4"> <h3 class="md-title">Active Nominators</h3></div>
+      <div class="header-card-light elevation-2 pt-4 pb-4 pl-4"> <h3 class="md-title">Active Nominators</h3></div>
       <div class="nominator-block">
         <div class="nominator" v-for="(nominator, index) in activeNominators" :key="index">
           <Identicon class="ident-icon" @click.native="copy(nominator.address)"
@@ -80,7 +86,7 @@
         </div>
       </div>
 
-      <div class="header-card elevation-2 pt-4 pb-4 pl-4"> <h3 class="md-title">Inactive Nominators</h3></div>
+      <div class="header-card elevation-2 mt-4 pt-4 pb-4 pl-4"> <h3 class="md-title">Inactive Nominators</h3></div>
       <div class="nominator-block">
         <div class="nominator" v-for="(nominator, index) in inactiveNominators" :key="index">
           <Identicon class="ident-icon" @click.native="copy(nominator.address)"
@@ -154,7 +160,7 @@ export default {
             title: {
               text: "Nominator Count",
               style: {
-                color: '#008FFB',
+                color: '#6166BA',
               }
             },
             seriesName: 'Nominator Count'
@@ -171,7 +177,7 @@ export default {
             title: {
               text: "Commission (%)",
               style: {
-                color: '#FEB019',
+                color: '#BAB661',
               }
             },
             seriesName: 'Commission'
@@ -180,13 +186,16 @@ export default {
       },
       series: [{
         name: 'Nominator Count',
-        data: this.nominatorCounts
+        data: this.nominatorCounts,
+        color: '#6166BA'
       }, {
         name: 'Nominated',
         data: this.exposures,
+        color: '#61BA89'
       }, {
         name: 'Commission',
         data: this.commisions,
+        color: '#BAB661'
       }],
       apyOptions: {
         chart: {
@@ -208,7 +217,7 @@ export default {
             title: {
               text: "APY(%)",
               style: {
-                color: '#008FFB',
+                color: '#61BA89',
               }
             },
             seriesName: 'APY'
@@ -217,7 +226,8 @@ export default {
       },
       apySeries: [{
         name: 'APY',
-        data: this.apyTrend
+        data: this.apyTrend,
+        color: '#61BA89',
       }]
     }
   },
@@ -408,6 +418,10 @@ export default {
 }
 .header-card {
   background-color:#293031;
+  color: #fafafa;
+}
+.header-card-light {
+  background-color:#61ba89;
   color: #fafafa;
 }
 .stash-info {

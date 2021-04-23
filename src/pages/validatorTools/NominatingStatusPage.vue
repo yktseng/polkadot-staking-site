@@ -8,7 +8,7 @@
       </v-progress-circular>
     </v-layout>
     
-    <md-toolbar class="md-primary md-dense" v-if="showTooltips && !showProgressBar">
+    <md-toolbar class="md-primary md-dense toolbar" v-if="showTooltips && !showProgressBar">
         <h4 class="md-dense" v-if="randomSeed < 0.7">
           Tips: Click on each card to see detailed information of the validator. Click <md-icon>favorite</md-icon> to put your interested validators to the top
         </h4>
@@ -329,5 +329,7 @@ export default {
   min-height: 88vh;
   background-color: #fafafa;
 }
-
+.toolbar {
+  background-color: #61ba89 !important;
+}
 </style>
