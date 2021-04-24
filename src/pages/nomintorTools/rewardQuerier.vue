@@ -61,6 +61,20 @@
         <reward-chart v-bind:eraRewards="eraRewards.slice().reverse()" v-bind:series="'weekly'" v-bind:coinName="coinName"/>
       </div>
     </div>
+    <div class="md-title stash-info-title pt-4 pb-4 pl-4 header-card-light">Nominated Validators</div>
+      <div class='card-container' v-for="(validator, index) in validators" :key="index">
+        <validator-card v-bind:displayName="validator.identity.display || validator.id" v-bind:activeKSM="validator.activeKSM || 0"
+        v-bind:allKSM="validator.inactiveKSM || 0"
+        v-bind:stash="validator.id"
+        v-bind:nominators="validator.info.nominators"
+        v-bind:commission="validator.info.commission"
+        v-bind:isLoading="validator.isLoading"
+        v-bind:favorite.sync="validator.isMissing"
+        v-bind:apy="validator.info.apy"
+        v-bind:commissionChange="commissionChange(validator)"
+        v-bind:stalePayouts="validator.info.unclaimed_eras.length >= 20"
+        v-bind:coinName="coinName"/>
+    </div>
   </div>
   <div v-else>
     <md-empty-state class="empty-state-view"
@@ -82,6 +96,8 @@ const Yaohsin = require('../../scripts/yaohsin');
 import Identicon from '@polkadot/vue-identicon';
 import moment from 'moment';
 import RewardChart from './rewardChart.vue';
+import ValidatorCard from '../validatorTools/ValidatorCard';
+const constants = require('../../scripts/constants');
 export default {
   name: 'RewardQuerier',
   mounted: function() {
@@ -115,6 +131,7 @@ export default {
       showSnakeBar: false,
       eraRewards: [],
       localStorageKey: 'queriedStashes',
+      validators: [],
 
       itemsPerPageOptions: [10, 20, 50, -1],
       eraRewardHeaders: [
@@ -193,6 +210,12 @@ export default {
       });
       result.reverse();
       return result;
+    },
+    commissionChange: function(validator) {
+      if(validator.statusChange !== undefined) {
+        return validator.statusChange.commission;
+      }
+      return 0;
     }
   },
   watch: {
@@ -222,18 +245,37 @@ export default {
         this.showSnakeBar = true;
         this.isStashValid = false;
       }
+      this.validators = await this.yaohsin.getNominatedValidators(stash, {coin: this.coinName});
+      for(let i = 0; i < this.validators.length; i++) {
+        const v = this.validators[i];
+        v.activeKSM = parseInt(v.info.exposure.total) / (this.coinName === 'DOT'? constants.POLKADOT_DECIMAL: constants.KUSAMA_DECIMAL);
+        v.inactiveKSM = v.info.nominators.reduce((acc, v_)=>{
+          acc += (parseInt(v_.balance.lockedBalance) / (this.coinName === 'DOT'? constants.POLKADOT_DECIMAL: constants.KUSAMA_DECIMAL));
+          return acc;
+        }, 0);
+      }
     }
   },
   components: {
     Identicon,
     RewardChart,
+    ValidatorCard,
   },
 }
 </script>
     RewardChart
 
 <style lang="scss" scoped>
-
+.card-container {
+    width: 8%;
+    min-width: 250px;
+    margin-top: 12px;
+    margin-bottom: 10px;
+    position: relative;
+    display: inline-block;
+    background-color:#404b55;
+    vertical-align: top;
+  }
 .stash-info-title {
   text-align: left;
 }

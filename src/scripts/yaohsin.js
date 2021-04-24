@@ -49,6 +49,24 @@ class Yaohsin {
     }
   }
 
+  async getNominatedValidators(stash, options) {
+    console.log(options);
+    if(options === undefined) {
+      options = {
+        coin: 'KSM',
+      };
+    }
+    let url = `${path}/api`;
+    if(options.coin === 'DOT') {
+      url += '/dot';
+    }
+    return axios.get(`${url}/nominated/stash/${stash}`).then((result)=>{
+      return result.data;
+    }).catch(()=>{
+      return [];
+    });
+  }
+
   async getOneKVList(params) {
     if(params === 'undefined') {
       params = {};
