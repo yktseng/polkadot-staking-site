@@ -4,14 +4,15 @@
     <p v-if="showProgressBar">Loading 1kv status...</p>
     <p v-if="isError">Fetching data from our server is failed. Please try again later</p>
     <div v-if="readyToDisplay && !isError">
-      <v-card class="pt-4 pb-2 mb-4 elevation-2 header-card">
+      <v-card class="pt-2 mb-4 elevation-2 header-card">
         
-        <div class="headline ma-2"><span style="color:#fafafa">Kusama One Thousand Validator Monitor</span></div>
-        <div class="d-inline-flex">
-        <div class="heading-6 ma-2 mb-2"><span style="color:#61ba89" class="mr-2">Total validators: </span>{{oneKVStatus.length}}</div>
+        <div class="pb-2"><img src="../../assets/1kv-logo.png" style="height:64px"/></div>
+        <div class="d-flex header-card justify-center">
+        <div class="heading-6 ma-2 mb-2"><span style="color:#61ba89" class="mr-2">Valid validators: </span>{{oneKVStatus.length}}</div>
         <!--<p>Total nominators: {{currentNominatingStatus.nominators.length}}</p>-->
-        <div class="heading-6 ma-2 mb-2"><span style="color:#61ba89" class="mr-2">Total active validators: </span>{{totalNominatedCount}}</div>
-        <div class="heading-6 ma-2 mb-2"><span style="color:#61ba89" class="mr-2">Total 1KV elected validators: </span>{{totalOneKvNominatedCount}}</div>
+        <div class="heading-6 ma-2 mb-2"><span style="color:#61ba89" class="mr-2">Active validators: </span>{{totalNominatedCount}}</div>
+        <div class="heading-6 ma-2 mb-2"><span style="color:#61ba89" class="mr-2">1KV Nominators: </span>{{totalOneKvNominatorCount}}</div>
+        <div class="heading-6 ma-2 mb-2"><span style="color:#61ba89" class="mr-2">1KV elected validators: </span>{{totalOneKvNominatedCount}}</div>
         </div>
       </v-card>
       <v-data-table
@@ -21,8 +22,24 @@
         :footer-props="{
           'items-per-page-options': itemsPerPageOptions,
         }"
-        :mobile-breakpoint=0
+        :search="search"
         class="elevation-2 era-reward-table mb-4">
+        <template v-slot:top>
+          <div class="d-flex align-center justify-start">
+            <v-text-field
+              v-model="search"
+              label="Search for Validator Name"
+              style="min-width: 400px;max-width:600px"
+              class="pl-2"
+            ></v-text-field>
+            <!-- <v-chip class="ml-4" @click="onClickActiveOnly" v-bind:class="{ 'v-chip-active': activeOnly }">
+              Active Only
+            </v-chip>
+            <v-chip class="ml-4" @click="onClick1kvNominatedOnly" v-bind:class="{ 'v-chip-active': oneKvNominatedOnly}">
+              1KV Nominated Only
+            </v-chip> -->
+          </div>
+        </template>
         <template v-slot:[`item.dashboard`]="{ item }">
           <md-button @click="onClickAnalytic(item.stash)"><md-icon>analytics</md-icon></md-button>
         </template>
@@ -42,35 +59,6 @@
           {{ Number.parseFloat(item.electedRate * 100).toFixed(2) }} %
         </template>
       </v-data-table>
-      <!-- <md-table class="onekvTable" v-model="oneKVStatus" md-sort="name" md-sort-order="asc" md-card>
-        <md-table-toolbar>
-          <h1 class="md-title">Kusama 1k validator info and status</h1>
-        </md-table-toolbar>
-        <md-table-row slot="md-table-row" slot-scope="{ item }">
-          <md-table-cell md-label="Validator Dashboard"><md-button @click="onClickAnalytic(item.stash)"><md-icon>analytics</md-icon></md-button></md-table-cell>
-          <md-table-cell>
-            <md-icon v-if="item.elected === true && item.oneKVNominated === false" class="waiting">celebration</md-icon>
-            <md-icon v-if="item.elected === false && item.oneKVNominated === true" class="nominated">mood_bad</md-icon>
-          </md-table-cell>-->
-          <!-- <md-table-cell md-label="Name" md-sort-by="name">{{ item.name }}</md-table-cell>
-          <md-table-cell md-label="Commission (%)" md-numeric md-sort-by="commission">{{ item.commissionZero? 0 : (item.commission / 10000000).toFixed(1)}}%</md-table-cell>
-          <md-table-cell md-label="Total Nominators" md-numeric md-sort-by="totalNominators">{{ item.totalNominators }}</md-table-cell>
-          <md-table-cell md-label="Active Nominators" md-numeric md-sort-by="activeNominators">{{ item.activeNominators }}</md-table-cell>
-          <md-table-cell md-label="Self Stash" md-numeric md-sort-by="stakeSize">{{ Number.parseFloat(item.stakeSize / 1000000000000).toFixed(3) }}</md-table-cell>-->
-          <!--<md-table-cell md-label="Active">
-            <md-icon v-if="item.elected === true" class="nominated">check</md-icon>
-            <md-icon v-if="item.elected === false" class="waiting">close</md-icon>
-          </md-table-cell>
-          <md-table-cell md-label="1KV Nominated (Nominated For)">
-            <md-icon v-if="item.oneKVNominated === true" class="nominated onekv-nominated-cell">check</md-icon>
-            <div v-if="item.oneKVNominated === true" class="onekv-nominated-cell">({{item.nominatedFor}})</div>
-            <md-icon v-if="item.oneKVNominated === false" class="waiting">close</md-icon>
-          </md-table-cell>
-          <md-table-cell class="nomination-order" md-label="Nomination Order" md-numeric md-sort-by="order">{{item.order}}</md-table-cell>
-          <md-table-cell md-label="rank" md-numeric md-sort-by="rank">{{ item.rank }}</md-table-cell>
-          <md-table-cell md-label="Elected Rate" md-numeric md-sort-by="electedRate">{{ Number.parseFloat(item.electedRate).toFixed(2) }}</md-table-cell>
-        </md-table-row>
-      </md-table> -->
     </div>
   </div>
 </template>
@@ -89,8 +77,12 @@ export default {
       totalNominatedCount: 0,
       totalElectedNominatorCount: 0,
       totalOneKvNominatedCount: 0,
+      totalOneKvNominatorCount: 0,
       isError: false,
 
+      activeOnly: false,
+      oneKvNominatedOnly: false,
+      search: '',
       itemsPerPageOptions: [10, 50, 100, -1],
       eraRewardHeaders: [
         {
@@ -120,6 +112,7 @@ export default {
     }
     const oneKVOfficial = await this.yaohsin.getOneKVOfficialNominators();
     const oneKVNominators = oneKVOfficial.nominators;
+    this.totalOneKvNominatorCount = oneKVNominators.length;
     this.totalValidatorCount = result.valid.length;
     this.totalNominatedCount = result.electedCount;
     this.oneKVStatus = result.valid;
@@ -146,6 +139,23 @@ export default {
     this.readyToDisplay = true;
   },
   methods: {
+    onClickActiveOnly: function() {
+      if(this.activeOnly) {
+        this.activeOnly = false;
+      } else {
+        this.activeOnly = true;
+        this.oneKvNominatedOnly = false;
+
+      }
+    },
+    onClick1kvNominatedOnly: function() {
+      if(this.oneKvNominatedOnly) {
+        this.oneKvNominatedOnly = false;
+      } else {
+        this.oneKvNominatedOnly = true;
+        this.activeOnly = false;
+      }
+    },
     onClickAnalytic: function(stash) {
       console.log(stash);
       let routeData = this.$router.resolve({path: 'validatorStatus', query: {stash: stash, coin: 'KSM'}});
@@ -207,6 +217,11 @@ export default {
     background-color:#293031;
     color: #fafafa;
   }
+
+  .header-card-light {
+    background-color:#61ba89;
+    color: #fafafa;
+  }
   
   ::v-deep tbody tr:nth-of-type(even) {
     background-color: #fafafa;
@@ -227,5 +242,9 @@ export default {
 
   ::v-deep .theme--light.v-data-table thead tr th {
     color: #fafafa;
+  }
+
+  .v-chip-active {
+    background-color: #61ba89 !important;
   }
 </style>
