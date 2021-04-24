@@ -3,12 +3,13 @@
     <md-card md-with-hover>
       <div @click="onClickCard">
       <md-card-media class="currency-img">
-        <img src="../assets/img/kusama-logo.svg" alt="KSM">
+        <img v-if="coinName === 'KSM'" src="../assets/img/kusama-logo.svg" alt="KSM">
+        <img v-if="coinName === 'DOT'" src="../assets/img/polkadot_logo.png" alt="DOT">
       </md-card-media>
 
       <md-card-header>
         <div class="md-title">{{displayName}}</div>
-        <div class="md-subhead">Status and Analysis</div>
+        <div class="md-subhead"></div>
       </md-card-header>
       </div>
     </md-card>
@@ -19,6 +20,7 @@
 export default {
   name: 'ToolCard',
   props: {
+    coinName: String,
     displayName: String,
     route: String
   },
@@ -44,7 +46,7 @@ export default {
     min-height: 268px;
     max-height: 268px;
     vertical-align: top;
-    
+    background-color: #1E1F21;
   }
 
   .currency-img {
@@ -52,5 +54,13 @@ export default {
     max-height: 120px;
     margin: auto;
     padding-top: 10px;
+  }
+
+  .md-title {
+    color: #FFFFFF;
+  }
+
+  .md-subhead {
+    color: #999999;
   }
 </style>                               

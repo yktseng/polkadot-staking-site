@@ -1,9 +1,70 @@
 const axios = require('axios');
-
-const path = process.env.VUE_APP_BACKEND_PATH || 'http://127.0.0.1:3000';
+const path = process.env.VUE_APP_BACKEND_PATH || 'http://127.0.0.1:3030';
 console.log(`path = ${path}`);
 class Yaohsin {
   constructor() {
+    this.ksmNominatorCache = [];
+    this.dotNominatorCache = [];
+  }
+
+  async getOneKVOfficialNominators() {
+    const result = await axios.get(`${path}/api/1kv/nominators`);
+    if(result.status === 200) {
+      return result.data;
+    } else {
+      throw new Error('Failed to retrieve data: ' + result.status);
+    }
+  }
+
+  async getAllNominators(options) {
+    console.log(options);
+    if(options === undefined) {
+      options = {
+        coin: 'KSM',
+      };
+    }
+    let url = `${path}/api`;
+    if(options.coin === 'DOT') {
+      url += '/dot';
+    }
+    if(options.coin === 'KSM') {
+      if(this.ksmNominatorCache.length > 0) {
+        return this.ksmNominatorCache;
+      }
+    } else if(options.coin === 'DOT') {
+      if(this.dotNominatorCache.length > 0) {
+        return this.dotNominatorCache;
+      }
+    }
+    const result = await axios.get(`${url}/nominators`);
+    if(result.status === 200) {
+      if(options.coin === 'KSM') {
+        this.ksmNominatorCache = result.data;
+      } else if(options.coin === 'DOT') {
+        this.dotNominatorCache = result.data;
+      }
+      return result.data;
+    } else {
+      throw new Error('Failed to retrieve data: ' + result.status);
+    }
+  }
+
+  async getNominatedValidators(stash, options) {
+    console.log(options);
+    if(options === undefined) {
+      options = {
+        coin: 'KSM',
+      };
+    }
+    let url = `${path}/api`;
+    if(options.coin === 'DOT') {
+      url += '/dot';
+    }
+    return axios.get(`${url}/nominated/stash/${stash}`).then((result)=>{
+      return result.data;
+    }).catch(()=>{
+      return [];
+    });
   }
 
   async getOneKVList(params) {
@@ -33,26 +94,41 @@ class Yaohsin {
     return result;
   }
 
-  async getCurrentNominatingStatus() {
-    const result = await axios.get(`${path}/api/nominators`);
-    if(result.status === 200) {
-      return result.data;
-    } else {
-      throw new Error('Failed to retrieve data: ' + result.status);
-    }
-  }
-  
-  mergeOneKVList(onekv, detailInfo) {
+  mergeOneKVList(onekv, detailInfo, oneKVNominators) {
     onekv.forEach(element => {
       const name = element.name;
       detailInfo.forEach(detail => {
         if(detail.stakingInfo !== undefined && detail.stakingInfo !== null) {
           if(detail.name === name) {
-            element.electedRate = detail.electedRate;
+            if(detail.electedRate !== undefined) {
+              element.electedRate = detail.electedRate;
+            } else {
+              element.electedRate = detail.inclusion;
+            }
             if(detail.stakingInfo.stakingLedger !== undefined) {
+              element.commission = detail.stakingInfo.validatorPrefs.commission;
               element.stakeSize = detail.stakingInfo.stakingLedger.total;
               element.totalNominators = detail.totalNominators;
               element.activeNominators = detail.activeNominators;
+            }
+            element.oneKVNominated = false;
+            // find matched 1kv nominator
+            const validator = detail.stash;
+            for(let j = 0; j < oneKVNominators.length; j++) {
+              const oneKV = oneKVNominators[j];
+              for(let k = 0; k < oneKV.current.length; k++) {
+                if(oneKV.current[k].stash === validator) {
+                  element.oneKVNominated = true;
+                  element.oneKVStash = oneKV.address;
+                  element.lastNomination = Date.parse(oneKV.lastNomination);
+                  const nominatedForNumber = Date.now() - element.lastNomination;
+                  element.nominatedFor = this.__parseTimeDiffrenceToString(nominatedForNumber);
+                  break;
+                }
+              }
+              if(element.oneKVNominated === true) {
+                break;
+              }
             }
           }
         }
@@ -61,6 +137,18 @@ class Yaohsin {
     return onekv;
   }
   
+  __parseTimeDiffrenceToString(timeDiff) {
+    const timeDiffSeconds = timeDiff / 1000;
+    const timeDiffHour = (timeDiffSeconds / 3600).toFixed(0);
+    // const timeDiffMinutes = (timeDiffSeconds / 60).toFixed(0) % 60;
+    return this.__pad(timeDiffHour, 2) + ' hours';
+  }
+
+  __pad (str, max) {
+    str = str.toString();
+    return str.length < max ? this.__pad("0" + str, max) : str;
+  }
+
   async getOneKVInfo() {
     const result = await axios.get(`${path}/api/valid`);
     if(result.status === 200) {
@@ -110,9 +198,7 @@ class Yaohsin {
           }, []);
         }
         result.data.valid = result.data.valid.reduce((acc, v) => {
-          if(v.invalidityReasons === '') {
-            acc.push(v);
-          }
+          acc.push(v);
           return acc;
         }, []);
         return result.data;
@@ -122,14 +208,64 @@ class Yaohsin {
     });
   }
 
-  async getValidatorStatus(stash) {
-    return axios.get(`${path}/api/validator/${stash}/trend`).then((result)=>{
+  async getValidatorUnclaimedEras(stash, options) {
+    console.log(options);
+    if(options === undefined) {
+      options = {
+        coin: 'KSM',
+      };
+    }
+    if(options.coin === undefined) {
+      options.coin = 'KSM';
+    }
+    let url = `${path}/api`;
+    if(options.coin === 'DOT') {
+      url += '/dot';
+    }
+    return axios.get(`${url}/validator/${stash}/unclaimedEras`).then((result)=>{
+      return result.data;
+    }).catch(()=>{
+      return [];
+    });
+  }
+
+  async getValidatorStatus(stash, options) {
+    let url;
+    ({ url, options } = this.fillUrlByCoinName(options));
+    return axios.get(`${url}/validator/${stash}/trend`).then((result)=>{
       return result;
     });
   }
 
-  async getAllValidatorAndNominators() {
-    return axios.get(`${path}/api/allValidators?size=1500`).then((result)=>{
+  async getValidatorStatusOfCurrentEra(stash, options) {
+    let url;
+    ({ url, options } = this.fillUrlByCoinName(options));
+    return axios.get(`${url}/validator/${stash}`).then((result)=>{
+      return result;
+    });
+  }
+
+  fillUrlByCoinName(options) {
+    console.log(options);
+    if (options === undefined) {
+      options = {
+        coin: 'KSM',
+      };
+    }
+    if (options.coin === undefined) {
+      options.coin = 'KSM';
+    }
+    let url = `${path}/api`;
+    if (options.coin === 'DOT') {
+      url += '/dot';
+    }
+    return { url, options };
+  }
+
+  async getAllValidatorAndNominators(options) {
+    let url;
+    ({ url, options } = this.fillUrlByCoinName(options));
+    return axios.get(`${url}/allValidators?size=1500`).then((result)=>{
       return result.data;
     });
   }
@@ -149,6 +285,17 @@ class Yaohsin {
       results = results.concat(tmp);
     }
     return results;
+  }
+
+  async getStashRewards(id, options) {
+    let url;
+    ({ url, options } = this.fillUrlByCoinName(options));
+    const result = await axios.get(`${url}/stash/${id}/rewards`).then((result)=>{
+      return result.data;
+    }).catch(()=>{
+      return undefined;
+    });
+    return result;
   }
 
   __splitNominatorArray(array) {

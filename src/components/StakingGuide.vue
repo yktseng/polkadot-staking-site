@@ -6,7 +6,7 @@
       <md-dialog-content>
       <div v-if="$isMobile()">
         <div class="md-body-1 desc">
-          Nominate the following validators to support us. Or use desktop to try our auto nomination tool.
+          Search for the validator on <a href="https://polkadot.js.org/apps/#/staking/waiting">Polkadot App</a> and nominate them.
         </div>
           <table id="kusama-table">
             <tr>
@@ -121,8 +121,8 @@
       </md-step>
     </md-steppers>
       <md-dialog-actions>
-        <md-button class="md-raised md-primary" @click="setDone(nextStep())" :disabled="(isLoading || ended) || (active === 'third' && stakeFund === 0)">Continue</md-button>
-        <md-button class="md-secondary" @click="$emit('close-guide')">Close</md-button>
+        <md-button id="kusama-stake-with-us-next" class="md-raised md-primary" @click="setDone(nextStep())" :disabled="(isLoading || ended) || (active === 'third' && stakeFund === 0)">Continue</md-button>
+        <md-button id="kusama-stake-with-us-end" class="md-secondary" @click="$emit('close-guide')">Close</md-button>
       </md-dialog-actions>
       </div>
       </md-dialog-content>
@@ -133,6 +133,7 @@
 <script>
 import Identicon from '@polkadot/vue-identicon';
 const polkadot = require('../scripts/polkadot');
+const constants = require('../scripts/constants');
 export default {
   name: 'StakingGuide',
   props: {
@@ -178,9 +179,10 @@ export default {
   },
   methods: {
     _calculateFunds(accountInfo) {
-      console.log((accountInfo.data.free.toNumber() / 1000000000000).toFixed(3), (accountInfo.data.reserved.toNumber() / 1000000000000).toFixed(3), (accountInfo.data.feeFrozen.toNumber() / 1000000000000).toFixed(3), (accountInfo.data.miscFrozen.toNumber() / 1000000000000).toFixed(3));
-          this.freeFund = ((accountInfo.data.free - accountInfo.data.feeFrozen) / 1000000000000).toFixed(3);
-          this.stakedFund = (accountInfo.data.feeFrozen / 1000000000000).toFixed(3);
+      console.log((accountInfo.data.free.toNumber() / constants.KUSAMA_DECIMAL).toFixed(3), (accountInfo.data.reserved.toNumber() / constants.KUSAMA_DECIMAL).toFixed(3),
+      (accountInfo.data.feeFrozen.toNumber() / constants.KUSAMA_DECIMAL).toFixed(3), (accountInfo.data.miscFrozen.toNumber() / constants.KUSAMA_DECIMAL).toFixed(3));
+          this.freeFund = ((accountInfo.data.free - accountInfo.data.feeFrozen) / constants.KUSAMA_DECIMAL).toFixed(3);
+          this.stakedFund = (accountInfo.data.feeFrozen / constants.KUSAMA_DECIMAL).toFixed(3);
           this.stakeFund = this.stakedFund;
           this.maxFund = parseFloat(this.freeFund) + parseFloat(this.stakedFund); // minus 0.5 to make sure you have enough KSM to pay the fee
           if(this.maxFund < 0.5) {

@@ -9,7 +9,7 @@ import VueMaterialSlider from 'vue-material-slider';
 import VueApexCharts from 'vue-apexcharts'
 import VueClipboard from 'vue-clipboard2'
 import VueMobileDetection from "vue-mobile-detection";
-
+import vuetify from './plugins/vuetify'
  
 Vue.use(VueClipboard)
 Vue.use(VueApexCharts)
@@ -25,9 +25,11 @@ Vue.config.productionTip = false;
 const oneKValidators = Vue.component('oneKValidators', require('./pages/oneThousandValidators/1kValidatorPage.vue').default);
 const nominatingStatus = Vue.component('nominatingStatus', require('./pages/validatorTools/NominatingStatusPage.vue').default);
 const validatorStatus = Vue.component('validatorStatus', require('./pages/oneThousandValidators/ValidatorDashboard.vue').default);
+const ksmBotGuide = Vue.component('ksmBotGuide', require('./pages/botGuide/KusamaBotGuide.vue').default);
 const landingPage = Vue.component('landingPage', require('./components/LandingPage.vue').default);
 const toolPage = Vue.component('toolPage', require('./components/ToolPage.vue').default);
 const contactPage = Vue.component('contactPane', require('./components/ContactPage.vue').default);
+const rewardQuerierPage = Vue.component('rewardQuerierPage', require('./pages/nomintorTools/rewardQuerier.vue').default);
 
 const router = new VueRouter({
   mode: 'history',
@@ -36,12 +38,25 @@ const router = new VueRouter({
     { path: '/', component: landingPage, name: 'landingPage'},
     { path: '/tools', component: toolPage, name: 'toolPage'},
     { path: '/contact', component: contactPage, name: 'contactPage'},
-    { path: '/tools/validatorStatus', component: validatorStatus, name: 'validatorStatusPage'},
-    { path: '/tools/ksmVN', component: nominatingStatus, name: 'nominatingStatusPage'}
+    { path: '/tools/validatorStatus', component: validatorStatus, name: 'validatorStatusPage', props: true},
+    { path: '/tools/ksmVN', component: nominatingStatus, name: 'nominatingStatusPage', props: {
+      coin: 'KSM'
+    }},
+    { path: '/tools/dotVN', component: nominatingStatus, name: 'nominatingStatusPage', props: {
+      coin: 'DOT'
+    }},
+    { path: '/tools/ksmBotGuide', component: ksmBotGuide, name: 'kusamaBotGuidePage'},
+    { path: '/tools/ksmSR', component: rewardQuerierPage, name: 'rewardQuerierPage', props: {
+      coinName: 'KSM'
+    }},
+    { path: '/tools/dotSR', component: rewardQuerierPage, name: 'rewardQuerierPage', props: {
+      coinName: 'DOT'
+    }},
   ],
 });
 
 new Vue({
   render: h => h(App),
   router: router,
+  vuetify,
 }).$mount('#app')

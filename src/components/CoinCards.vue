@@ -1,21 +1,20 @@
 <template>
   <div id="coin-cards" class="md-elevation-10">
-    <div class='card-container md-layout' v-for="(currency, index) in coins" :key="index">
-      <coin-card v-bind:displayName="currency.displayName"/>
+    <div class='md-layout md-gutter'>
+      <ksm-coin-card/>
+      <dot-coin-card/>
     </div>
   </div>
 </template>
 
 <script>
-import CoinCard from './CoinCard.vue'
-
+import KsmCoinCard from './coinCards/KsmCoinCard.vue'
+import DotCoinCard from './coinCards/DotCoinCard.vue'
 export default {
   name: 'CoinCards',
-  props: {
-    coins: Array
-  },
   components: {
-    CoinCard
+    KsmCoinCard,
+    DotCoinCard
   }
 }
 </script>
@@ -26,7 +25,7 @@ export default {
     margin-top: 10vh;
     padding-bottom: 20px;
     width: 80vw;
-    background-color:#404b55;
+    background-color:#76828d;
     margin-left: auto;
     margin-right: auto;
     z-index: 10;
@@ -34,14 +33,4 @@ export default {
     display: inline-block;
   }
 
-  .card-container {
-    width: 33%;
-    min-width: 240px;
-    min-height: 268px;
-    max-height: 268px;
-    margin-bottom: 40px;
-    position: relative;
-    display: inline-block;
-    background-color:#404b55;
-  }
 </style>

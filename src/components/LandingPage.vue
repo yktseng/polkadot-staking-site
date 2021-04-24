@@ -3,7 +3,7 @@
     <!-- <img src="../assets/img/banner.jpg" />-->
     <div v-if="$isMobile()" class="main-desc md-display-1">Earn <span style="color:#61ba89">Crypto </span>Income<div class="secondary-desc">in a few steps</div></div>
     <div v-else class="main-desc md-display-4">Earn <span style="color:#61ba89">Crypto </span>Income<div class="secondary-desc">in a few steps</div></div>
-    <coin-cards v-bind:coins="coins"/>
+    <coin-cards/>
   </div>
 
 </template>
@@ -24,9 +24,6 @@ export default {
   data: ()=>{
     return {
       validators: [],
-      coins: [{
-        displayName: 'Kusama',
-      }]
     }
   }
 }
@@ -39,7 +36,9 @@ export default {
     z-index: 5;
     background-color: #293031;
     width: 100%;
-    height: 88vh;
+    min-height: 88vh;
+    display: flex;
+    flex-direction: column;
   }
 
   .main-desc {

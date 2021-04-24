@@ -1,7 +1,7 @@
 <template>
   <div id="tool-cards" class="md-elevation-10">
     <div class='card-container md-layout' v-for="(tool, index) in tools" :key="index">
-      <tool-card v-bind:displayName="tool.displayName" v-bind:route="tool.route" />
+      <tool-card v-bind:displayName="tool.displayName" v-bind:route="tool.route" v-bind:coinName="tool.coinName" />
     </div>
   </div>
 </template>
@@ -26,7 +26,7 @@ export default {
     margin-top: 10vh;
     padding-bottom: 20px;
     width: 80vw;
-    background-color: #404b55;
+    background-color: #76828d;
     margin-left: auto;
     margin-right: auto;
     z-index: 10;
@@ -41,7 +41,8 @@ export default {
     max-height: 268px;
     margin-bottom: 40px;
     position: relative;
-    display: inline-block;
+    float: left;
+    display: inline;
     vertical-align: top;
   }
 </style>

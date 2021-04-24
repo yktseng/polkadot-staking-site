@@ -12,9 +12,11 @@
           </md-select>
         </md-field>
     </md-content>
+    <md-dialog-title>Highlight</md-dialog-title>
+    <md-switch class="sort-by" v-model="highlightCommissionChange">Commission Change</md-switch>
     <md-dialog-actions>
       <md-button class="md-secodary" @click="showDialog = false">Close</md-button>
-      <md-button class="md-primary" @click="onSave">Save</md-button>
+      <md-button class="md-primary" @click="onSave">Apply</md-button>
     </md-dialog-actions>
   </md-dialog>
 </div>
@@ -30,10 +32,15 @@ export default {
     return {
       showDialog: this.open,
       sortOptions: 'default',
+      highlightCommissionChange: true,
     }
   },
   mounted: async function() {
-    console.log('123');
+    if(localStorage.getItem('ksm.validator.highlight.commissionChange') === '1') {
+      this.highlightCommissionChange = true;
+    } else {
+      this.highlightCommissionChange = false;
+    }
   },
   methods: {
     onClose() {
@@ -45,7 +52,15 @@ export default {
       this.$emit('close-sorting-option');
       this.$emit('sorting-option', {
         sortBy: this.sortOptions,
+        highlights: {
+          commissionChange: this.highlightCommissionChange,
+        }
       });
+      if(this.highlightCommissionChange) {
+        localStorage.setItem('ksm.validator.highlight.commissionChange', '1');
+      } else {
+        localStorage.setItem('ksm.validator.highlight.commissionChange', '0');
+      }
     }
   }
 }

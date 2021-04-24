@@ -10,8 +10,37 @@
       yktseng<br>
       iisaint
     </div>
-    <div class="ksm-stash">
-      Kusama Validators <sub class='sub-head'>Nominate to support us</sub><br>---------------------------------------------------------------------
+    <div v-if="isMobile === false">
+    <div class="official-stash">
+      <img src="../assets/logo_dot_small.png"/>
+      Official Polkadot Validators <br>---------------------------------------------------------------------
+      <table id="kusama-table">
+        <tr>
+          <td class="ident-icon-column"><Identicon @click.native="copy('14AzFH6Vq1Vefp6eQYPK8DWuvYuUm3xVAvcN9wS352QsCH8L')" class="ident-icon"
+          :size="32"
+          :theme="'polkadot'"
+          :value="'14AzFH6Vq1Vefp6eQYPK8DWuvYuUm3xVAvcN9wS352QsCH8L'"/></td>
+          <td>Cryptolab.Network</td>
+          <td>14AzFH6Vq1Vefp6eQYPK8DWuvYuUm3xVAvcN9wS352QsCH8L</td>
+        </tr>
+      </table>
+    </div>
+    <div class="official-stash">
+      <img src="../assets/logo_ksm_small.png"/>
+      Official Kusama Validators <br>---------------------------------------------------------------------
+      <table id="kusama-table">
+        <tr>
+          <td class="ident-icon-column"><Identicon @click.native="copy('GA1WBfVMBReXjWKGnXneC682ZZYustFoc8aTsqXv5fFvi2e')" class="ident-icon"
+          :size="32"
+          :theme="'polkadot'"
+          :value="'GA1WBfVMBReXjWKGnXneC682ZZYustFoc8aTsqXv5fFvi2e'"/></td>
+          <td>Cryptolab.Network</td>
+          <td>GA1WBfVMBReXjWKGnXneC682ZZYustFoc8aTsqXv5fFvi2e</td>
+        </tr>
+      </table>
+    </div>
+    <div class="personal-stash">
+      Personal Kusama Validators <br>---------------------------------------------------------------------
       <table id="kusama-table">
         <tr>
           <td class="ident-icon-column"><Identicon @click.native="copy('H4EeouHL5LawTqq2itu6auF62hDRX2LEBYk1TxS6QMrn9Hg')" class="ident-icon"
@@ -55,15 +84,21 @@
         </tr>
       </table>
     </div>
+    </div>
+    <div v-else>
+      <br><br><span class="search-for">Search for <span class="cryptolab">Cryptolab.network</span> on Polkadot APP to nominate us!</span>
+    </div> 
   </div>
 </template>
 
 <script>
 import Identicon from '@polkadot/vue-identicon';
+const constants = require('../scripts/constants');
 export default {
   name: 'contactPage',
   data: ()=>{
     return {
+      isMobile: constants.isMobile(),
       ksmStashes: [
         {
           name: 'DRAGONLANCE',
@@ -90,8 +125,10 @@ export default {
     z-index: 5;
     background-color: #293031;
     width: 100%;
-    height: 88vh;
+    min-height: 88vh;
     font-size: 16px;
+    display: flex;
+    flex-direction: column;
   }
   .riot-id {
     padding-top:100px;
@@ -101,9 +138,11 @@ export default {
     padding-top:50px;
     color: #61ba89;
   }
-  .ksm-stash {
+  .official-stash {
     padding-top:50px;
+    padding-right: 5vw;
     color: #61ba89;
+    display: inline-block;
   }
   #kusama-table {
     padding-top: 20px;
@@ -119,5 +158,15 @@ export default {
   }
   .sub-head {
     font-size: 8px;
+  }
+  .personal-stash {
+    color: #61ba89;
+    padding-top: 5vh;
+  }
+  .search-for {
+    color: #61ba89;
+  }
+  .cryptolab {
+    color: #ffffff;
   }
 </style>
