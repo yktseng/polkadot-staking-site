@@ -62,6 +62,9 @@
           :dense=true
           :mobile-breakpoint=0
           class="elevation-2 era-reward-table mb-4 mt-4">
+          <template v-slot:[`item.amount`]="{ item }">
+              {{ item.amount > 0.0001? item.amount.toFixed(4): '~0.0001' }} {{coinName}}
+          </template>
         </v-data-table>
       </div>
       <div class='md-layout-item md-medium-size-35 md-medium-size-100 md-xsmall-size-100 charts'>
