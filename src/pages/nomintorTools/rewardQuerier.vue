@@ -10,7 +10,14 @@
       </div>
       </div>
   </md-toolbar>
-  <div v-if="isStashValid" class="content">
+  <v-layout class="pt-8" v-if="isLoading" justify-center align-center>
+      <v-progress-circular 
+      indeterminate
+      color=#61ba89
+      v-if="isLoading">
+      </v-progress-circular>
+  </v-layout>
+  <div v-if="isStashValid && !isLoading" class="content">
     <div class="md-title stash-info-title mt-2 pt-4 pb-4 pl-4 header-card-light">Stash Information</div>
     <v-simple-table class="elevation-2 mt-4 mb-8">
       <template v-slot:default>
@@ -132,6 +139,7 @@ export default {
       eraRewards: [],
       localStorageKey: 'queriedStashes',
       validators: [],
+      isLoading: false,
 
       itemsPerPageOptions: [10, 20, 50, -1],
       eraRewardHeaders: [
@@ -228,6 +236,7 @@ export default {
       setTimeout(()=>{
         this.inDelay = false;
       }, 1000);
+      this.isLoading = true;
       this.showSnakeBar = false;
       if(stash.startsWith('1')) {
         this.coinName = 'DOT';
@@ -254,6 +263,7 @@ export default {
           return acc;
         }, 0);
       }
+      this.isLoading = false;
     }
   },
   components: {
