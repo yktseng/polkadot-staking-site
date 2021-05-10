@@ -51,7 +51,7 @@
       v-bind:favorite.sync="validator.isMissing"
       v-bind:apy="validator.info.apy"
       v-bind:commissionChange="commissionChange(validator)"
-      v-bind:stalePayouts="validator.info.unclaimed_eras.length >= 20"
+      v-bind:stalePayouts="validator.info.unclaimedEras.length >= 20"
       v-bind:coinName="coin"
       @favorite-clicked="onFavoriteClicked"/>
     </div>
