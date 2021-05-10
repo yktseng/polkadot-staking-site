@@ -111,6 +111,9 @@ const constants = require('../../scripts/constants');
 export default {
   name: 'RewardQuerier',
   mounted: function() {
+    if(this.$route.params.stash !== undefined) {
+      this.selectedStash = this.$route.params.stash;
+    }
     if(localStorage.getItem(this.localStorageKey) !== undefined && localStorage.getItem(this.localStorageKey) !== null) {
       let storage = JSON.parse(localStorage.getItem(this.localStorageKey));
       if(!Array.isArray(storage)) {
