@@ -51,7 +51,16 @@
     </v-simple-table>
     <div class='md-layout md-alignment-top md-gutter'>
       <div class='md-layout-item md-medium-size-55 md-medium-size-100 md-xsmall-size-100'>
-        <div class="md-title stash-info-title pt-4 pb-4 pl-4 header-card-light">Era Rewards</div>
+        <div class="md-title stash-info-title pt-4 pb-4 pl-4 header-card-light" >
+          <div class="md-layout">
+            <div class="md-layout-item">Era Rewards</div>
+            <download-csv
+              :data = "eraRewards">
+              <md-icon style="color:#fafafa; cursor:pointer" class="md-layout-item pt-4 pb-4 pr-8 header-card-light">file_download</md-icon>
+              <md-tooltip md-direction="bottom">Export rewards as CSV</md-tooltip>
+            </download-csv>
+          </div>
+        </div>
         <v-data-table
           :headers="eraRewardHeaders"
           :items="eraRewards"

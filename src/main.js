@@ -9,7 +9,10 @@ import VueMaterialSlider from 'vue-material-slider';
 import VueApexCharts from 'vue-apexcharts'
 import VueClipboard from 'vue-clipboard2'
 import VueMobileDetection from "vue-mobile-detection";
-import vuetify from './plugins/vuetify'
+import vuetify from './plugins/vuetify';
+import JsonCSV from 'vue-json-csv'
+
+Vue.component('downloadCsv', JsonCSV)
  
 Vue.use(VueClipboard)
 Vue.use(VueApexCharts)
