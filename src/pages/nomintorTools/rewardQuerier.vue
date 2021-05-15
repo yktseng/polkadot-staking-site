@@ -164,6 +164,8 @@ export default {
         },
         { text: 'Payout Date', value: 'date' },
         { text: 'Amount', value: 'amount' },
+        { text: 'Price (USD)', value: 'price' },
+        { text: 'Total (USD)', value: 'total'}
       ],
     }
   },
@@ -218,6 +220,8 @@ export default {
           _eraRewards[reward.era] = {
             amount: reward.amount,
             timestamp: reward.timestamp,
+            price: reward.price,
+            total: reward.total,
           }
         } else {
           _eraRewards[reward.era].amount += reward.amount;
@@ -229,6 +233,8 @@ export default {
           era: era,
           amount: _eraRewards[era].amount,
           date: moment(_eraRewards[era].timestamp).format('L'),
+          price: _eraRewards[era].price.toFixed(3),
+          total: _eraRewards[era].total.toFixed(3),
         })
       });
       result.reverse();
