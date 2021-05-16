@@ -7,8 +7,14 @@ class Yaohsin {
     this.dotNominatorCache = [];
   }
 
-  async getOneKVOfficialNominators() {
-    const result = await axios.get(`${path}/api/1kv/nominators`);
+  async getOneKVOfficialNominators(coin) {
+    let url = `${path}`;
+    if(coin === 'DOT') {
+      url += '/api/dot';
+    } else {
+      url += '/api';
+    }
+    const result = await axios.get(`${url}/1kv/nominators`);
     if(result.status === 200) {
       return result.data;
     } else {
@@ -149,8 +155,14 @@ class Yaohsin {
     return str.length < max ? this.__pad("0" + str, max) : str;
   }
 
-  async getOneKVInfo() {
-    const result = await axios.get(`${path}/api/valid`);
+  async getOneKVInfo(coin) {
+    let url = `${path}`;
+    if(coin === 'DOT') {
+      url += '/api/dot';
+    } else {
+      url += '/api';
+    }
+    const result = await axios.get(`${url}/valid`);
     if(result.status === 200) {
       result.data.valid.map((v)=>{
         if(v.electedRate === undefined) {
@@ -163,13 +175,19 @@ class Yaohsin {
     }
   }
 
-  getOneKVDetailedInfo(params) {
+  getOneKVDetailedInfo(coin, params) {
+    let url = `${path}`;
+    if(coin === 'DOT') {
+      url += '/api/dot';
+    } else {
+      url += '/api';
+    }
     if(params === undefined) {
       params = {
         ignoredValidators: [],
       };
     }
-    return axios.get(`${path}/api/validDetail?option=1kv`).then((result)=>{
+    return axios.get(`${url}/validDetail?option=1kv`).then((result)=>{
       if(result.status === 200) {
         if(params.electedRate > 0) {
           result.data.valid = result.data.valid.reduce((acc, v) => {

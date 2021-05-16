@@ -37,7 +37,12 @@ const rewardQuerierPage = Vue.component('rewardQuerierPage', require('./pages/no
 const router = new VueRouter({
   mode: 'history',
   routes: [
-    { path: '/tools/oneKValidators', component: oneKValidators, name: 'oneKValidator' },
+    { path: '/tools/oneKValidators', component: oneKValidators, name: 'oneKValidator', props: {
+      coin: 'KSM'
+    }},
+    { path: '/tools/oneKValidatorsDot', component: oneKValidators, name: 'oneKValidator', props: {
+      coin: 'DOT'
+    }},
     { path: '/', component: landingPage, name: 'landingPage'},
     { path: '/tools', component: toolPage, name: 'toolPage'},
     { path: '/contact', component: contactPage, name: 'contactPage'},

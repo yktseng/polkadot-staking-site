@@ -6,7 +6,7 @@
     <div v-if="readyToDisplay && !isError">
       <v-card class="pt-2 mb-4 elevation-2 header-card">
         
-        <div class="pb-2"><img src="../../assets/1kv-logo.png" style="height:64px"/></div>
+        <div class="pb-2"><img v-if="coin==='KSM'" src="../../assets/1kv-logo.png" style="height:64px"/></div>
         <div class="d-flex header-card justify-center">
         <div class="heading-6 ma-2 mb-2"><span style="color:#61ba89" class="mr-2">Valid validators: </span>{{oneKVStatus.length}}</div>
         <!--<p>Total nominators: {{currentNominatingStatus.nominators.length}}</p>-->
@@ -68,6 +68,9 @@ const Yaohsin = require('../../scripts/yaohsin');
 // const constants = require('../scripts/constants');
 export default {
   name: 'oneKValidator',
+  props: {
+    coin: String,
+  },
   data: function() {
     return {
       oneKVStatus: [],
@@ -103,20 +106,20 @@ export default {
   mounted: async function() {
     this.yaohsin = new Yaohsin();
     this.showProgressBar = true;
-    const result = await this.yaohsin.getOneKVInfo().catch(()=>{
+    const result = await this.yaohsin.getOneKVInfo(this.coin).catch(()=>{
       this.isError = true;
     });
     if(this.isError) {
       this.showProgressBar = false;
       return;
     }
-    const oneKVOfficial = await this.yaohsin.getOneKVOfficialNominators();
+    const oneKVOfficial = await this.yaohsin.getOneKVOfficialNominators(this.coin);
     const oneKVNominators = oneKVOfficial.nominators;
     this.totalOneKvNominatorCount = oneKVNominators.length;
     this.totalValidatorCount = result.valid.length;
     this.totalNominatedCount = result.electedCount;
     this.oneKVStatus = result.valid;
-    this.yaohsin.getOneKVDetailedInfo().then((detail)=>{
+    this.yaohsin.getOneKVDetailedInfo(this.coin).then((detail)=>{
       this.oneKVStatus = this.yaohsin.mergeOneKVList(this.oneKVStatus, detail.valid, oneKVNominators);
       this.oneKVStatus.map((v)=>{
         if(v.commission < 1) {
@@ -158,7 +161,7 @@ export default {
     },
     onClickAnalytic: function(stash) {
       console.log(stash);
-      let routeData = this.$router.resolve({path: 'validatorStatus', query: {stash: stash, coin: 'KSM'}});
+      let routeData = this.$router.resolve({path: 'validatorStatus', query: {stash: stash, coin: this.coin}});
       window.open(routeData.href, '_blank');
     },
     sortByNominationOrder: function() {

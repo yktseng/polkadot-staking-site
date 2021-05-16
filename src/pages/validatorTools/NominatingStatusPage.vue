@@ -13,7 +13,7 @@
           Tips: Click on each card to see detailed information of the validator. Click <md-icon>favorite</md-icon> to put your interested validators to the top
         </h4>
         <h4 class="md-dense" v-if="randomSeed >= 0.7">
-          Tips: Support us by nominating "Cryptolab.Network" on Polkadot App
+          Tips: Support us by nominating "Cryptolab 01" and "Cryptolab.Network" on Polkadot App
         </h4>
         <div class="md-toolbar-section-end md-dense">
           <md-button class="md-icon-button" @click="onClickCloseTooltips">
