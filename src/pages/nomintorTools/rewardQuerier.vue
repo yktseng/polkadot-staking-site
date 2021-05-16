@@ -232,7 +232,7 @@ export default {
         result.push({
           era: era,
           amount: _eraRewards[era].amount,
-          date: moment(_eraRewards[era].timestamp).format('L'),
+          date: moment.utc(_eraRewards[era].timestamp).format('L'),
           price: _eraRewards[era].price.toFixed(3),
           total: _eraRewards[era].total.toFixed(3),
         })
