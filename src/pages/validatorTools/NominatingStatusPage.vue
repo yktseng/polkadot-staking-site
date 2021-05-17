@@ -113,10 +113,11 @@ export default {
         };
       }
       v.activeKSM = parseInt(v.info.exposure.total) / (this.coin === 'DOT'? constants.POLKADOT_DECIMAL: constants.KUSAMA_DECIMAL);
-      v.inactiveKSM = v.info.nominators.reduce((acc, v_)=>{
-        acc += (parseInt(v_.balance.lockedBalance) / (this.coin === 'DOT'? constants.POLKADOT_DECIMAL: constants.KUSAMA_DECIMAL));
-        return acc;
-      }, 0);
+      v.inactiveKSM = parseInt(v.info.total) / (this.coin === 'DOT'? constants.POLKADOT_DECIMAL: constants.KUSAMA_DECIMAL);
+      // v.inactiveKSM = v.info.nominators.reduce((acc, v_)=>{
+      //   acc += (parseInt(v_.balance.lockedBalance) / (this.coin === 'DOT'? constants.POLKADOT_DECIMAL: constants.KUSAMA_DECIMAL));
+      //   return acc;
+      // }, 0);
       this.displayValidators.push(v);
       v.isLoading = false;
     }
