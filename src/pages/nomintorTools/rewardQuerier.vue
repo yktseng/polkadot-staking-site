@@ -225,6 +225,7 @@ export default {
           }
         } else {
           _eraRewards[reward.era].amount += reward.amount;
+          _eraRewards[reward.era].total += reward.total;
         }
       });
       let result = [];
