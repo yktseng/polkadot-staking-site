@@ -1,4 +1,5 @@
 const axios = require('axios');
+const moment = require('moment');
 const path = process.env.VUE_APP_BACKEND_PATH || 'http://127.0.0.1:3030';
 console.log(`path = ${path}`);
 class Yaohsin {
@@ -117,6 +118,12 @@ class Yaohsin {
               element.totalNominators = detail.totalNominators;
               element.activeNominators = detail.activeNominators;
             }
+            if(moment(element.nominatedAt).unix() === 0) {
+              element.nominatedAt = '--';
+            } else {
+              element.nominatedAt = moment(element.nominatedAt).format('MM/DD');
+            }
+            
             element.oneKVNominated = false;
             // find matched 1kv nominator
             const validator = detail.stash;

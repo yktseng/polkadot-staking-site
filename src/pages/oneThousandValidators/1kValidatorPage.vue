@@ -54,6 +54,7 @@
           <md-icon v-if="item.oneKVNominated === true" class="nominated onekv-nominated-cell">check</md-icon>
           <div v-if="item.oneKVNominated === true" class="onekv-nominated-cell">({{item.nominatedFor}})</div>
           <md-icon v-if="item.oneKVNominated === false" class="waiting">close</md-icon>
+          <div v-if="item.oneKVNominated === false" class="onekv-nominated-cell">({{item.nominatedAt}})</div>
         </template>
         <template v-slot:[`item.electedRate`]="{ item }">
           {{ Number.parseFloat(item.electedRate * 100).toFixed(2) }} %
@@ -98,6 +99,7 @@ export default {
         { text: 'Nomination Order', value: 'order', align: 'right' },
         { text: 'Total Nominators', value: 'totalNominators', align: 'right d-none d-lg-table-cell' },
         { text: 'Active Nominators', value: 'activeNominators', align: 'right d-none d-lg-table-cell' },
+        // { text: 'Last Nominated', value: 'nominatedAt', align: 'right d-none d-lg-table-cell'},
         { text: 'Rank', value: 'rank', align: 'right d-none d-lg-table-cell' },
         { text: 'Elected Rate', value: 'electedRate', align: 'right' },
       ],
@@ -166,15 +168,6 @@ export default {
     },
     sortByNominationOrder: function() {
       this.oneKVStatus.sort((a, b)=>{
-        // add this condition to allow those who have been nominated for 3 era join the ordering.(because they can actually be nominated again)
-        if((Date.now() - a.lastNomination < 18 * 3600 * 1000) || (Date.now() - b.lastNomination < 18 * 3600 * 1000)) { // last era, ignore it
-          if(a.oneKVNominated === true && b.oneKVNominated === false) {
-            return 1;
-          }
-          if(a.oneKVNominated === false && b.oneKVNominated === true) {
-            return -1;
-          }
-        }
         if(a.aggregate?.aggregate > b.aggregate?.aggregate) {
           return -1;
         } else if(a.aggregate?.aggregate < b.aggregate?.aggregate) {
