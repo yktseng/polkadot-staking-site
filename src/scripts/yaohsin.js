@@ -323,6 +323,39 @@ class Yaohsin {
     return result;
   }
 
+  async getStashRewardsCollector(id, options) {
+    let url;
+    ({ url, options } = this.fillUrlByCoinName(options));
+    if(typeof options.startDate !== 'undefined') {
+      if(!moment(options.startDate, "YYYY-MM-DD").isValid()) {
+        throw new Error('Invalid startDate');
+      }
+    } else {
+      options.startDate = '2020-01-01';
+    }
+    if(typeof options.endDate !== 'undefined') {
+      if(!moment(options.endDate, 'YYYY-MM-DD').isValid()) {
+        throw new Error('Invalid endDate');
+      }
+    } else {
+      options.endDate = moment().format('YYYY-MM-DD');
+    }
+    if(typeof options.startBalance !== 'undefined') {
+      if(Number.isNaN(options.startBalance) || options.startBalance <= 0) {
+        throw new Error('Invalid startBalance');
+      }
+    } else {
+      options.startBalance = 1;
+    }
+    const result = await axios.get(`${url}/stash/${id}/rewards/collector?
+      start=${options.startDate}&end=${options.endDate}&currency=USD&price_data=true&start_balance=${options.startBalance}`).then((result)=>{
+      return result.data;
+    }).catch(()=>{
+      return undefined;
+    });
+    return result;
+  }
+
   __splitNominatorArray(array) {
     let result = [];
     const parts = 4;

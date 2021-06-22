@@ -72,7 +72,7 @@
           :mobile-breakpoint=0
           class="elevation-2 era-reward-table mb-4 mt-4">
           <template v-slot:[`item.amount`]="{ item }">
-              {{ item.amount > 0.0001? item.amount.toFixed(4): '~0.0001' }} {{coinName}}
+              {{ item.amount > 0.0001? item.amount.toFixed(4): '0' }} {{coinName}}
           </template>
         </v-data-table>
       </div>
@@ -214,32 +214,11 @@ export default {
       this.endDate = moment(this.endDate).format('L');
     },
     mergeEraRewards(eraRewards) {
-      const _eraRewards = {};
-      eraRewards.map((reward)=>{
-        if(_eraRewards[reward.era] === undefined){
-          _eraRewards[reward.era] = {
-            amount: reward.amount,
-            timestamp: reward.timestamp,
-            price: reward.price,
-            total: reward.total,
-          }
-        } else {
-          _eraRewards[reward.era].amount += reward.amount;
-          _eraRewards[reward.era].total += reward.total;
-        }
+      return eraRewards.map((era)=>{
+        era.date = moment.utc(era.timestamp).format('L');
+        era.total = era.total.toFixed(2);
+        return era;
       });
-      let result = [];
-      Object.keys(_eraRewards).map((era)=>{
-        result.push({
-          era: era,
-          amount: _eraRewards[era].amount,
-          date: moment.utc(_eraRewards[era].timestamp).format('L'),
-          price: _eraRewards[era].price.toFixed(3),
-          total: _eraRewards[era].total.toFixed(3),
-        })
-      });
-      result.reverse();
-      return result;
     },
     commissionChange: function(validator) {
       if(validator.statusChange !== undefined) {
@@ -265,12 +244,13 @@ export default {
       } else if(stash.charCodeAt(0) >= 65 && stash.charCodeAt(0) <= 90) {
         this.coinName = 'KSM';
       }
-      const eraRewards = await this.yaohsin.getStashRewards(stash, {coin: this.coinName});
+      const eraRewards = await this.yaohsin.getStashRewardsCollector(stash, {coin: this.coinName});
       if(eraRewards !== undefined) {
         this.isStashValid = true;
         this.saveQueriedRecords(stash);
         this.calcTotalRewards(eraRewards);
         this.eraRewards = this.mergeEraRewards(eraRewards.eraRewards);
+        console.log(this.eraRewards);
         this.stash = eraRewards.stash;
       } else {
         this.showSnakeBar = true;
