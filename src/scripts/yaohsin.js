@@ -347,13 +347,41 @@ class Yaohsin {
     } else {
       options.startBalance = 1;
     }
-    const result = await axios.get(`${url}/stash/${id}/rewards/collector?
-      start=${options.startDate}&end=${options.endDate}&currency=USD&price_data=true&start_balance=${options.startBalance}`).then((result)=>{
+    const result = await axios.get(`${url}/stash/${id}/rewards/collector?` +
+      `start=${options.startDate}&end=${options.endDate}&currency=${options.currency}&price_data=true&start_balance=${options.startBalance}`).then((result)=>{
       return result.data;
     }).catch(()=>{
       return undefined;
     });
     return result;
+  }
+
+  async getStashRewardsCollectorCsv(id, options) {
+    let url;
+    ({ url, options } = this.fillUrlByCoinName(options));
+    await axios.get(`${url}/stash/${id}/rewards/collector/csv`, { responseType: 'blob' })
+      .then(response => {
+        const blob = new Blob([response.data], { type: 'application/csv' })
+        const link = document.createElement('a')
+        link.href = URL.createObjectURL(blob)
+        link.download = id + '.csv'
+        link.click()
+        URL.revokeObjectURL(link.href)
+      }).catch(console.error)
+  }
+
+  async getStashRewardsCollectorJson(id, options) {
+    let url;
+    ({ url, options } = this.fillUrlByCoinName(options));
+    await axios.get(`${url}/stash/${id}/rewards/collector/json`, { responseType: 'blob' })
+      .then(response => {
+        const blob = new Blob([response.data], { type: 'application/json' })
+        const link = document.createElement('a')
+        link.href = URL.createObjectURL(blob)
+        link.download = id + '.json'
+        link.click()
+        URL.revokeObjectURL(link.href)
+      }).catch(console.error)
   }
 
   __splitNominatorArray(array) {
